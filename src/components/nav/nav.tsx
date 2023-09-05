@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
-
 // import React from 'react'
+import { Link } from 'react-router-dom';
 
 export default function Nav() {
   return (
@@ -19,7 +18,8 @@ export default function Nav() {
           <Link to="/dm">DM</Link>
         </li>
         <li>
-          <Link to="/profiles">프로필</Link>
+          {/* 아이디를 얻어와야 함 */}
+          <Link to="/profile/1">프로필</Link>
         </li>
       </ul>
     </nav>

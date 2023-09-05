@@ -11,9 +11,13 @@ export default async function (
   request: VercelRequest,
   response: VercelResponse,
 ) {
+  const auth = request.headers.authorization;
   const axiosConfig: AxiosRequestConfig = request.body;
 
-  const { status, data }: AxiosResponse = await axiosInstance(axiosConfig);
+  const { status, data }: AxiosResponse = await axiosInstance({
+    ...axiosConfig,
+    headers: { Authorization: auth },
+  });
 
   response.status(status).json(data);
 }

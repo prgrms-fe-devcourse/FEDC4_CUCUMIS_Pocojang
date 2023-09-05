@@ -4,15 +4,24 @@ import { BASE_URL } from '@/consts/api';
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 type RequestOptions = {
-  header?: {
-    Authorization?: string;
-  };
   data?: unknown;
   params?: unknown;
 };
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  // TODO: localStorage 에서 token 가져오기
+  // const token = localStorage.getItem(AUTH);
+  const token = undefined;
+
+  if (token) {
+    config.headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  return config;
 });
 
 const request = async <Response>(
@@ -25,7 +34,6 @@ const request = async <Response>(
     data: {
       url,
       method,
-      headers: opt?.header,
       params: opt?.params,
       data: opt?.data,
     } as AxiosRequestConfig,

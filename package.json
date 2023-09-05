@@ -38,8 +38,13 @@
     "husky": "^8.0.0",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
-    "typescript": "^5.0.2",
+    "typescript": "^5.2.2",
     "vercel": "^32.1.0",
     "vite": "^4.4.5"
+  },
+  "overrides": {
+    "@vercel/node": {
+      "typescript": "5.2.2"
+    }
   }
 }

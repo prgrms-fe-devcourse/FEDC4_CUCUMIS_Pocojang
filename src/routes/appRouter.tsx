@@ -2,17 +2,27 @@ import { Link, createBrowserRouter } from 'react-router-dom';
 
 import MainPage from '@/pages/MainPage';
 import ProjectPage from '@/pages/project/ProjectPage';
-import ProjectDetail from '@/pages/project/ProjectDetail';
-import ProjectPosting from '@/pages/project/ProjectPosting';
-import ProjectUpdate from '@/pages/project/ProjectUpdate';
-import DeveloperList from '@/pages/developer/DeveloperList';
-import DeveloperDetail from '@/pages/developer/DeveloperDetail';
+import ProjectDetailPage from '@/pages/project/ProjectDetailPage';
+import ProjectPostingPage from '@/pages/project/ProjectPostingPage';
+import ProjectUpdatePage from '@/pages/project/ProjectUpdatePage';
+import DeveloperListPage from '@/pages/developer/DeveloperListPage';
+import DeveloperDetailPage from '@/pages/developer/DeveloperDetailPage';
+import DMListPage from '@/pages/dm/DMListPage';
+import DMPage from '@/pages/dm/DMPage';
+import ProfilePage from '@/pages/profile/ProfilePage';
+import SettingsPage from '@/pages/settings/SettingsPage';
+import LoginPage from '@/pages/auth/LoginPage';
+import SignupPage from '@/pages/auth/SignupPage';
+import ExtraInformationPage from '@/pages/auth/ExtraInformationPage';
+import NotFoundPage from '@/pages/error/NotFoundPage';
+import NotificationPage from '@/pages/notification/NotificationPage';
 
+// 각 페이지별 라우팅 모듈화
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <MainPage />,
-    errorElement: <h1>404 page = 따로 만들어줘야 돼!</h1>,
+    errorElement: <NotFoundPage />,
     children: [
       {
         index: true, // /페이지
@@ -42,23 +52,55 @@ export const router = createBrowserRouter([
       },
       {
         path: '/projects/:projectId',
-        element: <ProjectDetail />,
+        element: <ProjectDetailPage />,
       },
       {
         path: '/projects/write',
-        element: <ProjectPosting />,
+        element: <ProjectPostingPage />,
       },
       {
         path: '/projects/write/:projectId',
-        element: <ProjectUpdate />,
+        element: <ProjectUpdatePage />,
       },
       {
         path: '/developers',
-        element: <DeveloperList />,
+        element: <DeveloperListPage />,
       },
       {
         path: '/developers/:developerId',
-        element: <DeveloperDetail />,
+        element: <DeveloperDetailPage />,
+      },
+      {
+        path: '/dm',
+        element: <DMListPage />,
+      },
+      {
+        path: '/dm/:dmId',
+        element: <DMPage />,
+      },
+      {
+        path: '/profile/:userId',
+        element: <ProfilePage />,
+      },
+      {
+        path: '/settings',
+        element: <SettingsPage />,
+      },
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+      {
+        path: '/signup/step1',
+        element: <SignupPage />,
+      },
+      {
+        path: '/signup/step2',
+        element: <ExtraInformationPage />,
+      },
+      {
+        path: '/notification',
+        element: <NotificationPage />,
       },
     ],
   },

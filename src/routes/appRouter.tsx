@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
         path: 'projects',
         children: [
           {
-            path: '',
+            index: true,
             element: <ProjectPage />,
           },
           {
@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
             path: 'write',
             children: [
               {
-                path: '',
+                index: true,
                 element: <ProjectPostingPage />,
               },
               {
@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
         path: 'developers',
         children: [
           {
-            path: '',
+            index: true,
             element: <DeveloperListPage />,
           },
           {
@@ -71,7 +71,7 @@ export const router = createBrowserRouter([
         path: 'dm',
         children: [
           {
-            path: '',
+            index: true,
             element: <DMListPage />,
           },
           {

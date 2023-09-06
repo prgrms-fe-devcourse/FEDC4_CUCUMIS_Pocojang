@@ -1,7 +1,10 @@
 import Chip from '@mui/material/Chip';
 
-const BasicChip = ({ ...props }) => {
-  return <Chip {...props} />;
+interface BasicChipProps {
+  label: string;
+}
+const BasicChip = ({ label, ...props }: BasicChipProps) => {
+  return <Chip label={label} {...props} />;
 };
 
 export default BasicChip;

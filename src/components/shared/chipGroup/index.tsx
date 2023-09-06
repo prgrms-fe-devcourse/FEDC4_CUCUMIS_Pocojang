@@ -6,11 +6,11 @@ interface ChipGroupProps {
   labels: string[];
 }
 
-const ChipGroup = ({ labels }: ChipGroupProps) => {
+const ChipGroup = ({ labels, ...props }: ChipGroupProps) => {
   return (
     <Stack direction="row" spacing={1}>
       {labels?.map((label: string, i) => (
-        <BasicChip label={label} key={label + i} />
+        <BasicChip label={label} key={label + i} {...props} />
       ))}
     </Stack>
   );

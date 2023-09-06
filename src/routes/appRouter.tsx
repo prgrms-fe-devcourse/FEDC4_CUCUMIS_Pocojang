@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       {
-        index: true, // /페이지
+        index: true,
         element: <HomePage />,
       },
       {

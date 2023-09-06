@@ -1,15 +1,15 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import RootLayout from '@/layout/RootLayout';
+import RootLayout from '@/components/layout/RootLayout';
 import HomePage from '@/pages';
 import ProjectPage from '@/pages/projects';
-import ProjectDetailPage from '@/pages/projects/projectId';
+import ProjectDetailPage from '@/pages/projects/[projectId]';
 import ProjectPostingPage from '@/pages/projects/write';
-import ProjectUpdatePage from '@/pages/projects/writeId';
+import ProjectUpdatePage from '@/pages/projects/[writeId]';
 import DeveloperListPage from '@/pages/developers';
-import DeveloperDetailPage from '@/pages/developers/developerId';
+import DeveloperDetailPage from '@/pages/developers/[developerId]';
 import DMListPage from '@/pages/dm';
-import DMPage from '@/pages/dm/dmId';
+import DMPage from '@/pages/dm/[dmId]';
 import ProfilePage from '@/pages/profile';
 import SettingsPage from '@/pages/settings';
 import LoginPage from '@/pages/login';

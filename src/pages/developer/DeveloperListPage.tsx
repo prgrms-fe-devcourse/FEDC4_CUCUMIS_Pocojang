@@ -8,7 +8,7 @@ export default function DeveloperList() {
   const inputValue = searchParams.get('keyword');
 
   console.log(inputValue);
-  console.log(setSearchParams); // 주석처리 => 일단 참조를 하지 않으면 error => 억지로 참조..
+  console.log(setSearchParams); // TODO : 주석처리 => 일단 참조를 하지 않으면 error => 억지로 참조..
   return (
     <div>
       <form

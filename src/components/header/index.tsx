@@ -1,10 +1,23 @@
-import { Link } from 'react-router-dom';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Box from '@mui/material/Box';
+
+import useHeader from '@/components/header/useHeader';
 
 export default function Header() {
+  const { header } = useHeader();
+
   return (
-    <header>
-      <Link to="/login">로그인</Link>
-      <Link to="/notification">알림!</Link>
-    </header>
+    <Box sx={{ flexGrow: 1, alignItems: 'center' }}>
+      <AppBar>
+        <Toolbar sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box id="start-box">{header.start}</Box>
+
+          <Box sx={{ flexGrow: 1, textAlign: 'center' }}>{header.center}</Box>
+
+          <Box id="end-box">{header.end}</Box>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }

@@ -1,27 +1,27 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import MainPage from '@/pages/MainPage';
-import ProjectPage from '@/pages/project/ProjectPage';
-import ProjectDetailPage from '@/pages/project/ProjectDetailPage';
-import ProjectPostingPage from '@/pages/project/ProjectPostingPage';
-import ProjectUpdatePage from '@/pages/project/ProjectUpdatePage';
-import DeveloperListPage from '@/pages/developer/DeveloperListPage';
-import DeveloperDetailPage from '@/pages/developer/DeveloperDetailPage';
-import DMListPage from '@/pages/dm/DMListPage';
-import DMPage from '@/pages/dm/DMPage';
-import ProfilePage from '@/pages/profile/ProfilePage';
-import SettingsPage from '@/pages/settings/SettingsPage';
-import LoginPage from '@/pages/auth/LoginPage';
-import SignupPage from '@/pages/auth/SignupPage';
-import ExtraInformationPage from '@/pages/auth/ExtraInformationPage';
-import NotFoundPage from '@/pages/error/NotFoundPage';
-import NotificationPage from '@/pages/notification/NotificationPage';
-import HomePage from '@/pages/HomePage';
+import RootLayout from '@/layout/RootLayout';
+import HomePage from '@/pages';
+import ProjectPage from '@/pages/projects';
+import ProjectDetailPage from '@/pages/projects/projectId';
+import ProjectPostingPage from '@/pages/projects/write';
+import ProjectUpdatePage from '@/pages/projects/writeId';
+import DeveloperListPage from '@/pages/developers';
+import DeveloperDetailPage from '@/pages/developers/developerId';
+import DMListPage from '@/pages/dm';
+import DMPage from '@/pages/dm/dmId';
+import ProfilePage from '@/pages/profile';
+import SettingsPage from '@/pages/settings';
+import LoginPage from '@/pages/login';
+import SignupPage from '@/pages/signup/step1';
+import ExtraInformationPage from '@/pages/signup/step2';
+import NotFoundPage from '@/pages/notFound';
+import NotificationPage from '@/pages/notification';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <MainPage />,
+    element: <RootLayout />,
     errorElement: <NotFoundPage />,
     children: [
       {

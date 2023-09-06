@@ -1,4 +1,4 @@
-import { Link, createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 
 import MainPage from '@/pages/MainPage';
 import ProjectPage from '@/pages/project/ProjectPage';
@@ -16,6 +16,7 @@ import SignupPage from '@/pages/auth/SignupPage';
 import ExtraInformationPage from '@/pages/auth/ExtraInformationPage';
 import NotFoundPage from '@/pages/error/NotFoundPage';
 import NotificationPage from '@/pages/notification/NotificationPage';
+import HomePage from '@/pages/HomePage';
 
 // 각 페이지별 라우팅 모듈화
 export const router = createBrowserRouter([
@@ -26,25 +27,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true, // /페이지
-        element: (
-          <ul>
-            <li>
-              <Link to="/projects/1">1번 프로젝트</Link>
-            </li>
-            <li>
-              <Link to="/projects/2">2번 프로젝트</Link>
-            </li>
-            <li>
-              <Link to="/developers/1">1번 개발자</Link>
-            </li>
-            <li>
-              <Link to="/developers/2">2번 개발자</Link>
-            </li>
-            <li>
-              <Link to="/developers/2">2번 개발자</Link>
-            </li>
-          </ul>
-        ),
+        element: <HomePage />,
       },
       {
         path: '/projects',

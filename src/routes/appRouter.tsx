@@ -18,7 +18,6 @@ import NotFoundPage from '@/pages/error/NotFoundPage';
 import NotificationPage from '@/pages/notification/NotificationPage';
 import HomePage from '@/pages/HomePage';
 
-// 각 페이지별 라우팅 모듈화
 export const router = createBrowserRouter([
   {
     path: '/',

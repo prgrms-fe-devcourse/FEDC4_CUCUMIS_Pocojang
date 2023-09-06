@@ -1,7 +1,4 @@
 import { Link, useParams } from 'react-router-dom';
-
-// import React from 'react'
-
 export default function ProfilePage() {
   const { userId } = useParams();
   return (

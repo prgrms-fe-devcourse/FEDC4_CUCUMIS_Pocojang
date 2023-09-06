@@ -1,7 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
 
-// import React from 'react'
-
 export default function ProjectDetailPage() {
   const { projectId } = useParams();
 

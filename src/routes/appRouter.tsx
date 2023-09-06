@@ -30,56 +30,86 @@ export const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: '/projects',
-        element: <ProjectPage />,
+        path: 'projects',
+        children: [
+          {
+            path: '',
+            element: <ProjectPage />,
+          },
+          {
+            path: ':projectId',
+            element: <ProjectDetailPage />,
+          },
+          {
+            path: 'write',
+            children: [
+              {
+                path: '',
+                element: <ProjectPostingPage />,
+              },
+              {
+                path: ':projectId',
+                element: <ProjectUpdatePage />,
+              },
+            ],
+          },
+        ],
       },
       {
-        path: '/projects/:projectId',
-        element: <ProjectDetailPage />,
+        path: 'developers',
+        children: [
+          {
+            path: '',
+            element: <DeveloperListPage />,
+          },
+          {
+            path: ':developerId',
+            element: <DeveloperDetailPage />,
+          },
+        ],
       },
       {
-        path: '/projects/write',
-        element: <ProjectPostingPage />,
+        path: 'dm',
+        children: [
+          {
+            path: '',
+            element: <DMListPage />,
+          },
+          {
+            path: ':dmId',
+            element: <DMPage />,
+          },
+        ],
       },
       {
-        path: '/projects/write/:projectId',
-        element: <ProjectUpdatePage />,
+        path: 'profile',
+        children: [
+          {
+            path: ':userId',
+            element: <ProfilePage />,
+          },
+        ],
       },
       {
-        path: '/developers',
-        element: <DeveloperListPage />,
+        path: 'signup',
+        children: [
+          {
+            path: 'step1',
+            element: <SignupPage />,
+          },
+          {
+            path: 'step2',
+            element: <ExtraInformationPage />,
+          },
+        ],
       },
       {
-        path: '/developers/:developerId',
-        element: <DeveloperDetailPage />,
-      },
-      {
-        path: '/dm',
-        element: <DMListPage />,
-      },
-      {
-        path: '/dm/:dmId',
-        element: <DMPage />,
-      },
-      {
-        path: '/profile/:userId',
-        element: <ProfilePage />,
-      },
-      {
-        path: '/settings',
+        path: 'settings',
         element: <SettingsPage />,
       },
       {
         path: '/login',
         element: <LoginPage />,
-      },
-      {
-        path: '/signup/step1',
-        element: <SignupPage />,
-      },
-      {
-        path: '/signup/step2',
-        element: <ExtraInformationPage />,
       },
       {
         path: '/notification',

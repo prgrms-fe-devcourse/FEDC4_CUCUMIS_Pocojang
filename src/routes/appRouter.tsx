@@ -107,11 +107,11 @@ export const router = createBrowserRouter([
         element: <SettingsPage />,
       },
       {
-        path: '/login',
+        path: 'login',
         element: <LoginPage />,
       },
       {
-        path: '/notification',
+        path: 'notification',
         element: <NotificationPage />,
       },
     ],

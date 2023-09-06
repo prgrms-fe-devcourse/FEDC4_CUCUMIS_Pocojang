@@ -1,9 +1,7 @@
-import { ThemeProvider } from '@mui/material';
+import { RouterProvider } from 'react-router-dom';
 
-import { theme } from '@/styles/theme';
+import { router } from './routes/appRouter';
 
-function App() {
-  return <ThemeProvider theme={theme}></ThemeProvider>;
+export default function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App;

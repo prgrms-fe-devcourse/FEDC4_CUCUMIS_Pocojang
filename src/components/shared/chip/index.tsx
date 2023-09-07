@@ -1,9 +1,7 @@
-import Chip from '@mui/material/Chip';
+import Chip, { ChipProps } from '@mui/material/Chip';
 
-interface BasicChipProps {
+interface BasicChipProps extends ChipProps {
   label: string;
-  key?: string;
-  onClick?: () => void;
 }
 const BasicChip = ({ label, ...props }: BasicChipProps) => {
   return <Chip label={label} {...props} />;

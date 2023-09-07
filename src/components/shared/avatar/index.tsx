@@ -7,7 +7,7 @@ interface BasicAvatarProps extends AvatarProps {
   alt: string;
   width: number;
   height: number;
-  isLogin: boolean;
+  isUserOn: boolean;
 }
 
 const BasicAvatar = ({
@@ -15,14 +15,14 @@ const BasicAvatar = ({
   alt,
   width,
   height,
-  isLogin,
+  isUserOn,
   onClick,
 }: BasicAvatarProps) => {
   return (
     <BadgeStyled
       overlap="circular"
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      variant={isLogin ? 'dot' : 'standard'}
+      variant={isUserOn ? 'dot' : 'standard'}
       onClick={onClick}
     >
       <AvatarStyled alt={alt} src={imgSrc} width={width} height={height} />

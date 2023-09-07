@@ -5,7 +5,7 @@ import HomePage from '@/pages';
 import ProjectPage from '@/pages/projects';
 import ProjectDetailPage from '@/pages/projects/[projectId]';
 import ProjectPostingPage from '@/pages/projects/write';
-import ProjectUpdatePage from '@/pages/projects/[writeId]';
+import ProjectUpdatePage from '@/pages/projects/write/[writeId]';
 import DeveloperListPage from '@/pages/developers';
 import DeveloperDetailPage from '@/pages/developers/[developerId]';
 import DMListPage from '@/pages/dm';

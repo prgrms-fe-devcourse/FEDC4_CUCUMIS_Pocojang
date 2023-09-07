@@ -2,20 +2,22 @@ import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar, { AvatarProps } from '@mui/material/Avatar';
 
+import LOGO_IMG_SRC from '@/assets/Logo96.svg';
+
 interface BasicAvatarProps extends AvatarProps {
-  imgSrc: string;
-  alt: string;
-  width: number;
-  height: number;
-  isUserOn: boolean;
+  imgSrc?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  isUserOn?: boolean;
 }
 
 const BasicAvatar = ({
-  imgSrc,
-  alt,
-  width,
-  height,
-  isUserOn,
+  imgSrc = LOGO_IMG_SRC,
+  alt = 'user profile',
+  width = 32,
+  height = 32,
+  isUserOn = false,
   onClick,
 }: BasicAvatarProps) => {
   return (

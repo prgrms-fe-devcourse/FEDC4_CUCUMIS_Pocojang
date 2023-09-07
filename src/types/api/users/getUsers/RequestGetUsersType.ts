@@ -1,4 +1,2 @@
-export interface RequestGetUsersType {
-  offset?: number | string;
-  limit?: number | string;
-}
+import type { UserDTOType } from "@/types/models/UserDTOType";
+export interface RequestGetUsersType extends UserDTOType{}

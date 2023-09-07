@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 import { BASE_URL } from '@/consts/api';
 
@@ -28,7 +28,7 @@ const request = async <Response>(
   url: string,
   method: Method,
   opt?: RequestOptions,
-): Promise<AxiosResponse<{ data: Response }>> =>
+): Promise<Response> =>
   axiosInstance({
     method: 'POST',
     data: {
@@ -37,6 +37,8 @@ const request = async <Response>(
       params: opt?.params,
       data: opt?.data,
     } as AxiosRequestConfig,
+  }).then((result) => {
+    return result.data;
   });
 
 const get = async <Request, Response>(url: string, params?: Request) =>

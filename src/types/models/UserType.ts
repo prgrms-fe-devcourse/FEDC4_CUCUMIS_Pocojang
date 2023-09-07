@@ -1,4 +1,4 @@
-import type { PostType, LikeType, MessageType } from '../';
+import type { PostType, LikeType, MessageType, FollowType } from '../';
 export interface UserType {
   coverImage: string; // 커버 이미지
   image: string; // 프로필 이미지
@@ -10,16 +10,7 @@ export interface UserType {
   likes: LikeType[];
   comments: string[];
   followers: [];
-  following: [
-    {
-      _id: '6169e91316cb2265df003c6d';
-      user: '6169e58216cb2265df003bf4';
-      follower: '6169e206aa57d952c6dc1edd';
-      createdAt: '2021-10-15T20:48:19.816Z';
-      updatedAt: '2021-10-15T20:48:19.816Z';
-      __v: 0;
-    },
-  ];
+  following: FollowType[];
   notifications: Notification[];
   messages: MessageType[];
   _id: string;

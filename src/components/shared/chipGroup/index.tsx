@@ -1,17 +1,13 @@
 import Stack from '@mui/material/Stack';
 
-import BasicChip from '@/components/shared/chip';
-
 interface ChipGroupProps {
-  labels: string[];
+  children: React.ReactNode;
 }
 
-const ChipGroup = ({ labels, ...props }: ChipGroupProps) => {
+const ChipGroup = ({ children, ...props }: ChipGroupProps) => {
   return (
-    <Stack direction="row" spacing={1}>
-      {labels?.map((label: string, i) => (
-        <BasicChip label={label} key={label + i} {...props} />
-      ))}
+    <Stack direction="row" spacing={1} {...props}>
+      {children}
     </Stack>
   );
 };

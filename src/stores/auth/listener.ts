@@ -1,24 +1,25 @@
 import { Unsubscribe } from '@reduxjs/toolkit';
 
 import { AppListenerEffectAPI, AppStartListening } from '@/stores';
-import { setLocation, setTitle } from '@/stores/layout';
+import { setAuth, setIsLogin } from '@/stores/auth';
 
-const onUpdateLocation = (
-  { payload: { location } }: ReturnType<typeof setLocation>,
+const onUpdateToken = (
+  { payload }: ReturnType<typeof setAuth>,
   { dispatch }: AppListenerEffectAPI,
 ) => {
-  if (location) console.log('token middleware start');
+  const { token } = payload;
+  if (token) console.log('token middleware start');
 
-  dispatch(setTitle(true));
+  dispatch(setIsLogin(true));
 };
 
-export const setupLayoutListeners = (
+export const setupAuthListeners = (
   startListening: AppStartListening,
 ): Unsubscribe => {
   const subscriptions = [
     startListening({
-      actionCreator: setLocation,
-      effect: onUpdateLocation,
+      actionCreator: setAuth,
+      effect: onUpdateToken,
     }),
   ];
 

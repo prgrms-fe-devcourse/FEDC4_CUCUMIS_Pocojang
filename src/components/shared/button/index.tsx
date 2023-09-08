@@ -11,4 +11,5 @@ const BasicButton = ({ variant = 'contained', children, ...props }: Props) => {
     </Button>
   );
 };
+
 export default BasicButton;

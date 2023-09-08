@@ -1,10 +1,11 @@
-import { styled } from '@mui/material/styles';
+import { keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
 import Badge from '@mui/material/Badge';
 import Avatar, { AvatarProps } from '@mui/material/Avatar';
 
-import LOGO_IMG_SRC from '@/assets/Logo96.svg';
+import LOGO_IMG_SRC from '@/assets/react.svg';
 
-interface BasicAvatarProps extends AvatarProps {
+interface Props extends AvatarProps {
   imgSrc?: string;
   alt?: string;
   width?: number;
@@ -19,7 +20,7 @@ const BasicAvatar = ({
   height = 32,
   isUserOn = false,
   onClick,
-}: BasicAvatarProps) => {
+}: Props) => {
   return (
     <BadgeStyled
       overlap="circular"
@@ -32,8 +33,6 @@ const BasicAvatar = ({
   );
 };
 
-export default BasicAvatar;
-
 const AvatarStyled = styled(Avatar)<{ width: number; height: number }>(
   ({ width, height }) => ({
     width: `${width}px`,
@@ -41,11 +40,22 @@ const AvatarStyled = styled(Avatar)<{ width: number; height: number }>(
   }),
 );
 
-const BadgeStyled = styled(Badge)(({ theme }) => ({
+const ripple = keyframes`
+0% {
+  transform: scale(1);
+  opacity: 1;
+} 
+100% {
+  transform: scale(2.4);
+  opacity: 0;
+}
+`;
+
+const BadgeStyled = styled(Badge)({
   '& .MuiBadge-badge': {
     backgroundColor: '#44b700',
     color: '#44b700',
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    boxShadow: `0 0 0 2px gray`,
     '&::after': {
       position: 'absolute',
       top: 0,
@@ -53,19 +63,13 @@ const BadgeStyled = styled(Badge)(({ theme }) => ({
       width: '100%',
       height: '100%',
       borderRadius: '50%',
-      animation: 'ripple 1.2s infinite ease-in-out',
+      animation: `${ripple} 1.2s infinite ease-in-out`,
       border: '1px solid currentColor',
       content: '""',
+      vertical: 'bottom',
+      horizontal: 'right',
     },
   },
-  '@keyframes ripple': {
-    '0%': {
-      transform: 'scale(.8)',
-      opacity: 1,
-    },
-    '100%': {
-      transform: 'scale(2.4)',
-      opacity: 0,
-    },
-  },
-}));
+});
+
+export default BasicAvatar;

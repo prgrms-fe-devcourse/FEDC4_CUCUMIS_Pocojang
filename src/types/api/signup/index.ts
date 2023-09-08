@@ -1,2 +1,2 @@
-export type { SignupRequestType } from './SignupRequestType'
-export type { SignupResponseType } from './SignupResponseType'
+export type { RequestSignupType } from './RequestSignupType'
+export type { ResponseSignupType } from './ResponseSignupType'

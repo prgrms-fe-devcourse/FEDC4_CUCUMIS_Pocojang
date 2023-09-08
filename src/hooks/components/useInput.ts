@@ -1,11 +1,8 @@
-import { useState, MutableRefObject } from 'react';
+import { useState } from 'react';
 
-interface Props {
-  inputRef: MutableRefObject<object>;
-  regExp?: string;
-}
+import { BasicInputProps } from '@/types/components/BasicInputProps';
 
-const useInput = ({ inputRef, regExp }: Props) => {
+const useInput = ({ inputRef, regExp }: Partial<BasicInputProps>) => {
   const [isError, setIsError] = useState(false);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,7 +12,9 @@ const useInput = ({ inputRef, regExp }: Props) => {
       setIsError(!new RegExp(regExp).test(value));
     }
 
-    inputRef.current = { ...inputRef.current, [name]: value };
+    if (inputRef) {
+      inputRef.current = { ...inputRef.current, [name]: value };
+    }
   };
 
   return { isError, handleInput };

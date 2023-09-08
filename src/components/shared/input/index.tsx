@@ -11,7 +11,7 @@ const BasicInput = ({
   regExp,
   errorMessage,
   inputRef,
-}: BasicInputProps) => {
+}: BasicInputProps<object>) => {
   const { isError, handleInput } = useInput({ inputRef, regExp });
 
   return (

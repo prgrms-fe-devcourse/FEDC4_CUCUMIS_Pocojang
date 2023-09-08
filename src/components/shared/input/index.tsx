@@ -1,6 +1,8 @@
-import { useState, MutableRefObject } from 'react';
+import { MutableRefObject } from 'react';
 import TextField from '@mui/material/TextField';
 import styled from '@emotion/styled';
+
+import useInput from '@/hooks/components/useInput';
 
 export interface BasicInputProps {
   type?: string; // 기본 search(x버튼 존재), password, number(연차)
@@ -22,17 +24,7 @@ const BasicInput = ({
   errorMessage,
   inputRef,
 }: BasicInputProps) => {
-  const [isError, setIsError] = useState(false);
-
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.currentTarget;
-
-    if (regExp) {
-      setIsError(!new RegExp(regExp).test(value));
-    }
-
-    inputRef.current = { ...inputRef.current, [name]: value };
-  };
+  const { isError, handleInput } = useInput({ inputRef, regExp });
 
   return (
     <>

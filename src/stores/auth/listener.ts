@@ -2,12 +2,13 @@ import { Unsubscribe } from '@reduxjs/toolkit';
 
 import { AppStartListening } from '@/stores';
 import { setAuth } from '@/stores/auth';
+import session from '@/utils/sessionStorage';
+import SESSION_STORAGE from '@/consts/sessionStorage';
 
 const onUpdateToken = ({ payload }: ReturnType<typeof setAuth>) => {
   const { token } = payload;
-  if (!token) return;
 
-  // TODO: session storage 에 token 저장
+  session.setItem(SESSION_STORAGE.TOKEN, token);
 };
 
 export const setupAuthListeners = (

@@ -1,5 +1,5 @@
 import type { UserType } from "@/types"
-export interface SignupResponseType{
+export interface ResponseSignupType{
 	"user": UserType,
 	"token": string
 }

@@ -1,3 +1,3 @@
 import type { MessageType } from "@/types";
 
-export interface ResponseFollowCreateType extends MessageType {}
+export interface ResponseMessagesType extends MessageType {}

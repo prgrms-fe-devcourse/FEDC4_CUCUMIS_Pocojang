@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, MutableRefObject } from 'react';
 import TextField from '@mui/material/TextField';
 
 interface BasicInputProps {
@@ -8,8 +8,7 @@ interface BasicInputProps {
   defaultValue?: string;
   regExp?: string; // 각 필드별 정규식 패턴
   errorMessage?: string;
-  // value: Record<string, string>;
-  setValue?: React.Dispatch<React.SetStateAction<object>>;
+  inputRef: MutableRefObject<object>;
 }
 
 const BasicInput = ({
@@ -19,22 +18,18 @@ const BasicInput = ({
   defaultValue,
   regExp,
   errorMessage,
-  setValue,
+  inputRef,
 }: BasicInputProps) => {
   const [isError, setIsError] = useState(false);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
 
-    setValue &&
-      setValue((prev: object) => ({
-        ...prev,
-        [name]: value,
-      }));
-
     if (regExp) {
       setIsError(!new RegExp(regExp).test(value));
     }
+
+    inputRef.current = { ...inputRef.current, [name]: value };
   };
 
   return (

@@ -1,7 +1,7 @@
 import TextField from '@mui/material/TextField';
 
 import useInput from '@/hooks/components/useInput';
-import { BasicInputProps } from '@/types/components/BasicInputProps';
+import BasicInputProps from '@/types/components/BasicInputProps';
 
 const BasicInput = ({
   type = 'search',

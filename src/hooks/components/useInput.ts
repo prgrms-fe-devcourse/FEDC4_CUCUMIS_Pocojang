@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { BasicInputProps } from '@/types/components/BasicInputProps';
+import BasicInputProps from '@/types/components/BasicInputProps';
 
 const useInput = <T>({ inputRef, regExp }: Partial<BasicInputProps<T>>) => {
   const [isError, setIsError] = useState(false);

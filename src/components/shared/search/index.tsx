@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 
 import useInput from '@/hooks/components/useInput';
-import { BasicInputProps } from '@/types/components/BasicInputProps';
+import BasicInputProps from '@/types/components/BasicInputProps';
 
 const BasicSearch = ({ inputRef }: Partial<BasicInputProps<string>>) => {
   const { handleInput } = useInput({ inputRef });

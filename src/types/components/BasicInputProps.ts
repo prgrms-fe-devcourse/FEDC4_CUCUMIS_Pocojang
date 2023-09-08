@@ -1,6 +1,6 @@
 import { MutableRefObject } from 'react';
 
-export interface BasicInputProps<T> {
+export default interface BasicInputProps<T> {
   type?: string;
   label: string;
   isRequired?: boolean;

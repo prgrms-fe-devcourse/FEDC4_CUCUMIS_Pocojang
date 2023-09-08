@@ -6,12 +6,6 @@ interface Props extends FabProps {
   onClick: () => void;
 }
 
-const FixedFab = styled(Fab)(() => ({
-  position: 'fixed',
-  bottom: '10px',
-  right: '10px',
-}));
-
 const BasicFab = ({ children, onClick, ...props }: Props) => {
   return (
     <FixedFab color="primary" onClick={onClick} {...props}>
@@ -19,4 +13,11 @@ const BasicFab = ({ children, onClick, ...props }: Props) => {
     </FixedFab>
   );
 };
+
+const FixedFab = styled(Fab)(() => ({
+  position: 'fixed',
+  bottom: '10px',
+  right: '10px',
+}));
+
 export default BasicFab;

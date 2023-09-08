@@ -1,16 +1,13 @@
 import { Unsubscribe } from '@reduxjs/toolkit';
 
-import { AppListenerEffectAPI, AppStartListening } from '@/stores';
-import { setAuth, setIsLogin } from '@/stores/auth';
+import { AppStartListening } from '@/stores';
+import { setAuth } from '@/stores/auth';
 
-const onUpdateToken = (
-  { payload }: ReturnType<typeof setAuth>,
-  { dispatch }: AppListenerEffectAPI,
-) => {
+const onUpdateToken = ({ payload }: ReturnType<typeof setAuth>) => {
   const { token } = payload;
-  if (token) console.log('token middleware start');
+  if (!token) return;
 
-  dispatch(setIsLogin(true));
+  // TODO: session storage 에 token 저장
 };
 
 export const setupAuthListeners = (

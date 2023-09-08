@@ -1,14 +1,22 @@
 import Fab, { FabProps } from '@mui/material/Fab';
+import styled from '@emotion/styled';
 
-interface BasicFabProps extends FabProps {
+interface Props extends FabProps {
   children: React.ReactNode;
   onClick: () => void;
 }
-const BasicFab = ({ children, onClick, ...props }: BasicFabProps) => {
+
+const FixedFab = styled(Fab)(() => ({
+  position: 'fixed',
+  bottom: '10px',
+  right: '10px',
+}));
+
+const BasicFab = ({ children, onClick, ...props }: Props) => {
   return (
-    <Fab color="primary" onClick={onClick} {...props}>
+    <FixedFab color="primary" onClick={onClick} {...props}>
       {children}
-    </Fab>
+    </FixedFab>
   );
 };
 export default BasicFab;

@@ -1,6 +1,6 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import Badge from '@mui/material/Badge';
+import Badge, { BadgeOrigin } from '@mui/material/Badge';
 import Avatar, { AvatarProps } from '@mui/material/Avatar';
 
 import LOGO_IMG_SRC from '@/assets/react.svg';
@@ -24,7 +24,7 @@ const BasicAvatar = ({
   return (
     <BadgeStyled
       overlap="circular"
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      anchorOrigin={anchorOriginStyle}
       variant={isUserOn ? 'dot' : 'standard'}
       onClick={onClick}
     >
@@ -39,6 +39,11 @@ const AvatarStyled = styled(Avatar)<{ width: number; height: number }>(
     height: `${height}px`,
   }),
 );
+
+const anchorOriginStyle: BadgeOrigin = {
+  vertical: 'bottom',
+  horizontal: 'right',
+};
 
 const ripple = keyframes`
 0% {

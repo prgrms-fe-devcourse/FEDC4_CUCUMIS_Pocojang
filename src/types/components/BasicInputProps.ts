@@ -7,5 +7,5 @@ export default interface BasicInputProps<T> {
   defaultValue?: string;
   regExp?: string;
   errorMessage?: string;
-  inputRef: MutableRefObject<T>;
+  inputRef?: MutableRefObject<T>;
 }

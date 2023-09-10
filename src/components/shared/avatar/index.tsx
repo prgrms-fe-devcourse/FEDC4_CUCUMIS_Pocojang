@@ -5,22 +5,20 @@ import Avatar, { AvatarProps } from '@mui/material/Avatar';
 
 import LOGO_IMG_SRC from '@/assets/react.svg';
 
-interface Props extends AvatarProps {
+export interface BasicAvatarProps extends AvatarProps {
   imgSrc?: string;
   alt?: string;
-  width?: number;
-  height?: number;
+  size?: number;
   isUserOn?: boolean;
 }
 
 const BasicAvatar = ({
   imgSrc = LOGO_IMG_SRC,
   alt = 'user profile',
-  width = 32,
-  height = 32,
+  size = 60,
   isUserOn = false,
   onClick,
-}: Props) => {
+}: BasicAvatarProps) => {
   return (
     <BadgeStyled
       overlap="circular"
@@ -28,17 +26,15 @@ const BasicAvatar = ({
       variant={isUserOn ? 'dot' : 'standard'}
       onClick={onClick}
     >
-      <AvatarStyled alt={alt} src={imgSrc} width={width} height={height} />
+      <AvatarStyled alt={alt} src={imgSrc} size={size} />
     </BadgeStyled>
   );
 };
 
-const AvatarStyled = styled(Avatar)<{ width: number; height: number }>(
-  ({ width, height }) => ({
-    width: `${width}px`,
-    height: `${height}px`,
-  }),
-);
+const AvatarStyled = styled(Avatar)<{ size: number }>(({ size }) => ({
+  width: `${size}px`,
+  height: `${size}px`,
+}));
 
 const anchorOriginStyle: BadgeOrigin = {
   vertical: 'bottom',

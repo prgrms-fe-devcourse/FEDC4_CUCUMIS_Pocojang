@@ -39,7 +39,7 @@ const CommentItem = ({ name, comment, AvatarProps }: Props) => {
 };
 
 const StyledListItemAvatar = styled(ListItemAvatar)(() => ({
-  marginRight: '20px',
+  marginRight: '10px',
 }));
 
 export default CommentItem;

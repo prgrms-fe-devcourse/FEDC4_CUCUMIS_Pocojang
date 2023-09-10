@@ -16,10 +16,10 @@ const ProjectCard = ({ name, imageUrl, projectTitle, onClick }: Props) => {
     <BasicCard onClick={onClick}>
       <CardMedia component="img" alt={name} height={141} src={imageUrl} />
       <CardContent>
-        <Typography align="left" noWrap={true} variant="h5">
+        <Typography align="left" noWrap={true} variant="h5" component="h5">
           {projectTitle}
         </Typography>
-        <Typography align="left" noWrap={true} variant="body2">
+        <Typography align="left" noWrap={true} variant="body2" component="p">
           {name}
         </Typography>
       </CardContent>

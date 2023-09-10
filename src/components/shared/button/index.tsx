@@ -4,9 +4,14 @@ interface Props extends ButtonProps {
   children: React.ReactNode;
 }
 
-const BasicButton = ({ variant = 'contained', children, ...props }: Props) => {
+const BasicButton = ({
+  variant = 'contained',
+  color = 'primary',
+  children,
+  ...props
+}: Props) => {
   return (
-    <Button fullWidth variant={variant} {...props}>
+    <Button fullWidth color={color} variant={variant} {...props}>
       {children}
     </Button>
   );

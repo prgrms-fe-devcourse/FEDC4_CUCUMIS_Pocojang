@@ -1,16 +1,10 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import Badge, { BadgeOrigin } from '@mui/material/Badge';
-import Avatar, { AvatarProps } from '@mui/material/Avatar';
+import Avatar from '@mui/material/Avatar';
 
+import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 import LOGO_IMG_SRC from '@/assets/react.svg';
-
-export interface BasicAvatarProps extends AvatarProps {
-  imgSrc?: string;
-  alt?: string;
-  size?: number;
-  isUserOn?: boolean;
-}
 
 const BasicAvatar = ({
   imgSrc = LOGO_IMG_SRC,

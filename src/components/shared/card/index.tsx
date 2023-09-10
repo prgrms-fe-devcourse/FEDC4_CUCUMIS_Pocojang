@@ -12,6 +12,7 @@ const BasicCard = ({ children, ...props }: CardProps) => {
 
 const StyledCard = styled(Card)(() => ({
   '&.MuiCard-root': {
+    width: '350px',
     transition: 'transform .2s ',
     '&:hover': {
       transform: 'scale(1.01)',

@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { CardContent, Grid, Typography } from '@mui/material';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
@@ -15,27 +15,28 @@ interface Props {
 const DeveloperCard = ({ oneline, name, description }: Props) => {
   return (
     <BasicCard>
-      <Grid container alignItems="center">
-        <Grid textAlign="center" item xs={3}>
-          <BasicAvatar sx={{ margin: '0 auto' }} />
+      <CardContent>
+        <Grid container alignItems="center">
+          <Grid item xs={3}>
+            <BasicAvatar />
+          </Grid>
+          <Grid item xs={9}>
+            <Typography variant="body1" noWrap={true}>
+              {oneline}
+            </Typography>
+            <Typography variant="body1">{name}</Typography>
+            <ChipGroup>
+              <BasicChip color="primary" label="test1"></BasicChip>
+              <BasicChip color="primary" label="test2"></BasicChip>
+              <BasicChip color="primary" label="test3"></BasicChip>
+            </ChipGroup>
+          </Grid>
         </Grid>
-        <Grid item xs={9}>
-          <Typography component="h5" variant="h5" noWrap={true}>
-            {oneline}
-          </Typography>
-          <Typography component="h3" variant="h3">
-            {name}
-          </Typography>
-          <ChipGroup>
-            <BasicChip color="primary" label="test1"></BasicChip>
-            <BasicChip color="primary" label="test2"></BasicChip>
-            <BasicChip color="primary" label="test3"></BasicChip>
-          </ChipGroup>
-        </Grid>
-      </Grid>
-      <Typography component="h5" variant="h5" noWrap={true}>
-        {description}
-      </Typography>
+
+        <Typography component="h5" variant="body1" noWrap={true}>
+          {description}
+        </Typography>
+      </CardContent>
     </BasicCard>
   );
 };

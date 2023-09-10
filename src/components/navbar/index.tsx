@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import styled from '@emotion/styled';
 import { Paper } from '@mui/material';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -8,56 +9,45 @@ import HomeIcon from '@mui/icons-material/Home';
 import EmailIcon from '@mui/icons-material/Email';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-import useNavbar from '@/components/navbar/useNavbar';
+import { useAppSelector } from '@/stores/hooks';
+import { locationSelector } from '@/stores/layout/selector';
 
-export default function Navbar() {
-  const { value, handleChange } = useNavbar({
-    initialValue: 'home',
-  });
+const Navbar = () => {
+  const location = useAppSelector(locationSelector);
+
+  const navigations = [
+    { name: '프로젝트', path: '/projects', icon: <LaptopIcon /> },
+    { name: '개발자', path: '/developers', icon: <PeopleIcon /> },
+    { name: '홈', path: '/', icon: <HomeIcon /> },
+    { name: 'DM', path: '/dm', icon: <EmailIcon /> },
+    { name: '프로필', path: '/profile/1', icon: <AccountCircleIcon /> }, // TODO: /profile/${userId}로 변경하기
+  ];
 
   return (
-    <Paper
-      sx={{ position: 'fixed', bottom: 0, width: 600 }}
-      elevation={1}
-      component={'nav'}
-    >
-      <BottomNavigation showLabels value={value} onChange={handleChange}>
-        <BottomNavigationAction
-          component={Link}
-          to="/projects"
-          value="projects"
-          label="프로젝트"
-          icon={<LaptopIcon />}
-        />
-        <BottomNavigationAction
-          component={Link}
-          to="/developers"
-          value="developers"
-          label="개발자"
-          icon={<PeopleIcon />}
-        />
-        <BottomNavigationAction
-          component={Link}
-          to="/"
-          value="home"
-          label="홈"
-          icon={<HomeIcon />}
-        />
-        <BottomNavigationAction
-          component={Link}
-          to="/dm"
-          value="dm"
-          label="DM"
-          icon={<EmailIcon />}
-        />
-        <BottomNavigationAction
-          component={Link}
-          to="/profile/1"
-          value="profile"
-          label="프로필"
-          icon={<AccountCircleIcon />}
-        />
-      </BottomNavigation>
-    </Paper>
+    navigations.some((nav) => nav.path === location) && (
+      <PaperStyled elevation={1} component="nav">
+        <BottomNavigation showLabels value={location}>
+          {navigations.map((nav) => (
+            <BottomNavigationAction
+              component={Link}
+              to={nav.path}
+              value={nav.path}
+              label={nav.name}
+              icon={nav.icon}
+              key={nav.name}
+            />
+          ))}
+        </BottomNavigation>
+      </PaperStyled>
+    )
   );
-}
+};
+
+const PaperStyled = styled(Paper)`
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 600px;
+`;
+
+export default Navbar;

@@ -7,12 +7,10 @@ import { theme } from '@/styles/theme';
 
 export default function RootLayout() {
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <Header />
-        <Outlet />
-        <Navbar />
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={theme}>
+      <Header />
+      <Outlet />
+      <Navbar />
+    </ThemeProvider>
   );
 }

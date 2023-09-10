@@ -5,7 +5,7 @@ export interface LayoutState {
 }
 
 const initialState: LayoutState = {
-  location: '/',
+  location: '',
 };
 
 export const layoutSlice = createSlice({

@@ -12,7 +12,7 @@ import BasicChip from '@/components/shared/chip';
 import BasicAvatar from '@/components/shared/avatar';
 import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 
-interface ItemWithAvatarProps extends BasicAvatarProps {
+interface Props extends BasicAvatarProps {
   name: string;
   message?: string;
   unReadCount?: number;
@@ -30,7 +30,8 @@ const ItemWithAvatar = ({
   isUserOn,
   isLastItem = false,
   isComment = false,
-}: ItemWithAvatarProps) => {
+  onClick,
+}: Props) => {
   const renderUnReadCount = () => {
     if (unReadCount) {
       return (
@@ -44,16 +45,17 @@ const ItemWithAvatar = ({
     return null;
   };
   return (
-    <LinkStyled to={moveTo ?? ''}>
-      <ListItem alignItems="center">
+    <>
+      <ListItem alignItems="center" component={Link} to={moveTo ?? ''}>
         <BasicAvatar
           size={40}
           imgSrc={imgSrc}
           alt={`${name}'s profile`}
           isUserOn={isUserOn}
+          onClick={onClick}
         />
         <ListItemTextStyled
-          primary={name}
+          primary={<Typography color="text.primary">{name}</Typography>}
           secondary={
             message && (
               <Typography
@@ -69,14 +71,9 @@ const ItemWithAvatar = ({
         {renderUnReadCount()}
       </ListItem>
       {!isLastItem && <Divider variant="middle" />}
-    </LinkStyled>
+    </>
   );
 };
-
-const LinkStyled = styled(Link)({
-  textDecoration: 'none',
-  color: 'inherit',
-});
 
 const ListItemTextStyled = styled(ListItemText)({
   paddingLeft: '10px',

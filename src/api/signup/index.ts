@@ -3,5 +3,6 @@ import api from "@/utils/api";
 export const signup = async (
   rq: RequestSignupType,
 ): Promise<ResponseSignupType> => {
-  return await api.post<RequestSignupType, ResponseSignupType>("login", rq);
+  console.log(rq);
+  return await api.post<RequestSignupType, ResponseSignupType>("signup", rq);
 };

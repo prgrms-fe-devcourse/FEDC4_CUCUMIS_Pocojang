@@ -8,12 +8,11 @@ interface Props {
   name: string;
   imageUrl: string;
   projectTitle: string;
-  onClick: () => void;
+  to: string;
 }
-
-const ProjectCard = ({ name, imageUrl, projectTitle, onClick }: Props) => {
+const ProjectCard = ({ name, imageUrl, projectTitle, to }: Props) => {
   return (
-    <BasicCard onClick={onClick}>
+    <BasicCard to={`/projects/${to}`}>
       <CardMedia component="img" alt={name} height={141} src={imageUrl} />
       <CardContent>
         <Typography align="left" noWrap={true} variant="h5" component="h5">

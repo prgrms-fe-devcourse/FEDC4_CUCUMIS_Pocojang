@@ -11,12 +11,19 @@ interface Props {
   oneliner: string;
   name: string;
   description: string;
+  to: string;
 }
 
-//chip은 반복문으로 변경
-const DeveloperCard = ({ AvatarProps, oneliner, name, description }: Props) => {
+//TODO 스택은 반복문으로 변경하기,
+const DeveloperCard = ({
+  AvatarProps,
+  oneliner,
+  name,
+  description,
+  to,
+}: Props) => {
   return (
-    <BasicCard>
+    <BasicCard to={`/developers/${to}`}>
       <CardContent>
         <Grid container alignItems="center">
           <Grid item xs={3}>

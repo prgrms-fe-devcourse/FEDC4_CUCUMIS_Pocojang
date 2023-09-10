@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 import { BASE_URL } from '@/consts/api';
 
@@ -14,10 +14,10 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use((config) => {
   // TODO: localStorage 에서 token 가져오기
-  const token = localStorage.getItem('AUTH');
-  // const token = undefined;
+  // const token = localStorage.getItem(AUTH);
+  const token = undefined;
 
-  if (token === null) {
+  if (token) {
     config.headers.set('Authorization', `Bearer ${token}`);
   }
 
@@ -37,7 +37,7 @@ const request = async <Response>(
       params: opt?.params,
       data: opt?.data,
     } as AxiosRequestConfig,
-  }).then((result: AxiosResponse<Response>) => {
+  }).then((result) => {
     return result.data;
   });
 

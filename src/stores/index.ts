@@ -1,4 +1,10 @@
-import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  TypedStartListening,
+  TypedAddListener,
+  ListenerEffectAPI,
+  addListener,
+} from '@reduxjs/toolkit';
 
 import { reducers } from '@/stores/reducers';
 import { listenerMiddleware } from '@/stores/listenerMiddleware';
@@ -11,9 +17,11 @@ export const store = configureStore({
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
+
+export type AppListenerEffectAPI = ListenerEffectAPI<RootState, AppDispatch>;
+export type AppStartListening = TypedStartListening<RootState, AppDispatch>;
+export type AppAddListener = TypedAddListener<RootState, AppDispatch>;
+
+export const startAppListening =
+  listenerMiddleware.startListening as AppStartListening;
+export const addAppListener = addListener as AppAddListener;

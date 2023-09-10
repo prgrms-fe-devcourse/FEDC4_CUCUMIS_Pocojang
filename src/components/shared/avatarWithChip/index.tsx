@@ -8,7 +8,7 @@ interface Props extends BasicAvatarProps {
   label: string;
 }
 
-const AvatarWithName = ({
+const AvatarWithChip = ({
   label,
   size = 60,
   imgSrc,
@@ -30,4 +30,4 @@ const AvatarWithName = ({
   );
 };
 
-export default AvatarWithName;
+export default AvatarWithChip;

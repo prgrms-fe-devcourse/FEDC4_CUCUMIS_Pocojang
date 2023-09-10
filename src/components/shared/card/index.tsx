@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 
 const BasicCard = ({ children, ...props }: CardProps) => {
   return (
-    <StyledCard {...props}>
+    <StyledCard raised={true} {...props}>
       <CardActionArea>{children}</CardActionArea>
     </StyledCard>
   );

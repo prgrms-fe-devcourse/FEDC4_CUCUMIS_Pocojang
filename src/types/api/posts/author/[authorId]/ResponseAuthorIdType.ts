@@ -1,3 +1,3 @@
-import type { PostType } from "@/types";
+import type { PostType } from '@/types';
 
-export interface ResponseAuthorIdType extends Array<PostType>{}
+export interface ResponseAuthorIdType extends Array<PostType> {}

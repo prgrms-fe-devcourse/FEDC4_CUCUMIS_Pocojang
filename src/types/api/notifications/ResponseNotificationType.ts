@@ -1,3 +1,3 @@
-import type { NotificationType } from "@/types";
+import type { NotificationType } from '@/types';
 
-export interface ResponseNotificationType extends Array<NotificationType>{}
+export interface ResponseNotificationType extends Array<NotificationType> {}

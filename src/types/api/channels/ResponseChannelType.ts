@@ -1,3 +1,3 @@
-import type { ChannelType } from "@/types";
+import type { ChannelType } from '@/types';
 
 export interface ResponseChannelType extends ChannelType {}

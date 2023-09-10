@@ -1,3 +1,3 @@
 export interface TokenType {
-  JWT_token : string;
+  JWT_token: string;
 }

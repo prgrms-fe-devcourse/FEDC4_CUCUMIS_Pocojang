@@ -1,6 +1,6 @@
-import api from "@/utils/api";
-import type { UserType } from "@/types";
+import api from '@/utils/api';
+import type { UserType } from '@/types';
 
 export const getOnlineUsers = async (): Promise<UserType[]> => {
-  return await api.get<null, UserType[]>("/users/online-users");
+  return await api.get<null, UserType[]>('/users/online-users');
 };

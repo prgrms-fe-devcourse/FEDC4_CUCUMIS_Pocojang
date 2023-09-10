@@ -1,4 +1,4 @@
 export interface RequestBodyUpdateUserType {
-  "fullName": string,
-	"username": string
+  fullName: string;
+  username: string;
 }

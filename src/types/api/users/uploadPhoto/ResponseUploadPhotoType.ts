@@ -1,3 +1,3 @@
-import type { UserType } from "@/types";
+import type { UserType } from '@/types';
 
-export interface ResponseUploadPhotoType extends UserType{}
+export interface ResponseUploadPhotoType extends UserType {}

@@ -1,3 +1,3 @@
-import type { UserDTOType } from "@/types/models/UserDTOType";
+import type { UserDTOType } from '@/types/models/UserDTOType';
 
-export interface RequestAuthorIdType extends UserDTOType{}
+export interface RequestAuthorIdType extends UserDTOType {}

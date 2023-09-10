@@ -1,3 +1,3 @@
 export interface RequestBodyDeleteCommentsType {
-  "id": string 
+  id: string;
 }

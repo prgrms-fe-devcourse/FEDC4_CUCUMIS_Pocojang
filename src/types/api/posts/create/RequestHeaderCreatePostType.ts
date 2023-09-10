@@ -1,3 +1,3 @@
-import type { TokenType } from "@/types";
+import type { TokenType } from '@/types';
 
-export interface RequestHeaderCreatePostType extends TokenType{}
+export interface RequestHeaderCreatePostType extends TokenType {}

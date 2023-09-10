@@ -1,3 +1,3 @@
 export interface RequestBodyDeletePostType {
-  "id": string
+  id: string;
 }

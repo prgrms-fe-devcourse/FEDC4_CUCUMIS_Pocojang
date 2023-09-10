@@ -1,7 +1,7 @@
 import { login } from '@/api/auth/login';
 import { setAuth } from '@/stores/auth';
 import { useAppDispatch } from '@/stores/hooks';
-import { LoginRequestType, LoginResponseType } from '@/types/api/login';
+import type { RequestLoginType, ResponseLoginType } from '@/types/api/login';
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
@@ -9,9 +9,9 @@ export const useAuth = () => {
   // TODO: auth 를 가져올 때는 이렇게 쓰세요.
   // const auth = useAppSelector(authSelector);
 
-  const onClickLogin = async (loginRequest: LoginRequestType) => {
+  const onClickLogin = async (loginRequest: RequestLoginType) => {
     try {
-      const rs: LoginResponseType = await login(loginRequest);
+      const rs: ResponseLoginType = await login(loginRequest);
       const { user, token } = rs;
 
       dispatch(setAuth({ user, token }));

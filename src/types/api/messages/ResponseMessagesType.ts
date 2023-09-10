@@ -1,3 +1,3 @@
-import type { MessageType } from "@/types";
+import type { MessageType } from '@/types';
 
 export interface ResponseMessagesType extends MessageType {}

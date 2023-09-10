@@ -1,3 +1,3 @@
-import type { LikeType } from "@/types";
+import type { LikeType } from '@/types';
 
-export interface ResponseDeleteLikesType extends LikeType{}
+export interface ResponseDeleteLikesType extends LikeType {}

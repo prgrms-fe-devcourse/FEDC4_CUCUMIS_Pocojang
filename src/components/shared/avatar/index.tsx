@@ -4,7 +4,8 @@ import Badge, { BadgeOrigin } from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 
 import BasicAvatarProps from '@/types/components/BasicAvatarProps';
-import LOGO_IMG_SRC from '@/assets/react.svg';
+
+import LOGO_IMG_SRC from '/Logo96.svg';
 
 const BasicAvatar = ({
   imgSrc = LOGO_IMG_SRC,

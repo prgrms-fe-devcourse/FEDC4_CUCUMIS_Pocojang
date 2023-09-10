@@ -10,7 +10,7 @@ interface Props {
   projectTitle: string;
   to: string;
 }
-const ProjectCard = ({ name, imageUrl, projectTitle, to }: Props) => {
+const ProjectCardItem = ({ name, imageUrl, projectTitle, to }: Props) => {
   return (
     <BasicCard to={`/projects/${to}`}>
       <CardMedia component="img" alt={name} height={141} src={imageUrl} />
@@ -26,4 +26,4 @@ const ProjectCard = ({ name, imageUrl, projectTitle, to }: Props) => {
   );
 };
 
-export default ProjectCard;
+export default ProjectCardItem;

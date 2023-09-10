@@ -15,7 +15,7 @@ interface Props {
 }
 
 //TODO 스택은 반복문으로 변경하기,
-const DeveloperCard = ({
+const DeveloperCardItem = ({
   AvatarProps,
   oneliner,
   name,
@@ -52,4 +52,4 @@ const DeveloperCard = ({
   );
 };
 
-export default DeveloperCard;
+export default DeveloperCardItem;

@@ -15,8 +15,8 @@ import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 interface ItemWithAvatarProps extends BasicAvatarProps {
   name: string;
   message?: string;
-  notReadCount?: number;
-  moveTo: string;
+  unReadCount?: number;
+  moveTo?: string;
   isLastItem?: boolean;
   isComment?: boolean;
 }
@@ -25,27 +25,26 @@ const ItemWithAvatar = ({
   name,
   imgSrc,
   message,
-  notReadCount,
+  unReadCount,
   moveTo,
   isUserOn,
   isLastItem = false,
   isComment = false,
 }: ItemWithAvatarProps) => {
-  const renderNotReadCount = () => {
-    if (notReadCount) {
+  const renderUnReadCount = () => {
+    if (unReadCount) {
       return (
         <Box maxWidth={60}>
           <BasicChip
-            label={notReadCount > 1000 ? '999+' : String(notReadCount)}
+            label={unReadCount > 1000 ? '999+' : String(unReadCount)}
           />
         </Box>
       );
     }
     return null;
   };
-
   return (
-    <LinkStyled to={moveTo}>
+    <LinkStyled to={moveTo ?? ''}>
       <ListItem alignItems="center">
         <BasicAvatar
           size={40}
@@ -67,7 +66,7 @@ const ItemWithAvatar = ({
             )
           }
         />
-        {renderNotReadCount()}
+        {renderUnReadCount()}
       </ListItem>
       {!isLastItem && <Divider variant="middle" />}
     </LinkStyled>

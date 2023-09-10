@@ -10,16 +10,7 @@ import styled from '@emotion/styled';
 
 import BasicChip from '@/components/shared/chip';
 import BasicAvatar from '@/components/shared/avatar';
-import BasicAvatarProps from '@/types/components/BasicAvatarProps';
-
-interface Props extends BasicAvatarProps {
-  name: string;
-  message?: string;
-  unReadCount?: number;
-  moveTo?: string;
-  isLastItem?: boolean;
-  isComment?: boolean;
-}
+import { ItemWithAvatarProps } from '@/types/components/ItemWithAvatarProps';
 
 const ItemWithAvatar = ({
   name,
@@ -31,7 +22,7 @@ const ItemWithAvatar = ({
   isLastItem = false,
   isComment = false,
   onClick,
-}: Props) => {
+}: ItemWithAvatarProps) => {
   const renderUnReadCount = () => {
     if (unReadCount) {
       return (

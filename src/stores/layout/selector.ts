@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+import { RootState } from '@/stores';
+import { LayoutState } from '@/stores/layout/slice';
+
+export const layoutSelector = (state: RootState): LayoutState => state.layout;
+=======
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState } from '@/stores';
@@ -12,3 +18,4 @@ export const titleSelector = createSelector(
   locationSelector,
   (location: string): string => getTitle(location),
 );
+>>>>>>> 158f1efd674cd58224abc013a3a1febf4564ac42

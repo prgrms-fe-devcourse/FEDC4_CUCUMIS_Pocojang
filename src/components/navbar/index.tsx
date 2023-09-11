@@ -11,16 +11,18 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import { useAppSelector } from '@/stores/hooks';
 import { locationSelector } from '@/stores/layout/selector';
+import { userIdSelector } from '@/stores/auth/selector';
 
 const Navbar = () => {
   const location = useAppSelector(locationSelector);
+  const userId = useAppSelector(userIdSelector);
 
   const navigations = [
     { name: '프로젝트', path: '/projects', icon: <LaptopIcon /> },
     { name: '개발자', path: '/developers', icon: <PeopleIcon /> },
     { name: '홈', path: '/', icon: <HomeIcon /> },
     { name: 'DM', path: '/dm', icon: <EmailIcon /> },
-    { name: '프로필', path: '/profile/1', icon: <AccountCircleIcon /> }, // TODO: /profile/${userId}로 변경하기
+    { name: '프로필', path: `/profile/${userId}`, icon: <AccountCircleIcon /> },
   ];
 
   return (

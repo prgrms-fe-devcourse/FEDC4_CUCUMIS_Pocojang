@@ -5,23 +5,21 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  ListItemButton,
 } from '@mui/material';
-import styled from '@emotion/styled';
 
 import BasicChip from '@/components/shared/chip';
 import BasicAvatar from '@/components/shared/avatar';
-import { ItemWithAvatarProps } from '@/types/components/ItemWithAvatarProps';
+import ItemWithAvatarProps from '@/types/components/ItemWithAvatarProps';
 
 const ItemWithAvatar = ({
+  AvatarProps,
   name,
-  imgSrc,
   message,
   unReadCount,
-  moveTo,
-  isUserOn,
+  to,
   isLastItem = false,
   isComment = false,
-  onClick,
 }: ItemWithAvatarProps) => {
   const renderUnReadCount = () => {
     if (unReadCount) {
@@ -35,40 +33,33 @@ const ItemWithAvatar = ({
     }
     return null;
   };
+
   return (
     <>
-      <ListItem alignItems="center" component={Link} to={moveTo ?? ''}>
-        <BasicAvatar
-          size={40}
-          imgSrc={imgSrc}
-          alt={`${name}'s profile`}
-          isUserOn={isUserOn}
-          onClick={onClick}
-        />
-        <ListItemTextStyled
-          primary={<Typography color="text.primary">{name}</Typography>}
-          secondary={
-            message && (
-              <Typography
-                variant="body2"
-                color="text.primary"
-                noWrap={!isComment}
-              >
-                {message}
-              </Typography>
-            )
-          }
-        />
+      <ListItem alignItems="center">
+        <BasicAvatar size={40} alt={`${name}'s profile`} {...AvatarProps} />
+        <ListItemButton component={Link} to={to ? to : ''}>
+          <ListItemText
+            primary={<Typography color="text.primary">{name}</Typography>}
+            secondary={
+              message && (
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  noWrap={!isComment}
+                >
+                  {message}
+                </Typography>
+              )
+            }
+          />
+        </ListItemButton>
+
         {renderUnReadCount()}
       </ListItem>
       {!isLastItem && <Divider variant="middle" />}
     </>
   );
 };
-
-const ListItemTextStyled = styled(ListItemText)({
-  paddingLeft: '10px',
-  paddingRight: '5px',
-});
 
 export default ItemWithAvatar;

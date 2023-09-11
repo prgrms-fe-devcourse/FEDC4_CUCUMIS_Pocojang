@@ -1,10 +1,11 @@
 import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 
-export interface ItemWithAvatarProps extends BasicAvatarProps {
+export default interface ItemWithAvatarProps {
+  AvatarProps: BasicAvatarProps;
   name: string;
   message?: string;
   unReadCount?: number;
-  moveTo?: string;
+  to?: string;
   isLastItem?: boolean;
   isComment?: boolean;
 }

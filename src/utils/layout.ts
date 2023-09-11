@@ -5,8 +5,24 @@ export const getHeaderType = (
   userId: string,
   isLogin: boolean,
 ) => {
-  console.log(location, userId, isLogin);
-  return HeaderType.LOGO;
+  const path = location.split('/').filter((path) => path);
+
+  if (path.length === 0) {
+    return HeaderType.LOGO;
+  }
+  if (path.length === 1) {
+    if (path[0] === 'dm') {
+      return HeaderType.LOGO;
+    } else if (path[0] === 'projects' || path[0] === 'developers') {
+      return HeaderType.SEARCH;
+    }
+  }
+  if (path.length === 2) {
+    if (path[0] === 'profile' && isLogin && path[1] === userId) {
+      return HeaderType.LOGO;
+    }
+  }
+  return HeaderType.BACK;
 };
 
 export const getTitle = (location: string) => {

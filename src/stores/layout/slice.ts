@@ -19,5 +19,8 @@ export const layoutSlice = createSlice({
       const { nextLocation } = action.payload;
       state.location = nextLocation;
     },
+    setInput: (state, action) => {
+      state.input = action.payload;
+    },
   },
 });

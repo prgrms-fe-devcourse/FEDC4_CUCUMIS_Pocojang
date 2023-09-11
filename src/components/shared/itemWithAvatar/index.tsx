@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import {
+  Container,
   Box,
   Divider,
   ListItem,
@@ -7,6 +8,7 @@ import {
   Typography,
   ListItemButton,
 } from '@mui/material';
+import styled from '@emotion/styled';
 
 import BasicChip from '@/components/shared/chip';
 import BasicAvatar from '@/components/shared/avatar';
@@ -34,26 +36,30 @@ const ItemWithAvatar = ({
     return null;
   };
 
+  const renderListItemText = () => (
+    <ListItemText
+      primary={<Typography color="text.primary">{name}</Typography>}
+      secondary={
+        message && (
+          <Typography variant="body2" color="text.primary" noWrap={!isComment}>
+            {message}
+          </Typography>
+        )
+      }
+    />
+  );
+
   return (
     <>
       <ListItem alignItems="center">
         <BasicAvatar size={40} alt={`${name}'s profile`} {...AvatarProps} />
-        <ListItemButton component={Link} to={to ? to : ''}>
-          <ListItemText
-            primary={<Typography color="text.primary">{name}</Typography>}
-            secondary={
-              message && (
-                <Typography
-                  variant="body2"
-                  color="text.primary"
-                  noWrap={!isComment}
-                >
-                  {message}
-                </Typography>
-              )
-            }
-          />
-        </ListItemButton>
+        {to ? (
+          <ListItemButton component={Link} to={to ? to : ''}>
+            {renderListItemText()}
+          </ListItemButton>
+        ) : (
+          <BoxStyled>{renderListItemText()}</BoxStyled>
+        )}
 
         {renderUnReadCount()}
       </ListItem>
@@ -61,5 +67,9 @@ const ItemWithAvatar = ({
     </>
   );
 };
+
+const BoxStyled = styled(Container)({
+  padding: '8px 16px',
+});
 
 export default ItemWithAvatar;

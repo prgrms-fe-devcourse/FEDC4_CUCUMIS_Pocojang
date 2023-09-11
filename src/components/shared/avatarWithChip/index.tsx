@@ -4,27 +4,16 @@ import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
 import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 
-interface Props extends BasicAvatarProps {
+interface Props {
+  AvatarProps?: BasicAvatarProps;
+  size?: number;
   label: string;
 }
 
-const AvatarWithChip = ({
-  label,
-  size = 60,
-  imgSrc,
-  alt,
-  isUserOn = false,
-  onClick,
-}: Props) => {
+const AvatarWithChip = ({ AvatarProps, size = 60, label }: Props) => {
   return (
     <Stack width={size} spacing={0.5}>
-      <BasicAvatar
-        size={size}
-        imgSrc={imgSrc}
-        alt={alt}
-        isUserOn={isUserOn}
-        onClick={onClick}
-      />
+      <BasicAvatar {...AvatarProps} />
       <BasicChip label={label} size="small" />
     </Stack>
   );

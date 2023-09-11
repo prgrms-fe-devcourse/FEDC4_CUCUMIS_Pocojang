@@ -4,8 +4,9 @@ export interface LayoutState {
   location: string;
 }
 
+const currentLocation = window.location.pathname;
 const initialState: LayoutState = {
-  location: '',
+  location: currentLocation,
 };
 
 export const layoutSlice = createSlice({

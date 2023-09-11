@@ -107,23 +107,24 @@ const Header = () => {
   );
 };
 
-const LinkStyled = styled(Link)`
-  display: flex;
-  padding-right: 12px;
-`;
-
-const AppBarStyled = styled(AppBar)`
-  max-width: 600px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  background-color: white;
-`;
+const AppBarStyled = styled(AppBar)({
+  maxWidth: '600px',
+  left: 0,
+  right: 0,
+  margin: '0 auto',
+  backgroundColor: 'white',
+  boxShadow: '0 4px 4px 0 rgba(0, 0, 0, 0.04)',
+});
 
 const ToolbarStyled = styled(Toolbar)({
   paddingRight: '8px',
   paddingLeft: '8px',
 });
+
+const LinkStyled = styled(Link)`
+  display: flex;
+  padding-right: 12px;
+`;
 
 const TypographyStyled = styled(Typography)<{ align: string }>(({ align }) => ({
   flexGrow: 1,

@@ -1,4 +1,3 @@
-
 import type { RequestSignupType, ResponseSignupType } from '@/types/api/signup';
 import api from '@/utils/api';
 export const signup = async (

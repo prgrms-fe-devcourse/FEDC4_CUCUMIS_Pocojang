@@ -5,4 +5,3 @@ import type { ChannelType } from '@/types';
 export const getChannels = async (): Promise<ChannelType[]> => {
   return await api.get<null, ChannelType[]>('/channels');
 };
-

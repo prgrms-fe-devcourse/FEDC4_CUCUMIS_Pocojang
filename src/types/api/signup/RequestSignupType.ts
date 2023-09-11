@@ -3,3 +3,4 @@ export interface RequestSignupType {
 	"fullName": string,
 	"password": string
 }
+

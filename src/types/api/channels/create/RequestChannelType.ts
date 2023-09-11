@@ -3,3 +3,4 @@ export interface RequestChannelType {
   "description": string // 채널 설명
   "name": string // 채널 이름
 }
+

@@ -1,3 +1,4 @@
-import type { UserType, PostType } from "@/types";
+import type { UserType, PostType } from '@/types';
 
-export interface ResponseSearchAllType extends Array<UserType | PostType>{}
+export interface ResponseSearchAllType extends Array<UserType | PostType> {}
+

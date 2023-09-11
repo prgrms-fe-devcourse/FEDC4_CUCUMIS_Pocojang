@@ -1,4 +1,4 @@
 export interface RequestBodyUploadPhotoType {
-  isCover : false;
-  image : BinaryData,
+  isCover: false;
+  image: BinaryData;
 }

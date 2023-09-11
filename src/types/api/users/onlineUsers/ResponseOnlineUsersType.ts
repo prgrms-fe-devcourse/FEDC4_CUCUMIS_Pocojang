@@ -1,2 +1,2 @@
-import type { UserType } from "@/types";
+import type { UserType } from '@/types';
 export interface ResponseOnlineUsersType extends Array<UserType> {}

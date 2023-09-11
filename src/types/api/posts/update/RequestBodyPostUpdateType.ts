@@ -5,3 +5,4 @@ export interface RequestBodyPostUpdateType {
   imageToDeletePublicId? : number | string;
   channelId : string;  
 }
+

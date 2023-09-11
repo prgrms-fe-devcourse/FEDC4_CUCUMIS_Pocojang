@@ -1,3 +1,3 @@
-import type { TokenType } from "@/types";
+import type { TokenType } from '@/types';
 
-export interface RequestHeaderDeleteLikesType extends TokenType{}
+export interface RequestHeaderDeleteLikesType extends TokenType {}

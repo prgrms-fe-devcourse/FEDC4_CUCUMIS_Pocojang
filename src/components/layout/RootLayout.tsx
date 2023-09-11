@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 import { setLocation } from '@/stores/layout';
 import { useAppDispatch } from '@/stores/hooks';
-import Header from '@/components/layout/HeaderLayout';
+import Header from '@/components/header';
 import Navbar from '@/components/navbar';
 
 export default function RootLayout() {

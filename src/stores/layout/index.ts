@@ -3,4 +3,4 @@ import * as selector from '@/stores/layout/selector';
 
 export const layoutReducer = layoutSlice.reducer;
 export const { setLocation, setInput } = layoutSlice.actions;
-export const { layoutSelector } = selector;
+export const { layoutSelector, headerTypeSelector, titleSelector } = selector;

@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material';
 
-import Header from '@/components/layout/HeaderLayout';
-import Navbar from '@/components/navbar';
-import { theme } from '@/styles/theme';
 import { setLocation } from '@/stores/layout';
 import { useAppDispatch } from '@/stores/hooks';
+import Header from '@/components/layout/HeaderLayout';
+import Navbar from '@/components/navbar';
 
 export default function RootLayout() {
   const dispatch = useAppDispatch();
@@ -17,10 +15,10 @@ export default function RootLayout() {
   }, [dispatch, location]);
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Header />
       <Outlet />
       <Navbar />
-    </ThemeProvider>
+    </>
   );
 }

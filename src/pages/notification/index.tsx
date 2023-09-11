@@ -54,15 +54,16 @@ const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'seen',
 })(({ seen }: { seen: boolean }) => ({
   backgroundColor: seen ? '' : `${theme.palette.primary.main}10`,
+  boxShadow: 'none',
   '.MuiCardContent-root': {
     paddingTop: '24px',
   },
 }));
 
 const StyledDivider = styled(Divider)(() => ({
+  color: 'transparent',
   margin: '3px auto',
 }));
-
 const notificationMessage: { [key: string]: string } = {
   COMMENT: '님이 포스트에 댓글을 작성했습니다',
   MESSAGE: '님이 메세지를 보냈습니다',

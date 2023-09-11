@@ -1,11 +1,3 @@
-import type { UserType } from '@/types';
+export type { RequestLoginType } from './RequestLoginType';
+export type { ResponseLoginType } from './ResponseLoginType';
 
-export interface LoginRequestType {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponseType {
-  user: UserType;
-  token: string;
-}

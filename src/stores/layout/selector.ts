@@ -12,3 +12,4 @@ export const titleSelector = createSelector(
   locationSelector,
   (location: string): string => getTitle(location),
 );
+

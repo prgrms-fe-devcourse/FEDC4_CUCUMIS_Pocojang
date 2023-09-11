@@ -1,9 +1,3 @@
-import { LoginResponseType } from '@/types/api/login';
+export type { RequestSignupType } from './RequestSignupType';
+export type { ResponseSignupType } from './ResponseSignupType';
 
-export interface SignupRequestType {
-  email: string;
-  fullName: string;
-  password: string;
-}
-
-export interface SignupResponseType extends LoginResponseType {}

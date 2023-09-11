@@ -1,4 +1,3 @@
 export interface RequestBodyUpdatePwType {
-  "password" : string;
+  password: string;
 }
-

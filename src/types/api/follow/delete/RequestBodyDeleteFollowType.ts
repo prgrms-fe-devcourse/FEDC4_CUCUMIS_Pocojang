@@ -1,3 +1,3 @@
 export interface RequestBodyDeleteFollowType {
-	"id" : string
+  id: string;
 }

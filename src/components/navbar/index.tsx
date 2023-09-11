@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { Paper } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import LaptopIcon from '@mui/icons-material/Laptop';
@@ -43,11 +43,11 @@ const Navbar = () => {
   );
 };
 
-const PaperStyled = styled(Paper)`
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  max-width: 600px;
-`;
+const PaperStyled = styled(Paper)({
+  position: 'fixed',
+  bottom: 0,
+  width: '100%',
+  maxWidth: '600px',
+}) as typeof Paper;
 
 export default Navbar;

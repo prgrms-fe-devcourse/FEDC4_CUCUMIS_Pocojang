@@ -11,7 +11,7 @@ export const getHeaderType = (
     return HeaderType.LOGO;
   }
   if (path.length === 1) {
-    if (path[0] === 'dm') {
+    if (path[0] === 'dm' || path[0] === 'profile') {
       return HeaderType.LOGO;
     } else if (path[0] === 'projects' || path[0] === 'developers') {
       return HeaderType.SEARCH;
@@ -56,11 +56,16 @@ export const getTitle = (
       return path[1]; // TODO: DM 주고받는 유저 이름 가져오기
     }
   }
-  if (path[0] === 'profile' && path.length === 2) {
-    if (isLogin && path[1] === userId) {
+  if (path[0] === 'profile') {
+    if (path.length === 1) {
       return Title.PROFILE;
-    } else {
-      return path[1]; // TODO: 프로필 유저 이름 가져오기
+    }
+    if (path.length === 2) {
+      if (isLogin && path[1] === userId) {
+        return Title.PROFILE;
+      } else {
+        return path[1]; // TODO: 프로필 유저 이름 가져오기
+      }
     }
   }
   if (path[0] === 'settings' && path.length === 1) {

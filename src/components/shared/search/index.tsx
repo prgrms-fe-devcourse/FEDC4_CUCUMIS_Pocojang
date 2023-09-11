@@ -22,8 +22,15 @@ const BasicSearch = ({ inputRef }: Partial<BasicInputProps<string>>) => {
 };
 
 const SearchTextFieldStyled = styled(TextField)({
-  borderRadius: '20px;',
+  borderRadius: '24px',
   overflow: 'hidden',
+  '& .MuiInputBase-root': {
+    height: '48px',
+  },
+  '& .MuiInputBase-input': {
+    paddingRight: '20px',
+    paddingLeft: '20px',
+  },
 });
 
 export default BasicSearch;

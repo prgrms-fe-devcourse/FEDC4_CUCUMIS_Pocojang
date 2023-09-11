@@ -1,3 +1,3 @@
 export interface RequestBodyCreateFollowType {
-  userId: string;
+	"userId" : string
 }

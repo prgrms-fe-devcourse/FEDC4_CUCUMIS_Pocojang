@@ -1,4 +1,5 @@
 export interface RequestBodyCommentsType {
-  comment: string;
-  postId: string;
+  "comment": string,
+	"postId": string
 }
+

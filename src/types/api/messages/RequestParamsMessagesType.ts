@@ -1,3 +1,3 @@
 export interface RequestParamsMessagesType {
-  userId: string;
+	"userId" : string
 }

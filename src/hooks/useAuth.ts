@@ -12,6 +12,7 @@ export const useAuth = () => {
   const onClickLogin = async (loginRequest: RequestLoginType) => {
     try {
       const rs: ResponseLoginType = await login(loginRequest);
+
       const { user, token } = rs;
 
       dispatch(setAuth({ user, token }));

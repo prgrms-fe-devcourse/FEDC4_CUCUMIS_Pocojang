@@ -1,4 +1,6 @@
-import type { RequestLoginType } from '../types/api/login/RequestLoginType';
+
+import type { RequestLoginType } from "../types/api/login/RequestLoginType"
+
 
 export default function useAuth() {
   const login = async (loginRequest: RequestLoginType) => {

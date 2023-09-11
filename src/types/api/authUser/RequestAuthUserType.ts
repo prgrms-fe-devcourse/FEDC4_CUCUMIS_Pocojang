@@ -1,3 +1,4 @@
-import type { TokenType } from '@/types';
+import type { TokenType } from "@/types";
 
-export interface RequestAuthUserType extends TokenType {}
+export interface RequestAuthUserType extends TokenType{}
+

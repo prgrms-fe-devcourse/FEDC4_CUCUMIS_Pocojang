@@ -1,3 +1,3 @@
 export interface RequestBodyLikesType {
-  postId: string;
+  "postId" : string;
 }

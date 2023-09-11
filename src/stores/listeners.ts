@@ -1,3 +1,10 @@
-import { layoutListeners } from '@/stores/layout/listener';
+import { Unsubscribe } from '@reduxjs/toolkit';
 
-export const listeners = [...layoutListeners];
+import { startAppListening } from '@/stores';
+import { setupAuthListeners } from '@/stores/auth/listener';
+
+const listeners = [setupAuthListeners];
+
+export const setupListeners = (): Unsubscribe[] => {
+  return listeners.map((setupListener) => setupListener(startAppListening));
+};

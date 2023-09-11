@@ -1,15 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { UserType } from '@/types';
-
 export interface AuthState {
-  isLogin: boolean;
-  token?: string;
-  user?: UserType;
+  token: string;
 }
 
 const initialState: AuthState = {
-  isLogin: false,
+  token: '',
 };
 
 export const authSlice = createSlice({
@@ -17,14 +13,8 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setAuth: (state, action) => {
-      const { token, user } = action.payload;
-
+      const { token } = action.payload;
       state.token = token;
-      state.user = user;
-    },
-    setIsLogin: (state, action) => {
-      const { nextIsLogin } = action.payload;
-      state.isLogin = nextIsLogin;
     },
   },
 });

@@ -2,11 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface LayoutState {
   location: string;
+  input: string;
 }
 
 const currentLocation = window.location.pathname;
 const initialState: LayoutState = {
   location: currentLocation,
+  input: '',
 };
 
 export const layoutSlice = createSlice({

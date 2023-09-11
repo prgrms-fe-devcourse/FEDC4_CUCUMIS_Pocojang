@@ -19,5 +19,8 @@ export const headerTypeSelector = createSelector(
 
 export const titleSelector = createSelector(
   locationSelector,
-  (location: string): string => getTitle(location),
+  userIdSelector,
+  isLoginSelector,
+  (location: string, userId: string, isLogin: boolean): string =>
+    getTitle(location, userId, isLogin),
 );

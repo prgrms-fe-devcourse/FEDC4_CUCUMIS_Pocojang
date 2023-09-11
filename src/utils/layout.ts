@@ -1,4 +1,4 @@
-import { HeaderType } from '@/types/components/Header';
+import { HeaderType, Title } from '@/types/components/Header';
 
 export const getHeaderType = (
   location: string,
@@ -25,8 +25,57 @@ export const getHeaderType = (
   return HeaderType.BACK;
 };
 
-export const getTitle = (location: string) => {
-  if (location === '/') return 'home';
-  if (location === '/projects') return 'project';
-  return location;
+export const getTitle = (
+  location: string,
+  userId: string,
+  isLogin: boolean,
+) => {
+  const path = location.split('/').filter((path) => path);
+
+  if (path.length === 0) {
+    return Title.HOME;
+  }
+  if (path[0] === 'projects') {
+    if (path[1] === 'write') {
+      if (path.length === 2) {
+        return Title.PROJECT_WRITE;
+      } else if (path.length === 3) {
+        return Title.PROJECT_UPDATE;
+      }
+    } else if (path.length === 2) {
+      return Title.PROJECT;
+    }
+  }
+  if (path[0] === 'developers' && path.length === 2) {
+    return Title.DEVELOPER;
+  }
+  if (path[0] === 'dm') {
+    if (path.length === 1) {
+      return Title.DM;
+    } else if (path.length === 2) {
+      return path[1]; // TODO: DM 주고받는 유저 이름 가져오기
+    }
+  }
+  if (path[0] === 'profile' && path.length === 2) {
+    if (isLogin && path[1] === userId) {
+      return Title.PROFILE;
+    } else {
+      return path[1]; // TODO: 프로필 유저 이름 가져오기
+    }
+  }
+  if (path[0] === 'settings' && path.length === 1) {
+    return Title.SETTINGS;
+  }
+  if (path[0] === 'login' && path.length === 1) {
+    return Title.LOGIN;
+  }
+  if (path[0] === 'signup' && path.length === 2) {
+    if (path[1] === 'step1' || path[1] === 'step2') {
+      return Title.SIGNUP;
+    }
+  }
+  if (path[0] === 'notification' && path.length === 1) {
+    return Title.NOTIFICATION;
+  }
+  return Title.NOT_FOUND;
 };

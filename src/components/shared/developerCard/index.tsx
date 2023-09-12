@@ -42,7 +42,7 @@ const DeveloperCardItem = ({
             </Typography>
             <ChipGroup>
               {selectedStacks.map((stack) => (
-                <ChipStyled label={stack} />
+                <ChipStyled key={stack} label={stack} />
               ))}
             </ChipGroup>
           </Grid>

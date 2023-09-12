@@ -12,9 +12,8 @@ const DevelopersPage = () => {
     <Stack spacing={1} mt={1}>
       <StackStyled direction="row" spacing={4}>
         {onlineDevelopers.map((developer) => (
-          <LinkStyled to={`/dm/${developer._id}`}>
+          <LinkStyled key={developer._id} to={`/dm/${developer._id}`}>
             <AvatarWithChip
-              key={developer._id}
               AvatarProps={developer.AvatarProps}
               label={developer.label}
             />
@@ -24,8 +23,8 @@ const DevelopersPage = () => {
       {developers.map((developer) => {
         return (
           <DeveloperCardItem
-            stacks={developer.stacks}
             key={developer._id}
+            stacks={developer.stacks}
             AvatarProps={developer.AvatarProps}
             name={developer.name}
             oneliner={developer.oneliner}

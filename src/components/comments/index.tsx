@@ -2,7 +2,7 @@ import { List } from '@mui/material';
 
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 
-interface CommentProps {
+type Comment = {
   _id: string;
   author: string;
   createdAt: string;
@@ -11,10 +11,10 @@ interface CommentProps {
     isUserOn: boolean;
   };
   isLastItem?: boolean;
-}
+};
 
 interface Props {
-  comments: CommentProps[];
+  comments: Comment[];
   url: string;
   onClick: (url: string, _id: string) => void;
 }

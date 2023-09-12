@@ -28,8 +28,9 @@ const DUMMY_DATA = {
         isUserOn: false,
       },
       _id: '2',
-      name: '댓글 List',
-      message:
+      author: '작성자2',
+      createdAt: '2022.03.14 00:00',
+      comment:
         'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
     },
     {
@@ -37,8 +38,9 @@ const DUMMY_DATA = {
         isUserOn: false,
       },
       _id: '3',
-      name: '댓글 List',
-      message:
+      createdAt: '2022.03.14 00:00',
+      author: '작성자3',
+      comment:
         'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
 
       isLastItem: true,
@@ -53,7 +55,7 @@ const DUMMY_DATA = {
     fullName: '사용자1',
     _id: '3',
   },
-  createdAt: '2022.03.14',
+  createdAt: '2022.03.14 00:00',
   updatedAt: '2022.03.14 00:00',
   title: 'This is TitleThis is TitleThis is TitleThis is TitleThis is Title',
   contents: `We need DesignerIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.`,

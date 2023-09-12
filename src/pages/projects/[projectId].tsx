@@ -62,12 +62,13 @@ export default function ProjectDetailPage() {
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        {comments.map((data, i) => (
+        {comments.map(({ author, comment, _id }, i) => (
           <ItemWithAvatar
-            {...data}
+            name={author}
+            message={comment}
             key={i}
             isComment={true}
-            AvatarProps={{ onClick: () => onClick(PROFILE_URL, data._id) }}
+            AvatarProps={{ onClick: () => onClick(PROFILE_URL, _id) }}
           />
         ))}
       </Box>

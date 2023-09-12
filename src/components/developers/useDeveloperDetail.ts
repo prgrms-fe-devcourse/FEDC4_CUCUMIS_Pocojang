@@ -12,7 +12,7 @@ const useDeveloperDetail = () => {
   return {
     developerId,
     onClick,
-    isAuthor: true,
+    isAuthor: false,
     ...DUMMY_DATA,
   };
 };

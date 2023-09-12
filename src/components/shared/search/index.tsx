@@ -12,15 +12,21 @@ const BasicSearch = ({ ...props }: Partial<BasicInputProps>) => {
       hiddenLabel
       required
       name="search"
-      placeholder="검색어를 입력해주세요"
       fullWidth
     />
   );
 };
 
 const SearchTextFieldStyled = styled(TextField)({
-  borderRadius: '20px;',
+  borderRadius: '24px',
   overflow: 'hidden',
+  '& .MuiInputBase-root': {
+    height: '48px',
+  },
+  '& .MuiInputBase-input': {
+    paddingRight: '20px',
+    paddingLeft: '20px',
+  },
 });
 
 export default BasicSearch;

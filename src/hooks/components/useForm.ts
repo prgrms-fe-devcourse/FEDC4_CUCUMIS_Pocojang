@@ -1,16 +1,16 @@
 import { useState, FormEvent } from 'react';
 
-interface FormValues {
+export interface FormValues {
   [key: string]: string;
 }
 
-interface FormErrors {
+export interface FormErrors {
   [key: string]: string;
 }
 
 interface FormProps {
   initialValues: FormValues;
-  onSubmit: (values: FormValues) => Promise<void>;
+  onSubmit: (values: FormValues) => Promise<void> | void;
   validate: (values: FormValues) => FormErrors;
 }
 

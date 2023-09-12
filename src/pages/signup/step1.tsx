@@ -1,38 +1,67 @@
 import { useNavigate } from 'react-router-dom';
 
-import BasicInput from '@/components/shared/input';
+import useForm, { FormErrors, FormValues } from '@/hooks/components/useForm';
 import SignupInputContainer from '@/components/signup/signupInputContainer';
+import BasicInput from '@/components/shared/input';
+
+const initialValues = {
+  email: '',
+  password: '',
+  passwordConfirm: '',
+  name: '',
+};
+
+const validate = ({ email, password, passwordConfirm, name }: FormValues) => {
+  const newErrors: FormErrors = {};
+  if (!email) newErrors.email = 'please enter ';
+  if (!password) newErrors.password = 'please enter ';
+  if (!passwordConfirm) newErrors.passwordConfirm = 'please enter ';
+  if (!name) newErrors.name = 'please enter ';
+  return newErrors;
+};
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  const handleClickNext = () => {
+  const onSubmit = async (value: FormValues) => {
+    console.log(value);
     navigate('/signup/step2');
   };
 
+  const { errors, handleChange, handleSubmit } = useForm({
+    initialValues,
+    onSubmit,
+    validate,
+  });
+
   return (
-    <SignupInputContainer buttonText="다음" onSubmit={handleClickNext}>
+    <SignupInputContainer buttonText="다음" onSubmit={handleSubmit}>
       <BasicInput
         label="email"
-        regExp="[a-z0-9]+@[a-z]+.[a-z]{2,3}"
-        errorMessage="영문, 숫자 포함 몇 자 이상 validation"
+        placeholder="이메일을 입력해주세요"
+        onChange={handleChange}
+        errorMessage={errors.email}
         isRequired
       />
       <BasicInput
         type="password"
         label="password"
-        regExp="^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$"
-        errorMessage="영문, 숫자 포함 몇 자 이상 validation"
+        placeholder="비밀번호를 입력해주세요"
+        onChange={handleChange}
+        errorMessage={errors.password}
         isRequired
       />
       <BasicInput
         label="password confirm"
-        errorMessage="영문, 숫자 포함 몇 자 이상 validation"
+        placeholder="비밀번호를 입력해주세요"
+        onChange={handleChange}
+        errorMessage={errors.passwordConfig}
         isRequired
       />
       <BasicInput
         label="name"
-        regExp=""
-        errorMessage="영문, 숫자 포함 몇 자 이상 validation"
+        placeholder="이름을 입력해주세요"
+        onChange={handleChange}
+        errorMessage={errors.name}
         isRequired
       />
     </SignupInputContainer>

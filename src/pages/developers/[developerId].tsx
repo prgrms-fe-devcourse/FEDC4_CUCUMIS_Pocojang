@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
-import { Box, Divider, Stack, Typography, List } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 
 import BasicAvatar from '@/components/shared/avatar';
-import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 import BasicChip from '@/components/shared/chip';
 import ChipGroup from '@/components/shared/chipGroup';
 import { PROFILE_URL, PROJECT_MODIFYL_URL, DM_URL } from '@/consts/routes';
 import BasicButton from '@/components/shared/button';
 import useDeveloperDetails from '@/pages/developers/useDeveloperDetails';
+import Comments from '@/components/comments';
 
 export default function DeveloperDetail() {
   const {
@@ -63,7 +63,7 @@ export default function DeveloperDetail() {
       )}
       <Typography variant="h4">
         {title}
-        <BasicChip label={position} color="secondary" />
+        <BasicChipStyled label={position} color="secondary" />
       </Typography>
       <ChipGroup>
         {technicalSkill.map((skill: string, i: number) => (
@@ -77,20 +77,7 @@ export default function DeveloperDetail() {
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        <List disablePadding>
-          {comments.map(({ author, comment, _id, AvatarProps }, i) => (
-            <ItemWithAvatar
-              name={author}
-              message={comment}
-              key={i}
-              isComment={true}
-              AvatarProps={{
-                ...AvatarProps,
-                onClick: () => onClick(PROFILE_URL, _id),
-              }}
-            />
-          ))}
-        </List>
+        <Comments comments={comments} onClick={onClick} url={PROFILE_URL} />
       </Box>
     </Stack>
   );
@@ -108,4 +95,8 @@ const StackStyled = styled(Stack)({
 
 const ChipBoxStyled = styled(Box)({
   textAlign: 'center',
+});
+
+const BasicChipStyled = styled(BasicChip)({
+  margin: '0 8px',
 });

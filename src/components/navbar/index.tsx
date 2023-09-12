@@ -60,7 +60,7 @@ const Navbar = () => {
   ) : (
     path.length === 2 &&
       (path[0] === 'developers' ||
-        path[0] === 'projects' ||
+        (path[0] === 'projects' && path[1] !== 'write') ||
         path[0] === 'dm') && (
         <PaperStyled elevation={0}>
           <FormStyled onSubmit={handleSubmit}>

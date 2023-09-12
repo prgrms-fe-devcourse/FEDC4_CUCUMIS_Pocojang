@@ -2,15 +2,16 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import session from '@/utils/sessionStorage';
+import { UserType } from '@/types';
 
 export interface AuthState {
-  token: string;
-  userId: string;
+  token?: string;
+  user?: UserType;
 }
 
 const initialState: AuthState = {
-  token: session.getItem(SESSION_STORAGE.TOKEN) ?? '',
-  userId: '',
+  token: session.getItem(SESSION_STORAGE.TOKEN) ?? undefined,
+  user: (session.getItem(SESSION_STORAGE.USER) as UserType) ?? undefined,
 };
 
 export const authSlice = createSlice({
@@ -21,9 +22,9 @@ export const authSlice = createSlice({
       const { token } = action.payload;
       state.token = token;
     },
-    setUserId: (state, action) => {
-      const { userId } = action.payload;
-      state.userId = userId;
+    setUser: (state, action) => {
+      const { user } = action.payload;
+      state.user = user;
     },
   },
 });

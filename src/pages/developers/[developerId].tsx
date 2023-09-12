@@ -3,7 +3,6 @@ import { Box, Divider, Stack, Typography } from '@mui/material';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
-import ChipGroup from '@/components/shared/chipGroup';
 import { PROFILE_URL, PROJECT_MODIFYL_URL, DM_URL } from '@/consts/routes';
 import BasicButton from '@/components/shared/button';
 import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
@@ -61,15 +60,17 @@ export default function DeveloperDetail() {
           </BasicButton>
         </Stack>
       )}
-      <Typography variant="h4">
-        {title}
-        <BasicChipStyled label={position} color="secondary" />
-      </Typography>
-      <ChipGroup>
-        {technicalSkill.map((skill: string, i: number) => (
-          <BasicChip label={skill} key={i} />
-        ))}
-      </ChipGroup>
+      <Stack spacing={1}>
+        <Typography variant="h4">
+          {title}
+          <ChipStyled label={position} margin="0 8px" color="secondary" />
+        </Typography>
+        <ChipsBoxStyled>
+          {technicalSkill.map((skill: string, i: number) => (
+            <ChipStyled label={skill} margin="0 8px 4px 0" key={i} />
+          ))}
+        </ChipsBoxStyled>
+      </Stack>
       <Box>
         <Typography color="gray">자기소개</Typography>
         <Typography>{contents}</Typography>
@@ -97,6 +98,11 @@ const ChipBoxStyled = styled(Box)({
   textAlign: 'center',
 });
 
-const BasicChipStyled = styled(BasicChip)({
-  margin: '0 8px',
+const ChipsBoxStyled = styled(Box)({
+  display: 'flex',
+  flexWrap: 'wrap',
 });
+
+const ChipStyled = styled(BasicChip)<{ margin: string }>(({ margin }) => ({
+  margin: margin,
+}));

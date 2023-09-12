@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
-import { Avatar, Box, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { DarkMode } from '@mui/icons-material';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicInput from '@/components/shared/input';
 import BasicButton from '@/components/shared/button';
 import BasicFab from '@/components/shared/fab';
+import BgProfile from '@/components/profile/bgProfile';
 
 export default function SettingsPage() {
   const settingData = [
@@ -17,13 +18,14 @@ export default function SettingsPage() {
     { data: 'Position(option)' },
     { data: 'Details(option)' },
   ];
+
   const toggleDark = () => {
     alert('dark toggled!');
   };
   return (
     <StyledWrapper>
       <StyledBox>
-        <Avatar
+        <BgProfile
           variant="square"
           sx={{ width: '100%', height: '141px' }}
           src={

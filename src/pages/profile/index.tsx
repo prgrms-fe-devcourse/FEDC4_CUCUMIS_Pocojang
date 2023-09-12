@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
 import {
-  Avatar,
   BottomNavigation,
   BottomNavigationAction,
   Box,
@@ -15,8 +14,10 @@ import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 import ProjectCardItem from '@/components/shared/projectCard';
 import BasicAvatar from '@/components/shared/avatar';
 import BasicButton from '@/components/shared/button';
+import BgProfile from '@/components/profile/bgProfile';
+import DUMMY_DATA from '@/components/profile/useProfileData';
 
-import DUMMY_DATA from './DUMMY_DATA';
+
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -25,7 +26,7 @@ const ProfilePage = () => {
   return (
     <StyledWrapperBox>
       <StyledBox>
-        <Avatar
+        <BgProfile
           variant="square"
           sx={{ width: '100%', height: '141px' }}
           src={
@@ -153,7 +154,6 @@ const StyledBasicAvatar = styled(BasicAvatar)({
 const StyledBox = styled(Box)({
   position: 'relative',
   width: '100%',
-  border : '3px solid',
   textAlign: 'center',
 });
 const StyledProfileWrapper = styled(Box)({

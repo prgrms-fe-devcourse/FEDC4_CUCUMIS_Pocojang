@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import Paper from '@mui/material/Paper';
@@ -14,17 +13,26 @@ import SendIcon from '@mui/icons-material/Send';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setInput, locationSelector } from '@/stores/layout';
 import { userIdSelector } from '@/stores/auth';
+import useForm from '@/hooks/components/useForm';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
 
 const Navbar = () => {
-  const inputStringRef = useRef('');
   const dispatch = useAppDispatch();
   const location = useAppSelector(locationSelector);
   const userId = useAppSelector(userIdSelector);
   const path = useAppSelector(locationSelector)
     .split('/')
     .filter((path) => path);
+  const { handleChange, handleSubmit } = useForm({
+    initialValues: { search: '' },
+    onSubmit: ({ search }) => dispatch(setInput(search)),
+    validate: ({ search }) => {
+      const newErrors = { search: '' };
+      if (!search) newErrors.search = '내용을 입력해주세요.';
+      return newErrors;
+    },
+  });
 
   const navigations = [
     { name: '프로젝트', path: '/projects', icon: <LaptopIcon /> },
@@ -33,11 +41,6 @@ const Navbar = () => {
     { name: 'DM', path: '/dm', icon: <EmailIcon /> },
     { name: '프로필', path: `/profile/${userId}`, icon: <AccountCircleIcon /> },
   ];
-
-  const handleFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(setInput(inputStringRef.current.search));
-  };
 
   return navigations.some((nav) => nav.path === location) ? (
     <PaperStyled elevation={0} component="nav">
@@ -60,9 +63,9 @@ const Navbar = () => {
         path[0] === 'projects' ||
         path[0] === 'dm') && (
         <PaperStyled elevation={0}>
-          <FormStyled onSubmit={handleFormSubmit}>
+          <FormStyled onSubmit={handleSubmit}>
             <BasicSearch
-              inputRef={inputStringRef}
+              onChange={handleChange}
               placeholder="내용을 입력해주세요"
             />
             <BasicIconButton type="submit">

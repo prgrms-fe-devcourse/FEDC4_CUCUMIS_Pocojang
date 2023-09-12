@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import AppBar from '@mui/material/AppBar';
@@ -12,22 +11,26 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setInput, headerTypeSelector, titleSelector } from '@/stores/layout';
 import { isLoginSelector } from '@/stores/auth';
 import { HeaderType, Title } from '@/types/components/Header';
+import useForm from '@/hooks/components/useForm';
 import BasicChip from '@/components/shared/chip';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
 
 const Header = () => {
   const navigate = useNavigate();
-  const inputStringRef = useRef('');
   const dispatch = useAppDispatch();
   const headerType = useAppSelector(headerTypeSelector);
   const title = useAppSelector(titleSelector);
   const isLogin = useAppSelector(isLoginSelector);
-
-  const handleFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(setInput(inputStringRef.current.search));
-  };
+  const { handleChange, handleSubmit } = useForm({
+    initialValues: { search: '' },
+    onSubmit: ({ search }) => dispatch(setInput(search)),
+    validate: ({ search }) => {
+      const newErrors = { search: '' };
+      if (!search) newErrors.search = '검색어를 입력해주세요.';
+      return newErrors;
+    },
+  });
 
   const goBack = () => {
     navigate(-1);
@@ -71,9 +74,9 @@ const Header = () => {
             <LinkStyled to="/">
               <img src="/assets/Logo512.png" alt="CUCUMIS" width={40} />
             </LinkStyled>
-            <FormStyled onSubmit={handleFormSubmit}>
+            <FormStyled onSubmit={handleSubmit}>
               <BasicSearch
-                inputRef={inputStringRef}
+                onChange={handleChange}
                 placeholder="검색어를 입력해주세요"
               />
               <BasicIconButton type="submit">

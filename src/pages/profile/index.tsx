@@ -15,7 +15,7 @@ import ProjectCardItem from '@/components/shared/projectCard';
 import BasicAvatar from '@/components/shared/avatar';
 import BasicButton from '@/components/shared/button';
 import BgProfile from '@/components/profile/bgProfile';
-import DUMMY_DATA from '@/components/profile/useProfileData';
+import DUMMY_DATA from '@/components/profile/useProfile';
 
 const ProfilePage = () => {
   const { userId } = useParams();

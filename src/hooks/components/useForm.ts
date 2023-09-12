@@ -27,8 +27,7 @@ const useForm = ({ initialValues, onSubmit, validate }: FormProps) => {
   const isValidValue = () => {
     const newErrors = validate(values);
     setErrors(newErrors);
-
-    return Object.keys(newErrors).length;
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

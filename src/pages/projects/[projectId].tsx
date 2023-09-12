@@ -1,17 +1,14 @@
 import { Link, useParams } from 'react-router-dom';
 
-export default function ProjectDetailPage() {
-  const { projectId } = useParams();
+export default function DeveloperDetail() {
+  const { developerId } = useParams();
 
   return (
     <div>
-      <h1>{projectId}번 프로젝트!</h1>
-      <h2>
-        <Link to={`/projects/write/${projectId}`}>{projectId}번 수정하기</Link>
-      </h2>
-      <p>프로필</p>
-      <p>댓글</p>
-      <input type="text" />
+      <h1>{developerId}번 개발자!</h1>
+      <button>팔로우</button>
+      <Link to={`/dm/${developerId}`}>DM</Link>
+      <h2>댓글 다는 공간</h2>
     </div>
   );
 }

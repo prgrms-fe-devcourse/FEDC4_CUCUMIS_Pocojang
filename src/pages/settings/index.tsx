@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { Avatar, Box } from '@mui/material';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { Avatar, Box, Stack } from '@mui/material';
+import { DarkMode } from '@mui/icons-material';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicInput from '@/components/shared/input';
@@ -23,55 +23,66 @@ export default function SettingsPage() {
   return (
     <StyledWrapper>
       <StyledBox>
-        <StyledAvatar
-          alt="Remy Sharp"
-          src="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg"
-          sx={{ width: 394, height: 141 }}
+        <Avatar
           variant="square"
+          sx={{ width: '100%', height: '141px' }}
+          src={
+            'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg'
+          }
         />
-        <StyledBasicAvatarBox>
-          <BasicAvatar
-            isUserOn={true}
+        <StyledProfileWrapper>
+          <StyledBasicAvatar
+            imgSrc="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg"
+            alt="프로필사진"
             size={90}
-            imgSrc={
-              'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg'
-            }
-            alt={'user profile'}
+            isUserOn={true}
           />
-        </StyledBasicAvatarBox>
+        </StyledProfileWrapper>
       </StyledBox>
-
+      <Stack
+        direction={'column'}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        <Box>
+          <Stack
+            direction={'row'}
+            alignItems={'center'}
+            justifyContent={'center'}
+          >
+            <p>이름</p>
+          </Stack>
+        </Box>
+      </Stack>
       {settingData.map(({ data }) => (
         <StyledBasicInputBox>
           <BasicInput placeholder={data} label={data} />
         </StyledBasicInputBox>
       ))}
-      <StyledBasicFab onClick={toggleDark} children={<DarkModeIcon />} />
+      <StyledBasicFab onClick={toggleDark} children={<DarkMode />} />
       <BasicButton children="수정하기" />
     </StyledWrapper>
   );
 }
 
+const StyledBasicAvatar = styled(BasicAvatar)({
+  position: 'absolute',
+  left: '50%',
+  transform: 'translateX(-50%)',
+});
 const StyledBox = styled(Box)({
   position: 'relative',
   width: '100%',
   height: '200px',
   textAlign: 'center',
 });
-
-const StyledAvatar = styled(Avatar)({
-  position: 'absolute',
-  width: '100%',
-  height: '85%',
-});
-
-const StyledBasicAvatarBox = styled(Box)({
-  width: '90px',
-  height: '100px',
-  position: 'absolute',
+const StyledProfileWrapper = styled(Box)({
+  width: 'fit-content',
+  height: 'fit-content',
+  position: 'relative',
+  bottom: '50px',
   left: '50%',
   transform: 'translateX(-50%)',
-  bottom: 0,
 });
 
 const StyledBasicInputBox = styled(Box)({

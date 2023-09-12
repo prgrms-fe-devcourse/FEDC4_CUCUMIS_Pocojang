@@ -10,11 +10,11 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from 'react';
 import styled from '@emotion/styled';
 
-import BasicAvatar from '@/components/shared/avatar';
 import Navbar from '@/components/navbar';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
-import BasicButton from '@/components/shared/button';
 import ProjectCardItem from '@/components/shared/projectCard';
+import BasicAvatar from '@/components/shared/avatar';
+import BasicButton from '@/components/shared/button';
 
 import DUMMY_DATA from './DUMMY_DATA';
 
@@ -25,49 +25,48 @@ const ProfilePage = () => {
   return (
     <StyledWrapperBox>
       <StyledBox>
-        <StyledAvatar
-          alt="Remy Sharp"
-          src="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg"
-          sx={{ width: 394, height: 151 }}
+        <Avatar
           variant="square"
+          sx={{ width: '100%', height: '141px' }}
+          src={
+            'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg'
+          }
         />
-        <StyledBasicAvatarBox>
-          <BasicAvatar
-            isUserOn={true}
+        <StyledProfileWrapper>
+          <StyledBasicAvatar
+            imgSrc="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg"
+            alt="프로필사진"
             size={90}
-            imgSrc={
-              'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg'
-            }
-            alt={'user profile'}
+            isUserOn={true}
           />
-        </StyledBasicAvatarBox>
+        </StyledProfileWrapper>
       </StyledBox>
-      <StyledStackBox>
+      <StyledBox>
         <Stack
-          direction={'row'}
+          direction={'column'}
           alignItems={'center'}
           justifyContent={'center'}
         >
-          지성
-          {userId === '1' && (
-            <Link to={'/settings'}>
-              <SettingsIcon />
-            </Link>
-          )}
-        </Stack>
-        <div>
-          {userId !== '1' && (
+          <Box>
             <Stack
               direction={'row'}
               alignItems={'center'}
               justifyContent={'center'}
             >
+              <p>이름</p>
+              <Link to="/settings">
+                <SettingsIcon />
+              </Link>
+            </Stack>
+          </Box>
+          {userId !== '1' && (
+            <StyledBasicButtonStack direction={'row'}>
               <BasicButton variant="outlined" children="팔로우" />
               <BasicButton variant="outlined" children="DM" />
-            </Stack>
+            </StyledBasicButtonStack>
           )}
-        </div>
-      </StyledStackBox>
+        </Stack>
+      </StyledBox>
       <StyledMavigationBox>
         <BottomNavigation
           value={value}
@@ -145,31 +144,32 @@ const ProfilePage = () => {
     </StyledWrapperBox>
   );
 };
+
+const StyledBasicAvatar = styled(BasicAvatar)({
+  position: 'absolute',
+  left: '50%',
+  transform: 'translateX(-50%)',
+});
 const StyledBox = styled(Box)({
   position: 'relative',
   width: '100%',
   height: '200px',
   textAlign: 'center',
 });
-
-const StyledAvatar = styled(Avatar)({
-  border: '3px solid',
-  position: 'absolute',
-  width: '100%',
-  height: '95%',
-});
-
-const StyledBasicAvatarBox = styled(Box)({
-  width: '90px',
-  height: '100px',
-  position: 'absolute',
+const StyledProfileWrapper = styled(Box)({
+  width: 'fit-content',
+  height: 'fit-content',
+  position: 'relative',
+  bottom: '50px',
   left: '50%',
   transform: 'translateX(-50%)',
-  bottom: -10,
 });
 
+const StyledBasicButtonStack = styled(Stack)({
+  width: '100%',
+});
 const StyledWrapperBox = styled(Box)({
-  height: '750px',
+  height: '800px',
   display: 'flex',
   flexDirection: 'column',
 });
@@ -193,12 +193,6 @@ const StyledItemWithAvatarBox = styled(Box)({
 const StyledProjectCardItemBox = styled(Box)({
   width: 'fit-content',
   margin: '10px auto',
-});
-
-const StyledStackBox = styled(Box)({
-  width: '100%',
-  border: '3px solid',
-  padding: '10px 0',
 });
 
 export default ProfilePage;

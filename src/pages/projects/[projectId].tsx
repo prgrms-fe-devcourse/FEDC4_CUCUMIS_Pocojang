@@ -4,9 +4,12 @@ import { Box, Divider, Stack, Typography } from '@mui/material';
 import BasicAvatar from '@/components/shared/avatar';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 import useProjectDetails from '@/pages/projects/useProjectDetails';
+import BasicChip from '@/components/shared/chip';
+import { PROFILE_URL, PROJECT_MODIFYL_URL } from '@/consts/routes';
 
 export default function ProjectDetailPage() {
   const {
+    projectId,
     author,
     image,
     _id,
@@ -14,7 +17,8 @@ export default function ProjectDetailPage() {
     contents,
     comments,
     createdAt,
-    onClickProfile,
+    onClick,
+    isAuthor,
   } = useProjectDetails();
 
   return (
@@ -24,13 +28,30 @@ export default function ProjectDetailPage() {
         src={image}
         alt={title + "'s project image"}
       />
-      <Stack direction="row" alignItems="center" spacing={2}>
-        <BasicAvatar {...author} onClick={() => onClickProfile(_id)} />
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={2}
+        alignContent="center"
+      >
+        <BasicAvatar {...author} onClick={() => onClick(PROFILE_URL, _id)} />
         <TitleBoxStyled>
           <Typography noWrap>{author.fullName}</Typography>
-          <Typography variant="subtitle2" color="gray">
-            {createdAt}
-          </Typography>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography variant="subtitle2" color="gray">
+              {createdAt}
+            </Typography>
+            {isAuthor && (
+              <BasicChip
+                size="small"
+                label="수정하기"
+                variant="outlined"
+                onClick={() =>
+                  onClick(PROJECT_MODIFYL_URL, projectId as string)
+                }
+              />
+            )}
+          </Stack>
         </TitleBoxStyled>
       </Stack>
       <Typography variant="h4">{title}</Typography>
@@ -46,7 +67,7 @@ export default function ProjectDetailPage() {
             {...data}
             key={i}
             isComment={true}
-            AvatarProps={{ onClick: () => onClickProfile(data._id) }}
+            AvatarProps={{ onClick: () => onClick(PROFILE_URL, data._id) }}
           />
         ))}
       </Box>
@@ -63,4 +84,5 @@ const ProjectImageStyled = styled(Box)({
 const TitleBoxStyled = styled(Box)({
   minWidth: 0,
   marginRight: '16px',
+  width: '100%',
 });

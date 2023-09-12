@@ -1,15 +1,20 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const useProjectDetails = () => {
+  const { projectId } = useParams();
   const navigate = useNavigate();
 
-  const onClickProfile = (id: number) => {
-    navigate('/profile/' + id);
+  const onClick = (url: string, id: string) => {
+    navigate(url + id);
   };
 
+  const isAuthor = true;
+
   return {
+    projectId,
     ...DUMMY_DATA,
-    onClickProfile,
+    onClick,
+    isAuthor,
   };
 };
 
@@ -22,7 +27,7 @@ const DUMMY_DATA = {
       AvatarProps: {
         isUserOn: false,
       },
-      _id: 2,
+      _id: '2',
       name: '댓글 List',
       message:
         'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
@@ -31,7 +36,7 @@ const DUMMY_DATA = {
       AvatarProps: {
         isUserOn: false,
       },
-      _id: 3,
+      _id: '3',
       name: '댓글 List',
       message:
         'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
@@ -39,14 +44,14 @@ const DUMMY_DATA = {
       isLastItem: true,
     },
   ],
-  _id: 1,
+  _id: '1',
   image: '/assets/Logo96.svg',
   author: {
     image:
       'https://img.freepik.com/free-photo/world-smile-day-emojis-arrangement_23-2149024491.jpg?q=10&h=200',
     isUserOn: true,
     fullName: '사용자1',
-    _id: 3,
+    _id: '3',
   },
   createdAt: '2022.03.14',
   updatedAt: '2022.03.14 00:00',

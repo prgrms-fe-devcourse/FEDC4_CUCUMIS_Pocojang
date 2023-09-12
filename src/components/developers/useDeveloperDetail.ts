@@ -9,12 +9,10 @@ const useDeveloperDetail = () => {
     navigate(url + id);
   };
 
-  const isAuthor = true;
-
   return {
     developerId,
     onClick,
-    isAuthor,
+    isAuthor: true,
     ...DUMMY_DATA,
   };
 };

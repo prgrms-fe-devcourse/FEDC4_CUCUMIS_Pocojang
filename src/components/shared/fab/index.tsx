@@ -1,23 +1,54 @@
 import Fab, { FabProps } from '@mui/material/Fab';
+import { Box } from '@mui/material';
 import styled from '@emotion/styled';
 
 interface Props extends FabProps {
+  bottom?: number;
+  right?: number;
   children: React.ReactNode;
   onClick: () => void;
 }
 
-const BasicFab = ({ children, onClick, ...props }: Props) => {
+const BasicFab = ({
+  bottom = 80,
+  right = 20,
+  children,
+  onClick,
+  ...props
+}: Props) => {
   return (
-    <FixedFab color="primary" onClick={onClick} {...props}>
-      {children}
-    </FixedFab>
+    <BoxStyled>
+      <FabStyled
+        bottom={bottom}
+        right={right}
+        color="primary"
+        onClick={onClick}
+        {...props}
+      >
+        {children}
+      </FabStyled>
+    </BoxStyled>
   );
 };
 
-const FixedFab = styled(Fab)(() => ({
-  position: 'fixed',
-  bottom: '10px',
-  right: '10px',
-}));
+const FabStyled = styled(Fab)<{ bottom: number; right: number }>(
+  ({ bottom, right }) => ({
+    position: 'absolute',
+    bottom: `${bottom}px`,
+    right: `${right}px`,
+    pointerEvents: 'auto',
+  }),
+);
 
+const BoxStyled = styled(Box)({
+  zIndex: '10',
+  maxWidth: '600px',
+  bottom: '0',
+  width: '100%',
+  height: 'calc(100vh - 80px)',
+  position: 'fixed',
+  left: '50%',
+  transform: 'translate(-50%)',
+  pointerEvents: 'none',
+});
 export default BasicFab;

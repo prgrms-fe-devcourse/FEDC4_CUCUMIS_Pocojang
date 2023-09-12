@@ -14,12 +14,13 @@ const ProjectPage = () => {
         <Add />
       </MainFab>
       <Stack spacing={1}>
-        {data.map((project, index) => (
+        {data.map((project) => (
           <ProjectCardItem
+            key={project._id}
             name={project.name}
             imageUrl={project.imageUrl}
             projectTitle={project.projectTitle}
-            to={(index + 1).toString()}
+            to={project._id}
           />
         ))}
       </Stack>

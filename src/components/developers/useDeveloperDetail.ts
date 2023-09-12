@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 
-const useDeveloperDetails = () => {
+const useDeveloperDetail = () => {
   const { developerId } = useParams();
 
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const useDeveloperDetails = () => {
   };
 };
 
-export default useDeveloperDetails;
+export default useDeveloperDetail;
 
 const DUMMY_DATA = {
   likes: [],

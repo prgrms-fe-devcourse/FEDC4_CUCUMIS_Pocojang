@@ -6,7 +6,7 @@ import BasicChip from '@/components/shared/chip';
 import ChipGroup from '@/components/shared/chipGroup';
 import { PROFILE_URL, PROJECT_MODIFYL_URL, DM_URL } from '@/consts/routes';
 import BasicButton from '@/components/shared/button';
-import useDeveloperDetails from '@/pages/developers/useDeveloperDetails';
+import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
 
 export default function DeveloperDetail() {

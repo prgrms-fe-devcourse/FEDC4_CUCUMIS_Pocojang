@@ -1,4 +1,4 @@
-import { CardContent, Grid, Typography } from '@mui/material';
+import { CardContent, Grid, Typography, styled } from '@mui/material';
 
 import type BasicAvatarProps from '@/types/components/BasicAvatarProps';
 import BasicAvatar from '@/components/shared/avatar';
@@ -12,6 +12,7 @@ interface Props {
   name: string;
   description: string;
   to: string;
+  stacks: string[];
 }
 
 //TODO 스택은 반복문으로 변경하기,
@@ -20,8 +21,11 @@ const DeveloperCardItem = ({
   oneliner,
   name,
   description,
+  stacks,
   to,
 }: Props) => {
+  const selectedStacks = stacks.slice(0, 3);
+
   return (
     <BasicCard to={`/developers/${to}`}>
       <CardContent>
@@ -37,9 +41,9 @@ const DeveloperCardItem = ({
               {name}
             </Typography>
             <ChipGroup>
-              <BasicChip color="primary" label="test1"></BasicChip>
-              <BasicChip color="primary" label="test2"></BasicChip>
-              <BasicChip color="primary" label="test3"></BasicChip>
+              {selectedStacks.map((stack) => (
+                <ChipStyled label={stack} />
+              ))}
             </ChipGroup>
           </Grid>
         </Grid>
@@ -51,5 +55,7 @@ const DeveloperCardItem = ({
     </BasicCard>
   );
 };
-
+const ChipStyled = styled(BasicChip)({
+  maxWidth: '70px',
+});
 export default DeveloperCardItem;

@@ -95,6 +95,7 @@ const Header = () => {
               component="h1"
               color="primary"
               align="center"
+              paddingRight={title === Title.SETTINGS && isLogin ? 0 : 40}
             >
               {title}
             </TypographyStyled>
@@ -132,10 +133,13 @@ const LinkStyled = styled(Link)`
   padding-right: 12px;
 `;
 
-const TypographyStyled = styled(Typography)<{ align: string }>(({ align }) => ({
+const TypographyStyled = styled(Typography)<{
+  align: string;
+  paddingRight: number;
+}>(({ align, paddingRight }) => ({
   flexGrow: 1,
   textAlign: align,
-  paddingRight: 40,
+  paddingRight: `${paddingRight}px`,
 })) as typeof Typography;
 
 const FormStyled = styled('form')({

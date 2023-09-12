@@ -5,11 +5,13 @@ import { setAuth, setUser } from '@/stores/auth';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 
-const onUpdateToken = ({ payload: token }: ReturnType<typeof setAuth>) => {
+const onUpdateToken = (action: ReturnType<typeof setAuth>) => {
+  const token = action.payload;
   session.setItem(SESSION_STORAGE.TOKEN, token);
 };
 
-const onUpdateUser = ({ payload: user }: ReturnType<typeof setUser>) => {
+const onUpdateUser = (action: ReturnType<typeof setUser>) => {
+  const user = action.payload;
   session.setItem(SESSION_STORAGE.USER, user);
 };
 

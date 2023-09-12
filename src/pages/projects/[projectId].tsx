@@ -1,9 +1,50 @@
 import styled from '@emotion/styled';
 import { Box, Divider, Stack, Typography } from '@mui/material';
-import { Link, useParams } from 'react-router-dom';
 
 import BasicAvatar from '@/components/shared/avatar';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
+
+export default function ProjectDetailPage() {
+  const { userName, date, title, contents, comments } = DUMMY_DATA;
+
+  return (
+    <Stack spacing={3}>
+      <ProjectImageStyled component="img" src="/Logo96.svg" alt="참외" />
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <BasicAvatar />
+        <TitleBoxStyled>
+          <Typography noWrap>{userName}</Typography>
+          <Typography variant="subtitle2" color="gray">
+            {date}
+          </Typography>
+        </TitleBoxStyled>
+      </Stack>
+      <Typography variant="h4">{title}</Typography>
+      <Stack spacing={1}>
+        <Typography color="gray">요구사항</Typography>
+        <Typography>{contents}</Typography>
+      </Stack>
+      <Divider variant="middle" />
+      <Box>
+        <Typography color="gray">댓글</Typography>
+        {comments.map((data, i) => (
+          <ItemWithAvatar {...data} key={i} isComment={true} />
+        ))}
+      </Box>
+    </Stack>
+  );
+}
+
+const ProjectImageStyled = styled(Box)({
+  width: '100%',
+  height: '40vh',
+  objectFit: 'cover',
+}) as typeof Box;
+
+const TitleBoxStyled = styled(Box)({
+  minWidth: 0,
+  marginRight: '16px',
+});
 
 const DUMMY_DATA = {
   userName:
@@ -34,49 +75,3 @@ const DUMMY_DATA = {
     },
   ],
 };
-
-export default function ProjectDetailPage() {
-  const { projectId } = useParams();
-  const { userName, date, title, contents, comments } = DUMMY_DATA;
-  return (
-    <div>
-      <h1>{projectId}번 프로젝트!</h1>
-      <Stack spacing={2}>
-        <ProjectImageStyled component="img" src="/Logo96.svg" alt="참외" />
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <BasicAvatar />
-          <TitleBoxStyled>
-            <Typography noWrap>{userName}</Typography>
-            <Typography variant="body2">{date}</Typography>
-          </TitleBoxStyled>
-        </Stack>
-        <Typography variant="h3">{title}</Typography>
-        <Typography>{contents}</Typography>
-        <Divider variant="middle" />
-        <Box>
-          <Typography>댓글</Typography>
-          {comments.map((data, i) => (
-            <ItemWithAvatar {...data} key={i} isComment={true} />
-          ))}
-        </Box>
-      </Stack>
-      <h2>
-        <Link to={`/projects/write/${projectId}`}>{projectId}번 수정하기</Link>
-      </h2>
-      <p>프로필</p>
-      <p>댓글</p>
-      <input type="text" />
-    </div>
-  );
-}
-
-const ProjectImageStyled = styled(Box)({
-  width: '100%',
-  height: '40vh',
-  objectFit: 'cover',
-}) as typeof Box;
-
-const TitleBoxStyled = styled(Box)({
-  minWidth: 0,
-  marginRight: '16px',
-});

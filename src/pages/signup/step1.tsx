@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useForm, { FormErrors, FormValues } from '@/hooks/components/useForm';
 import SignupInputContainer from '@/components/signup/signupInputContainer';
 import BasicInput from '@/components/shared/input';
+import validation from '@/utils/validations';
 
 const initialValues = {
   email: '',
@@ -13,17 +14,27 @@ const initialValues = {
 
 const validate = ({ email, password, passwordConfirm, name }: FormValues) => {
   const newErrors: FormErrors = {};
-  if (!email) newErrors.email = 'please enter ';
-  if (!password) newErrors.password = 'please enter ';
-  if (!passwordConfirm) newErrors.passwordConfirm = 'please enter ';
-  if (!name) newErrors.name = 'please enter ';
+
+  const emailErrorMessage = validation.email(email);
+  const passwordErrorMessage = validation.email(password);
+  const passwordConfirmErrorMessage = validation.email(passwordConfirm);
+  const nameErrorMessage = validation.email(name);
+
+  if (emailErrorMessage) newErrors.email = emailErrorMessage;
+  if (passwordErrorMessage) newErrors.password = passwordErrorMessage;
+  if (passwordConfirmErrorMessage)
+    newErrors.passwordConfirm = passwordConfirmErrorMessage;
+  if (nameErrorMessage) newErrors.name = nameErrorMessage;
+
   return newErrors;
 };
 
 export default function SignupPage() {
   const navigate = useNavigate();
   const onSubmit = async (value: FormValues) => {
+    // TODO: signup store 에 value 저장
     console.log(value);
+
     navigate('/signup/step2');
   };
 

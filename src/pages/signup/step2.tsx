@@ -18,10 +18,10 @@ const validate = ({
   details,
 }: FormValues): FormErrors => {
   const newErrors: FormErrors = {};
-  if (!oneLiner) newErrors.oneLiner = 'please enter ';
-  if (!technicalTools) newErrors.technicalTools = 'please enter ';
-  if (!position) newErrors.position = 'please enter ';
-  if (!details) newErrors.details = 'please enter ';
+  if (!oneLiner) newErrors.oneLiner = 'please enter oneLiner';
+  if (!technicalTools) newErrors.technicalTools = 'please enter technicalTools';
+  if (!position) newErrors.position = 'please enter position';
+  if (!details) newErrors.details = 'please enter details';
   return newErrors;
 };
 

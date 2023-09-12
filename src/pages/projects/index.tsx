@@ -1,12 +1,20 @@
 import { Stack } from '@mui/material';
+import { Add } from '@mui/icons-material';
 
 import ProjectCardItem from '@/components/shared/projectCard';
-//TODO  floating button 위치 수정 필요(포지션, 위치수정 가능하도록),<Divider> shared에 만들기
+import MainFab from '@/components/shared/mainFab';
+import useProjectList from '@/components/ProjectList/useProjectList';
+
 const ProjectPage = () => {
+  const { handleFabClick, data } = useProjectList();
+
   return (
     <>
-      <Stack spacing={3}>
-        {dummyProjects.map((project, index) => (
+      <MainFab onClick={handleFabClick}>
+        <Add />
+      </MainFab>
+      <Stack spacing={1}>
+        {data.map((project, index) => (
           <ProjectCardItem
             name={project.name}
             imageUrl={project.imageUrl}
@@ -20,64 +28,6 @@ const ProjectPage = () => {
 };
 
 export default ProjectPage;
-
-const dummyProjects = [
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-  {
-    name: '저쩌구씨',
-    projectTitle: 'ProjectA',
-    imageUrl: 'https://source.unsplash.com/random',
-  },
-];
 
 // export default function ProjectPage() {
 //   return (

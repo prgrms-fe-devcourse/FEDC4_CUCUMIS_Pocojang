@@ -25,7 +25,11 @@ export default function ProjectDetailPage() {
 
   return (
     <Stack spacing={3}>
-      <ProjectImageStyled component="img" src={projectImage} alt="참외" />
+      <ProjectImageStyled
+        component="img"
+        src={projectImage}
+        alt={title + "'s project image"}
+      />
       <Stack direction="row" alignItems="center" spacing={2}>
         <BasicAvatar
           imgSrc={profileImage}
@@ -79,7 +83,7 @@ const DUMMY_DATA = {
   userName:
     '사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자',
   date: '2022.03.14',
-  title: 'This is Title',
+  title: 'This is TitleThis is TitleThis is TitleThis is TitleThis is Title',
   contents: `We need DesignerIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.`,
   comments: [
     {

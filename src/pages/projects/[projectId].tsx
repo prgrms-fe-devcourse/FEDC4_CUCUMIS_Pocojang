@@ -5,7 +5,7 @@ import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
 import { PROFILE_URL, PROJECT_MODIFYL_URL } from '@/consts/routes';
 import Comments from '@/components/comments';
-import useProjectDetails from '@/components/projects/useProjectDetails';
+import useProjectDetail from '@/components/projects/useProjectDetail';
 
 export default function ProjectDetailPage() {
   const {
@@ -19,7 +19,7 @@ export default function ProjectDetailPage() {
     createdAt,
     onClick,
     isAuthor,
-  } = useProjectDetails();
+  } = useProjectDetail();
 
   return (
     <Stack spacing={3}>

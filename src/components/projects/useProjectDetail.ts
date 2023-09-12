@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-const useProjectDetails = () => {
+const useProjectDetail = () => {
   const { projectId } = useParams();
 
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const useProjectDetails = () => {
   };
 };
 
-export default useProjectDetails;
+export default useProjectDetail;
 
 const DUMMY_DATA = {
   likes: [],
@@ -30,7 +30,7 @@ const DUMMY_DATA = {
       author: '작성자2',
       createdAt: '2022.03.14 00:00',
       comment:
-        'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     {
       AvatarProps: {
@@ -40,8 +40,7 @@ const DUMMY_DATA = {
       createdAt: '2022.03.14 00:00',
       author: '작성자3',
       comment:
-        'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
-
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       isLastItem: true,
     },
   ],
@@ -56,6 +55,6 @@ const DUMMY_DATA = {
   },
   createdAt: '2022.03.14',
   updatedAt: '2022.03.14 00:00',
-  title: 'This is TitleThis is TitleThis is TitleThis is TitleThis is Title',
+  title: 'This is Title',
   contents: `We need DesignerIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.`,
 };

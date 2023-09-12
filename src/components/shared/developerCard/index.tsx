@@ -24,8 +24,6 @@ const DeveloperCardItem = ({
   stacks,
   to,
 }: Props) => {
-  const selectedStacks = stacks.slice(0, 3);
-
   return (
     <BasicCard to={`/developers/${to}`}>
       <CardContent>
@@ -41,7 +39,7 @@ const DeveloperCardItem = ({
               {name}
             </Typography>
             <ChipGroup>
-              {selectedStacks.map((stack) => (
+              {stacks.slice(0, 3).map((stack) => (
                 <ChipStyled key={stack} label={stack} />
               ))}
             </ChipGroup>

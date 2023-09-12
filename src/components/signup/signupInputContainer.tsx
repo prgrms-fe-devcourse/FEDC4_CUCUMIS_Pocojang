@@ -18,7 +18,7 @@ const SignupInputContainer = ({
   onSubmit,
 }: Props) => {
   return (
-    <Stack alignItems="center" sx={{ px: '16px' }}>
+    <Stack alignItems="center">
       <Box>
         <img src={cucumisLogo} alt="Cucumis Logo" />
       </Box>

@@ -1,11 +1,11 @@
-import { MutableRefObject } from 'react';
+import { TextFieldProps } from '@mui/material';
 
-export default interface BasicInputProps<T> {
-  type?: string;
+interface ExtraInputProps {
   label: string;
   isRequired?: boolean;
-  defaultValue?: string;
-  regExp?: string;
   errorMessage?: string;
-  inputRef?: MutableRefObject<T>;
 }
+
+type InputProps = ExtraInputProps & TextFieldProps;
+
+export default InputProps;

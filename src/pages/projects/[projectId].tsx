@@ -70,7 +70,7 @@ export default function ProjectDetailPage() {
 
 const ProjectImageStyled = styled(Box)({
   width: '100%',
-  height: '40vh',
+  height: '30vh',
   objectFit: 'cover',
 }) as typeof Box;
 

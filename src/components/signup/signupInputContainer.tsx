@@ -8,7 +8,7 @@ interface Props {
   formId?: string;
   children: ReactNode;
   buttonText: string;
-  onSubmit: () => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
 
 const SignupInputContainer = ({
@@ -17,11 +17,6 @@ const SignupInputContainer = ({
   buttonText,
   onSubmit,
 }: Props) => {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    onSubmit();
-  };
-
   return (
     <Stack alignItems="center" sx={{ px: '16px' }}>
       <Box>
@@ -32,7 +27,7 @@ const SignupInputContainer = ({
         id={formId}
         width={1}
         spacing={2}
-        onSubmit={handleSubmit}
+        onSubmit={onSubmit}
       >
         {children}
       </Stack>

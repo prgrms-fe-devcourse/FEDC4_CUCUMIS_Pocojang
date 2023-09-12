@@ -1,45 +1,35 @@
 import styled from '@emotion/styled';
 import { Box, Divider, Stack, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 import BasicAvatar from '@/components/shared/avatar';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
+import useProjectDetails from '@/pages/projects/useProjectDetails';
 
 export default function ProjectDetailPage() {
   const {
-    projectImage,
-    profileImage,
-    userName,
+    author,
+    image,
     _id,
-    date,
     title,
     contents,
     comments,
-  } = DUMMY_DATA;
-
-  const navigate = useNavigate();
-
-  const onClickProfile = (id: number) => {
-    navigate('/profile/' + id);
-  };
+    createdAt,
+    onClickProfile,
+  } = useProjectDetails();
 
   return (
     <Stack spacing={3}>
       <ProjectImageStyled
         component="img"
-        src={projectImage}
+        src={image}
         alt={title + "'s project image"}
       />
       <Stack direction="row" alignItems="center" spacing={2}>
-        <BasicAvatar
-          imgSrc={profileImage}
-          alt={userName + "'s profile"}
-          onClick={() => onClickProfile(_id)}
-        />
+        <BasicAvatar {...author} onClick={() => onClickProfile(_id)} />
         <TitleBoxStyled>
-          <Typography noWrap>{userName}</Typography>
+          <Typography noWrap>{author.fullName}</Typography>
           <Typography variant="subtitle2" color="gray">
-            {date}
+            {createdAt}
           </Typography>
         </TitleBoxStyled>
       </Stack>
@@ -74,37 +64,3 @@ const TitleBoxStyled = styled(Box)({
   minWidth: 0,
   marginRight: '16px',
 });
-
-const DUMMY_DATA = {
-  projectImage: '/assets/Logo96.svg',
-  profileImage:
-    'https://img.freepik.com/free-photo/world-smile-day-emojis-arrangement_23-2149024491.jpg?q=10&h=200',
-  _id: 1,
-  userName:
-    '사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자',
-  date: '2022.03.14',
-  title: 'This is TitleThis is TitleThis is TitleThis is TitleThis is Title',
-  contents: `We need DesignerIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.`,
-  comments: [
-    {
-      AvatarProps: {
-        isUserOn: false,
-      },
-      _id: 2,
-      name: '댓글 List',
-      message:
-        'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
-    },
-    {
-      AvatarProps: {
-        isUserOn: false,
-      },
-      _id: 3,
-      name: '댓글 List',
-      message:
-        'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
-
-      isLastItem: true,
-    },
-  ],
-};

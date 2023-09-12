@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { Box, Divider, Stack, Typography, List } from '@mui/material';
 
 import BasicAvatar from '@/components/shared/avatar';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
-import useProjectDetails from '@/pages/projects/useProjectDetails';
+import useDetails from '@/hooks/pages/useDetails';
 import BasicChip from '@/components/shared/chip';
 import { PROFILE_URL, PROJECT_MODIFYL_URL } from '@/consts/routes';
 
@@ -19,7 +19,7 @@ export default function ProjectDetailPage() {
     createdAt,
     onClick,
     isAuthor,
-  } = useProjectDetails();
+  } = useDetails();
 
   return (
     <Stack spacing={3}>
@@ -62,15 +62,20 @@ export default function ProjectDetailPage() {
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        {comments.map(({ author, comment, _id }, i) => (
-          <ItemWithAvatar
-            name={author}
-            message={comment}
-            key={i}
-            isComment={true}
-            AvatarProps={{ onClick: () => onClick(PROFILE_URL, _id) }}
-          />
-        ))}
+        <List disablePadding>
+          {comments.map(({ author, comment, _id, AvatarProps }, i) => (
+            <ItemWithAvatar
+              name={author}
+              message={comment}
+              key={i}
+              isComment={true}
+              AvatarProps={{
+                ...AvatarProps,
+                onClick: () => onClick(PROFILE_URL, _id),
+              }}
+            />
+          ))}
+        </List>
       </Box>
     </Stack>
   );

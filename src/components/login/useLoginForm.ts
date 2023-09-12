@@ -23,7 +23,7 @@ export const useLoginForm = ({
   onSuccess,
   onFail,
 }: LoginFormHookParameters) => {
-  const handleSubmitLoginForm = async ({ email, password }: FormValues) => {
+  const onSubmitLoginForm = async ({ email, password }: FormValues) => {
     try {
       const rs = await login({ email, password });
       onSuccess(rs);
@@ -35,7 +35,7 @@ export const useLoginForm = ({
 
   const { handleChange, handleSubmit } = useForm({
     initialValues: initialLoginFormValues,
-    onSubmit: handleSubmitLoginForm,
+    onSubmit: onSubmitLoginForm,
     validate: validateLoginForm,
   });
 

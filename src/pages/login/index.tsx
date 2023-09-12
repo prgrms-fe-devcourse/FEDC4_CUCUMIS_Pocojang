@@ -3,20 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import LoginInputContainer from '@/components/login/loginInputContainer';
 import BasicInput from '@/components/shared/input';
 import { useLoginForm } from '@/components/login/useLoginForm';
-import { useLoginResult } from '@/components/login/useLoginResult';
+import { useAuth } from '@/hooks/useAuth';
+import { ResponseLoginType } from '@/types/api/login';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-
-  const { handleLoginSuccess, handleLoginFail } = useLoginResult({
-    navigateToHome: () => {
-      navigate('/', { replace: true });
-    },
-  });
+  const saveAuthData = useAuth();
 
   const { handleLoginFormChange, handleLoginFormSubmit } = useLoginForm({
-    onSuccess: handleLoginSuccess,
-    onFail: handleLoginFail,
+    onSuccess: ({ token, user }: ResponseLoginType) => {
+      saveAuthData(token, user);
+      navigate('/', { replace: true });
+    },
+    onFail: (error: unknown) => {
+      // TODO: 로그인 실패 알림 모달 출력
+      console.error(error);
+    },
   });
 
   const handleClickSignup = () => {

@@ -1,18 +1,15 @@
 import styled from '@emotion/styled';
 import TextField from '@mui/material/TextField';
 
-import useInput from '@/hooks/components/useInput';
 import BasicInputProps from '@/types/components/BasicInputProps';
 
-const BasicSearch = ({ inputRef }: Partial<BasicInputProps<string>>) => {
-  const { handleInput } = useInput({ inputRef });
-
+const BasicSearch = ({ ...props }: Partial<BasicInputProps>) => {
   return (
     <SearchTextFieldStyled
+      {...props}
       type="search"
       variant="filled"
       hiddenLabel
-      onChange={handleInput}
       required
       name="search"
       placeholder="검색어를 입력해주세요"

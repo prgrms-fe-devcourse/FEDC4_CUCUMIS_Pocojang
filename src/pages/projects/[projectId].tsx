@@ -1,17 +1,37 @@
 import styled from '@emotion/styled';
 import { Box, Divider, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import BasicAvatar from '@/components/shared/avatar';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 
 export default function ProjectDetailPage() {
-  const { userName, date, title, contents, comments } = DUMMY_DATA;
+  const {
+    projectImage,
+    profileImage,
+    userName,
+    _id,
+    date,
+    title,
+    contents,
+    comments,
+  } = DUMMY_DATA;
+
+  const navigate = useNavigate();
+
+  const onClickProfile = (id: number) => {
+    navigate('/profile/' + id);
+  };
 
   return (
     <Stack spacing={3}>
-      <ProjectImageStyled component="img" src="/Logo96.svg" alt="참외" />
+      <ProjectImageStyled component="img" src={projectImage} alt="참외" />
       <Stack direction="row" alignItems="center" spacing={2}>
-        <BasicAvatar />
+        <BasicAvatar
+          imgSrc={profileImage}
+          alt={userName + "'s profile"}
+          onClick={() => onClickProfile(_id)}
+        />
         <TitleBoxStyled>
           <Typography noWrap>{userName}</Typography>
           <Typography variant="subtitle2" color="gray">
@@ -28,7 +48,12 @@ export default function ProjectDetailPage() {
       <Box>
         <Typography color="gray">댓글</Typography>
         {comments.map((data, i) => (
-          <ItemWithAvatar {...data} key={i} isComment={true} />
+          <ItemWithAvatar
+            {...data}
+            key={i}
+            isComment={true}
+            AvatarProps={{ onClick: () => onClickProfile(data._id) }}
+          />
         ))}
       </Box>
     </Stack>
@@ -47,6 +72,10 @@ const TitleBoxStyled = styled(Box)({
 });
 
 const DUMMY_DATA = {
+  projectImage: '/assets/Logo96.svg',
+  profileImage:
+    'https://img.freepik.com/free-photo/world-smile-day-emojis-arrangement_23-2149024491.jpg?q=10&h=200',
+  _id: 1,
   userName:
     '사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자사용자',
   date: '2022.03.14',
@@ -55,18 +84,18 @@ const DUMMY_DATA = {
   comments: [
     {
       AvatarProps: {
-        onClick: () => console.log('hi'),
         isUserOn: false,
       },
+      _id: 2,
       name: '댓글 List',
       message:
         'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
     },
     {
       AvatarProps: {
-        onClick: () => console.log('hi'),
         isUserOn: false,
       },
+      _id: 3,
       name: '댓글 List',
       message:
         'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',

@@ -153,7 +153,7 @@ const StyledBasicAvatar = styled(BasicAvatar)({
 const StyledBox = styled(Box)({
   position: 'relative',
   width: '100%',
-  height: '200px',
+  border : '3px solid',
   textAlign: 'center',
 });
 const StyledProfileWrapper = styled(Box)({
@@ -169,7 +169,7 @@ const StyledBasicButtonStack = styled(Stack)({
   width: '100%',
 });
 const StyledWrapperBox = styled(Box)({
-  height: '800px',
+  height: '750px',
   display: 'flex',
   flexDirection: 'column',
 });
@@ -180,9 +180,9 @@ const StyledMavigationBox = styled(Box)({
 
 const StyledContentsWrapper = styled(Box)({
   boxShadow: 'rgba(0, 0, 0, 0.35) 0px 1px 3px',
-  height: '450px',
   overflowY: 'scroll',
   padding: '10px',
+  height : '300px',
 });
 
 const StyledItemWithAvatarBox = styled(Box)({

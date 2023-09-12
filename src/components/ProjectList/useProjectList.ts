@@ -65,7 +65,7 @@ const useProjectList = () => {
   ];
   return {
     handleFabClick,
-    data: dummyData,
+    projects: dummyData,
   };
 };
 

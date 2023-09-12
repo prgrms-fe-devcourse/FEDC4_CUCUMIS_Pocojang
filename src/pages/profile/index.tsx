@@ -17,8 +17,6 @@ import BasicButton from '@/components/shared/button';
 import BgProfile from '@/components/profile/bgProfile';
 import DUMMY_DATA from '@/components/profile/useProfileData';
 
-
-
 const ProfilePage = () => {
   const { userId } = useParams();
   const [value, setValue] = useState(0);
@@ -128,7 +126,7 @@ const ProfilePage = () => {
               {DUMMY_DATA.CARD_DUMMY_DATA.map(
                 ({ name, imageUrl, to, projectTitle }) => (
                   <StyledProjectCardItemBox>
-                    <ProjectCardItem
+                    <StyledProjectCardItem
                       name={name}
                       imageUrl={imageUrl}
                       to={to}
@@ -182,7 +180,7 @@ const StyledContentsWrapper = styled(Box)({
   boxShadow: 'rgba(0, 0, 0, 0.35) 0px 1px 3px',
   overflowY: 'scroll',
   padding: '10px',
-  height : '300px',
+  height: '300px',
 });
 
 const StyledItemWithAvatarBox = styled(Box)({
@@ -190,8 +188,11 @@ const StyledItemWithAvatarBox = styled(Box)({
   height: '100%',
 });
 
+const StyledProjectCardItem = styled(ProjectCardItem)({
+  border: '3px solid black',
+});
 const StyledProjectCardItemBox = styled(Box)({
-  width: 'fit-content',
+  width: '90%',
   margin: '10px auto',
 });
 

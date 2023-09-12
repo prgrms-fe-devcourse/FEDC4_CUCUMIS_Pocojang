@@ -24,7 +24,9 @@ const Header = () => {
   const isLogin = useAppSelector(isLoginSelector);
   const { handleChange, handleSubmit } = useForm({
     initialValues: { search: '' },
-    onSubmit: ({ search }) => dispatch(setInput(search)),
+    onSubmit: ({ search }) => {
+      dispatch(setInput(search));
+    },
     validate: ({ search }) => {
       const newErrors = { search: '' };
       if (!search) newErrors.search = '검색어를 입력해주세요.';

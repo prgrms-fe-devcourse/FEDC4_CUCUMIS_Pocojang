@@ -26,7 +26,9 @@ const Navbar = () => {
     .filter((path) => path);
   const { handleChange, handleSubmit } = useForm({
     initialValues: { search: '' },
-    onSubmit: ({ search }) => dispatch(setInput(search)),
+    onSubmit: ({ search }) => {
+      dispatch(setInput(search));
+    },
     validate: ({ search }) => {
       const newErrors = { search: '' };
       if (!search) newErrors.search = '내용을 입력해주세요.';

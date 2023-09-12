@@ -10,7 +10,7 @@ interface FormErrors {
 
 interface FormProps {
   initialValues: FormValues;
-  onSubmit: (values: FormValues) => Promise<void>;
+  onSubmit: (values: FormValues) => Promise<void> | void;
   validate: (values: FormValues) => FormErrors;
 }
 

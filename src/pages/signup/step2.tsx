@@ -48,28 +48,28 @@ export default function ExtraInformationPage() {
         placeholder="한 줄 포부를 작성해주세요"
         onChange={handleChange}
         errorMessage={errors.oneLiner}
-        isRequired
+        isRequired={false}
       />
       <BasicInput
         label="Technical Tools"
         placeholder="기술 스택을 추가해주세요"
         onChange={handleChange}
         errorMessage={errors.technicalTools}
-        isRequired
+        isRequired={false}
       />
       <BasicInput
         label="Position"
         placeholder="직군을 입력해주세요"
         onChange={handleChange}
         errorMessage={errors.position}
-        isRequired
+        isRequired={false}
       />
       <BasicInput
         label="Details"
         placeholder="소개글을 작성해주세요"
         onChange={handleChange}
         errorMessage={errors.details}
-        isRequired
+        isRequired={false}
       />
     </SignupInputContainer>
   );

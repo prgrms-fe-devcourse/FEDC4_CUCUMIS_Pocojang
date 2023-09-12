@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
 const useProjectDetails = () => {
-  const { projectId, developerId } = useParams();
+  const { projectId } = useParams();
 
   const navigate = useNavigate();
 
@@ -9,13 +9,10 @@ const useProjectDetails = () => {
     navigate(url + id);
   };
 
-  const isAuthor = true;
-
   return {
     projectId,
-    developerId,
     onClick,
-    isAuthor,
+    isAuthor: true,
     ...DUMMY_DATA,
   };
 };

@@ -5,7 +5,7 @@ import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
 import { PROFILE_URL, PROJECT_MODIFYL_URL } from '@/consts/routes';
 import Comments from '@/components/comments';
-import useProjectDetails from '@/pages/projects/useProjectDetails';
+import useProjectDetails from '@/components/projects/useProjectDetails';
 
 export default function ProjectDetailPage() {
   const {

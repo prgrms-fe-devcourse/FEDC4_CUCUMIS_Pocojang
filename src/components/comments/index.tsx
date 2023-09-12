@@ -32,6 +32,7 @@ const Comments = ({ comments, onClick, url }: Props) => {
             ...AvatarProps,
             onClick: () => onClick(url, _id),
           }}
+          isLastItem={i === comments.length - 1}
         />
       ))}
     </List>

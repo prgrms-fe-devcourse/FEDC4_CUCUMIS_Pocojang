@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Avatar, Box } from '@mui/material';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicInput from '@/components/shared/input';
@@ -42,10 +43,10 @@ export default function SettingsPage() {
 
       {settingData.map(({ data }) => (
         <StyledBasicInputBox>
-          <BasicInput label={data} />
+          <BasicInput placeholder={data} label={data} />
         </StyledBasicInputBox>
       ))}
-      <StyledBasicFab onClick={toggleDark} children={'dark'} />
+      <StyledBasicFab onClick={toggleDark} children={<DarkModeIcon />} />
       <BasicButton children="수정하기" />
     </StyledWrapper>
   );
@@ -79,7 +80,6 @@ const StyledBasicInputBox = styled(Box)({
 
 const StyledWrapper = styled(Box)({
   position: 'relative',
-  padding: '5px',
 });
 
 const StyledBasicFab = styled(BasicFab)({

@@ -12,7 +12,7 @@ import SendIcon from '@mui/icons-material/Send';
 
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setInput, locationSelector } from '@/stores/layout';
-import { userIdSelector } from '@/stores/auth';
+// import { userIdSelector } from '@/stores/auth'; // TODO : 단순 미참조 에러
 import useForm from '@/hooks/components/useForm';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
@@ -20,7 +20,7 @@ import BasicIconButton from '@/components/shared/iconButton';
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const location = useAppSelector(locationSelector);
-  const userId = useAppSelector(userIdSelector);
+  // const userId = useAppSelector(userIdSelector); // TODO : 단순 미참조 에러
   const path = useAppSelector(locationSelector)
     .split('/')
     .filter((path) => path);
@@ -39,7 +39,7 @@ const Navbar = () => {
     { name: '개발자', path: '/developers', icon: <PeopleIcon /> },
     { name: '홈', path: '/', icon: <HomeIcon /> },
     { name: 'DM', path: '/dm', icon: <EmailIcon /> },
-    { name: '프로필', path: `/profile/${userId}`, icon: <AccountCircleIcon /> },
+    { name: '프로필', path: `/profile/1`, icon: <AccountCircleIcon /> }, // TODO : ${userId}
   ];
 
   return navigations.some((nav) => nav.path === location) ? (

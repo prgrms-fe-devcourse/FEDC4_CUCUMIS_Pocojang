@@ -1,10 +1,10 @@
 import { useState, FormEvent } from 'react';
 
-interface FormValues {
+export interface FormValues {
   [key: string]: string;
 }
 
-interface FormErrors {
+export interface FormErrors {
   [key: string]: string;
 }
 

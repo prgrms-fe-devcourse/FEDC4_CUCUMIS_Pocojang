@@ -14,6 +14,7 @@ import BasicAvatar from '@/components/shared/avatar';
 import Navbar from '@/components/navbar';
 import ProjectCardItem from '@/components/shared/projectCard';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
+import BasicButton from '@/components/shared/button';
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -141,7 +142,18 @@ const ProfilePage = () => {
         </StyledBasicAvatarBox>
       </StyledBox>
       {/* ❗️프로필 끝❗️ */}
-
+      {userId !== '1' && (
+        <Box>
+          <Stack
+            direction={'row'}
+            alignItems={'center'}
+            justifyContent={'center'}
+          >
+            <BasicButton variant="outlined" children="팔로우" />
+            <BasicButton variant="outlined" children="DM" />
+          </Stack>
+        </Box>
+      )}
       <StyledMavigationBox>
         <BottomNavigation
           value={value}

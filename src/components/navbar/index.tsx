@@ -61,7 +61,10 @@ const Navbar = () => {
         path[0] === 'dm') && (
         <PaperStyled elevation={0}>
           <FormStyled onSubmit={handleFormSubmit}>
-            <BasicSearch inputRef={inputStringRef} />
+            <BasicSearch
+              inputRef={inputStringRef}
+              placeholder="내용을 입력해주세요"
+            />
             <BasicIconButton type="submit">
               <SendIcon />
             </BasicIconButton>

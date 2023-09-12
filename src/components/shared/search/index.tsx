@@ -12,7 +12,6 @@ const BasicSearch = ({ ...props }: Partial<BasicInputProps>) => {
       hiddenLabel
       required
       name="search"
-      placeholder="검색어를 입력해주세요"
       fullWidth
     />
   );

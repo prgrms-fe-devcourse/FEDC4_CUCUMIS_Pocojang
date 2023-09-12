@@ -72,7 +72,10 @@ const Header = () => {
               <img src="/assets/Logo512.png" alt="CUCUMIS" width={40} />
             </LinkStyled>
             <FormStyled onSubmit={handleFormSubmit}>
-              <BasicSearch inputRef={inputStringRef} />
+              <BasicSearch
+                inputRef={inputStringRef}
+                placeholder="검색어를 입력해주세요"
+              />
               <BasicIconButton type="submit">
                 <SearchIcon />
               </BasicIconButton>

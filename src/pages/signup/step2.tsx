@@ -1,74 +1,58 @@
 import { useNavigate } from 'react-router-dom';
 
-import useForm, { FormErrors, FormValues } from '@/hooks/components/useForm';
-import BasicInput from '@/components/shared/input';
 import SignupInputContainer from '@/components/signup/signupInputContainer';
-
-const initialValues = {
-  oneLiner: '',
-  technicalTools: '',
-  position: '',
-  details: '',
-};
-
-const validate = ({
-  oneLiner,
-  technicalTools,
-  position,
-  details,
-}: FormValues): FormErrors => {
-  const newErrors: FormErrors = {};
-  if (!oneLiner) newErrors.oneLiner = 'please enter oneLiner';
-  if (!technicalTools) newErrors.technicalTools = 'please enter technicalTools';
-  if (!position) newErrors.position = 'please enter position';
-  if (!details) newErrors.details = 'please enter details';
-  return newErrors;
-};
+import BasicInput from '@/components/shared/input';
+import { useExtraInformationForm } from '@/components/signup/useExtraInformationForm';
 
 export default function ExtraInformationPage() {
   const navigate = useNavigate();
-  const onSubmit = async (value: FormValues) => {
-    console.log(value);
-    navigate('/home');
-  };
 
-  const { errors, handleChange, handleSubmit } = useForm({
-    initialValues,
-    onSubmit,
-    validate,
+  const {
+    extraInformationFormErrors,
+    handleExtraInformationFormChange,
+    handleExtraInformationFormSubmit,
+  } = useExtraInformationForm({
+    onSuccess: () => {
+      navigate('/');
+    },
+    onFail: (error: unknown) => {
+      // TODO: 추가 정보 입력 실패 알림 모달 출력
+      console.error(error);
+      navigate('/');
+    },
   });
 
   return (
     <SignupInputContainer
       buttonText="건너뛰고 회원가입"
-      onSubmit={handleSubmit}
+      onSubmit={handleExtraInformationFormSubmit}
     >
       <BasicInput
-        label="One Liner"
+        label="oneLiner"
         placeholder="한 줄 포부를 작성해주세요"
-        onChange={handleChange}
-        errorMessage={errors.oneLiner}
+        onChange={handleExtraInformationFormChange}
+        errorMessage={extraInformationFormErrors.oneLiner}
         isRequired={false}
       />
       <BasicInput
-        label="Technical Tools"
+        label="technicalTools"
         placeholder="기술 스택을 추가해주세요"
-        onChange={handleChange}
-        errorMessage={errors.technicalTools}
+        onChange={handleExtraInformationFormChange}
+        errorMessage={extraInformationFormErrors.technicalTools}
         isRequired={false}
       />
       <BasicInput
-        label="Position"
+        label="position"
         placeholder="직군을 입력해주세요"
-        onChange={handleChange}
-        errorMessage={errors.position}
+        onChange={handleExtraInformationFormChange}
+        errorMessage={extraInformationFormErrors.position}
         isRequired={false}
       />
       <BasicInput
-        label="Details"
+        label="details"
         placeholder="소개글을 작성해주세요"
-        onChange={handleChange}
-        errorMessage={errors.details}
+        onChange={handleExtraInformationFormChange}
+        errorMessage={extraInformationFormErrors.details}
         isRequired={false}
       />
     </SignupInputContainer>

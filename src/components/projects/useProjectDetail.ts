@@ -5,13 +5,13 @@ const useProjectDetail = () => {
 
   const navigate = useNavigate();
 
-  const onClick = (url: string, id: string) => {
+  const handleClick = (url: string, id: string) => {
     navigate(url + id);
   };
 
   return {
     projectId,
-    onClick,
+    handleClick,
     isAuthor: true,
     ...DUMMY_DATA,
   };

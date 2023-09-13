@@ -19,7 +19,7 @@ export default function ProjectDetailPage() {
     contents,
     comments,
     createdAt,
-    onClick,
+    handleClick,
     isAuthor,
   } = useProjectDetail();
 
@@ -36,7 +36,10 @@ export default function ProjectDetailPage() {
         spacing={2}
         alignContent="center"
       >
-        <BasicAvatar {...author} onClick={() => onClick(PROFILE_URL, _id)} />
+        <BasicAvatar
+          {...author}
+          onClick={() => handleClick(PROFILE_URL, _id)}
+        />
         <TitleBoxStyled>
           <Stack
             direction="row"
@@ -54,7 +57,7 @@ export default function ProjectDetailPage() {
                 label="수정하기"
                 variant="outlined"
                 onClick={() =>
-                  onClick(PROJECT_MODIFYL_URL, projectId as string)
+                  handleClick(PROJECT_MODIFYL_URL, projectId as string)
                 }
               />
             )}
@@ -69,7 +72,7 @@ export default function ProjectDetailPage() {
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        <Comments comments={comments} onClick={onClick} url={PROFILE_URL} />
+        <Comments comments={comments} onClick={handleClick} url={PROFILE_URL} />
       </Box>
     </Stack>
   );

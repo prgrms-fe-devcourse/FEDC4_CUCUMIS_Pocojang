@@ -26,7 +26,7 @@ const DUMMY_DATA = {
       AvatarProps: {
         isUserOn: false,
       },
-      _id: '2',
+      userId: '2',
       author: '작성자2',
       createdAt: '2022.03.14 00:00',
       comment:
@@ -36,7 +36,7 @@ const DUMMY_DATA = {
       AvatarProps: {
         isUserOn: true,
       },
-      _id: '3',
+      userId: '3',
       createdAt: '2022.03.14 00:00',
       author: '작성자3',
       comment:
@@ -45,7 +45,7 @@ const DUMMY_DATA = {
       isLastItem: true,
     },
   ],
-  _id: '1',
+  postId: '1',
   image:
     'https://www.zdnet.com/a/img/resize/ba1b1ab92085d777ab5e313b34c66a94b7aa1236/2023/06/05/79a43eb8-ce38-488c-8cc0-e04699aaca7f/bing.jpg?auto=webp&width=1280',
   author: {
@@ -53,7 +53,7 @@ const DUMMY_DATA = {
       'https://img.freepik.com/free-photo/world-smile-day-emojis-arrangement_23-2149024491.jpg?q=10&h=200',
     isUserOn: true,
     fullName: '사용자1',
-    _id: '3',
+    userId: '3',
   },
   createdAt: '2022.03.14 00:00',
   updatedAt: '2022.03.14 00:00',

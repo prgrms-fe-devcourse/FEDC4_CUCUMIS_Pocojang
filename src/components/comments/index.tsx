@@ -3,7 +3,7 @@ import { List } from '@mui/material';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 
 type Comment = {
-  _id: string;
+  userId: string;
   author: string;
   createdAt: string;
   comment: string;
@@ -16,13 +16,13 @@ type Comment = {
 interface Props {
   comments: Comment[];
   url: string;
-  onClick: (url: string, _id: string) => void;
+  onClick: (url: string, userId: string) => void;
 }
 
 const Comments = ({ comments, onClick, url }: Props) => {
   return (
     <List disablePadding>
-      {comments.map(({ author, comment, _id, AvatarProps }, i) => (
+      {comments.map(({ author, comment, userId, AvatarProps }, i) => (
         <ItemWithAvatar
           name={author}
           message={comment}
@@ -30,7 +30,7 @@ const Comments = ({ comments, onClick, url }: Props) => {
           isComment={true}
           AvatarProps={{
             ...AvatarProps,
-            onClick: () => onClick(url, _id),
+            onClick: () => onClick(url, userId),
           }}
           isLastItem={i === comments.length - 1}
         />

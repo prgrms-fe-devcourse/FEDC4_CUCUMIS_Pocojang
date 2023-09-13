@@ -13,7 +13,6 @@ export default function DeveloperDetail() {
     developerId,
     author,
     image,
-    _id,
     title,
     comments,
     technicalSkill,
@@ -35,7 +34,7 @@ export default function DeveloperDetail() {
           <BasicAvatar
             {...author}
             size={90}
-            onClick={() => onClick(PROFILE_URL, _id)}
+            onClick={() => onClick(PROFILE_URL, author.userId)}
           />
           <Typography noWrap>{author.fullName}</Typography>
         </StackStyled>

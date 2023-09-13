@@ -14,7 +14,6 @@ export default function ProjectDetailPage() {
     projectId,
     author,
     image = DEFAULT_IMAGE,
-    _id,
     title,
     contents,
     comments,
@@ -38,7 +37,7 @@ export default function ProjectDetailPage() {
       >
         <BasicAvatar
           {...author}
-          onClick={() => handleClick(PROFILE_URL, _id)}
+          onClick={() => handleClick(PROFILE_URL, author.userId)}
         />
         <TitleBoxStyled>
           <Stack

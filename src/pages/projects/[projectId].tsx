@@ -36,14 +36,19 @@ export default function ProjectDetailPage() {
       >
         <BasicAvatar {...author} onClick={() => onClick(PROFILE_URL, _id)} />
         <TitleBoxStyled>
-          <Typography noWrap>{author.fullName}</Typography>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography variant="subtitle2" color="gray">
-              {createdAt}
-            </Typography>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Stack alignItems="flex-start">
+              <Typography noWrap>{author.fullName}</Typography>
+              <Typography variant="subtitle2" color="gray">
+                {createdAt}
+              </Typography>
+            </Stack>
             {isAuthor && (
               <BasicChip
-                size="small"
                 label="수정하기"
                 variant="outlined"
                 onClick={() =>

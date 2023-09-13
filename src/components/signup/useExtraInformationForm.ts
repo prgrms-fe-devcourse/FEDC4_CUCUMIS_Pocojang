@@ -1,4 +1,4 @@
-import useForm, { FormErrors, FormValues } from '@/hooks/components/useForm';
+import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 
 const initialExtraInformationFormValues = {
   oneLiner: '',

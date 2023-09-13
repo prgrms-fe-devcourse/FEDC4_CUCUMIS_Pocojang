@@ -16,6 +16,7 @@ export default function SignupPage() {
         navigate('/signup/step2');
       },
       onFail: (error: unknown) => {
+        // TODO: 회원가입 실패 알림 모달 출력
         console.error(error);
       },
     });
@@ -38,10 +39,10 @@ export default function SignupPage() {
         isRequired
       />
       <BasicInput
-        label="password confirm"
-        placeholder="비밀번호를 입력해주세요"
+        label="passwordConfirm"
+        placeholder="비밀번호 확인을 입력해주세요"
         onChange={handleSignupFormChange}
-        errorMessage={signupFormErrors.passwordConfig}
+        errorMessage={signupFormErrors.passwordConfirm}
         isRequired
       />
       <BasicInput

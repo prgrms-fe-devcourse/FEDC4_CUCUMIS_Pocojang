@@ -19,9 +19,12 @@ const validateSignupForm = ({
   const newErrors: FormErrors = {};
 
   const emailErrorMessage = validation.email(email);
-  const passwordErrorMessage = validation.email(password);
-  const passwordConfirmErrorMessage = validation.email(passwordConfirm);
-  const nameErrorMessage = validation.email(name);
+  const passwordErrorMessage = validation.password(password);
+  const passwordConfirmErrorMessage = validation.passwordConfirm(
+    password,
+    passwordConfirm,
+  );
+  const nameErrorMessage = validation.name(name);
 
   if (emailErrorMessage) newErrors.email = emailErrorMessage;
   if (passwordErrorMessage) newErrors.password = passwordErrorMessage;

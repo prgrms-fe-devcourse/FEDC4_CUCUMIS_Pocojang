@@ -49,7 +49,6 @@ export const useSignupForm = ({
       const rs = await signup({ email, password, fullName: name });
       onSuccess(rs);
     } catch (error) {
-      // TODO: 회원가입 실패 알림
       onFail(error);
     }
   };

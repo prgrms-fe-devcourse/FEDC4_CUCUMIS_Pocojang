@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo, useRef, MutableRefObject } from 'react';
 
 export interface InfiniteScrollProps {
   target: MutableRefObject<HTMLDivElement | null>;
-  targetArray: Array<unknown>;
   endPoint?: number;
   options: IntersectionObserverOptions;
 }
@@ -15,7 +14,6 @@ export interface IntersectionObserverOptions {
 
 const useInfiniteScroll = ({
   target,
-  targetArray,
   endPoint = 1,
   options: { root = null, rootMargin = '0px', threshold = 1 },
 }: InfiniteScrollProps) => {
@@ -39,8 +37,9 @@ const useInfiniteScroll = ({
   useEffect(() => {
     if (target?.current === null) return;
 
-    const observeChild =
-      target.current.children[target.current.children.length - endPoint];
+    const { current } = target;
+
+    const observeChild = current.children[current.children.length - endPoint];
     if (observeChild && currentChild.current !== observeChild) {
       currentChild.current = observeChild;
       observer.observe(observeChild);
@@ -53,7 +52,7 @@ const useInfiniteScroll = ({
         observer.unobserve(current);
       }
     };
-  }, [page, target, targetArray, observer, endPoint]);
+  }, [page, target, observer, endPoint]);
 
   return {
     page,

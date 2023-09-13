@@ -19,7 +19,7 @@ const BasicCard = ({ children, to }: Props) => {
 
 const StyledCard = styled(Card)(() => ({
   '& ': {
-    transition: 'transform .2s',
+    transition: 'transform .2s ',
     '&:hover': {
       transform: 'scale(1.01)',
     },

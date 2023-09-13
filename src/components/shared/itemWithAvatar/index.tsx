@@ -27,9 +27,7 @@ const ItemWithAvatar = ({
     if (unReadCount) {
       return (
         <Box maxWidth={60}>
-          <BasicChip
-            label={unReadCount > 1000 ? '999+' : String(unReadCount)}
-          />
+          <BasicChip label={unReadCount > 999 ? '999+' : String(unReadCount)} />
         </Box>
       );
     }

@@ -10,7 +10,7 @@ const HomePage = () => {
   const { projects, onlineDevelopers } = useHome();
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} mt={1}>
       {projects.map(({ _id, projectTitle, imageUrl, name }, index) => {
         if ((index + 1) % 2 !== 0) {
           return (

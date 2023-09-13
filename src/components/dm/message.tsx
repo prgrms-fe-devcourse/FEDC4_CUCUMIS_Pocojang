@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
 
-import { theme } from '@/styles/theme';
-
 interface Props {
   message: string;
   isSender: boolean;
@@ -40,15 +38,15 @@ const BoxStyled = styled(Box)({
   },
 });
 
-const RightBox = styled(BoxStyled)({
-  backgroundColor: `${theme.palette.primary.main}`,
+const RightBox = styled(BoxStyled)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
   color: 'white',
   '&:after': {
     right: 0,
     borderRight: 0,
-    borderTopColor: `${theme.palette.primary.main}`,
+    borderTopColor: theme.palette.primary.main,
   },
-});
+}));
 
 const LeftBox = styled(BoxStyled)({
   backgroundColor: '#F7F7F7',

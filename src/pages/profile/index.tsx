@@ -69,7 +69,7 @@ const ProfilePage = () => {
       <StyledMavigationBox>
         <BottomNavigation
           value={value}
-          onChange={(e, newValue) => {
+          onChange={(_, newValue) => {
             setValue(newValue);
           }}
           showLabels

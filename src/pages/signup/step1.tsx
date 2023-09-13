@@ -39,6 +39,7 @@ export default function SignupPage() {
         isRequired
       />
       <BasicInput
+        type="password"
         label="passwordConfirm"
         placeholder="비밀번호 확인을 입력해주세요"
         onChange={handleSignupFormChange}

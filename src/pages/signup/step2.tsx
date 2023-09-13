@@ -24,7 +24,7 @@ export default function ExtraInformationPage() {
 
   return (
     <SignupInputContainer
-      buttonText="건너뛰고 회원가입"
+      buttonText="프로필 저장"
       onSubmit={handleExtraInformationFormSubmit}
     >
       <BasicInput

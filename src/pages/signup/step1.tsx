@@ -22,7 +22,10 @@ export default function SignupPage() {
     });
 
   return (
-    <SignupInputContainer buttonText="다음" onSubmit={handleSignupFormSubmit}>
+    <SignupInputContainer
+      buttonText="회원가입"
+      onSubmit={handleSignupFormSubmit}
+    >
       <BasicInput
         label="email"
         placeholder="이메일을 입력해주세요"

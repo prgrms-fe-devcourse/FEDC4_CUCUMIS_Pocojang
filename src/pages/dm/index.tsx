@@ -1,26 +1,24 @@
-import { Link } from 'react-router-dom';
+import { List } from '@mui/material';
+import styled from '@emotion/styled';
 
-export default function DMList() {
+import ItemWithAvatar from '@/components/shared/itemWithAvatar';
+import { useDMList } from '@/components/dm/useDMList';
+
+export default function DMListPage() {
+  const { conversations } = useDMList();
+
   return (
-    <div>
-      <h1>DM List</h1>
-      <ul>
-        <li>
-          <Link to="/dm/노철">노철</Link>
-        </li>
-        <li>
-          <Link to="/dm/혜진">혜진</Link>
-        </li>
-        <li>
-          <Link to="/dm/원지">원지</Link>
-        </li>
-        <li>
-          <Link to="/dm/지성">지성</Link>
-        </li>
-        <li>
-          <Link to="/dm/승희">승희</Link>
-        </li>
-      </ul>
-    </div>
+    <ListStyled>
+      {conversations.map((conversation) => (
+        <ItemWithAvatar key={conversation._id} {...conversation} />
+      ))}
+    </ListStyled>
   );
 }
+
+const ListStyled = styled(List)({
+  padding: 0,
+  '.MuiDivider-root': {
+    margin: 0,
+  },
+});

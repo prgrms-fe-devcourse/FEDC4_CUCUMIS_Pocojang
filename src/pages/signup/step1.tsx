@@ -1,78 +1,59 @@
 import { useNavigate } from 'react-router-dom';
 
-import useForm, { FormErrors, FormValues } from '@/hooks/components/useForm';
 import SignupInputContainer from '@/components/signup/signupInputContainer';
 import BasicInput from '@/components/shared/input';
-import validation from '@/utils/validations';
-
-const initialValues = {
-  email: '',
-  password: '',
-  passwordConfirm: '',
-  name: '',
-};
-
-const validate = ({ email, password, passwordConfirm, name }: FormValues) => {
-  const newErrors: FormErrors = {};
-
-  const emailErrorMessage = validation.email(email);
-  const passwordErrorMessage = validation.email(password);
-  const passwordConfirmErrorMessage = validation.email(passwordConfirm);
-  const nameErrorMessage = validation.email(name);
-
-  if (emailErrorMessage) newErrors.email = emailErrorMessage;
-  if (passwordErrorMessage) newErrors.password = passwordErrorMessage;
-  if (passwordConfirmErrorMessage)
-    newErrors.passwordConfirm = passwordConfirmErrorMessage;
-  if (nameErrorMessage) newErrors.name = nameErrorMessage;
-
-  return newErrors;
-};
+import { useSignupForm } from '@/components/signup/useSignupForm';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  const onSubmit = async (value: FormValues) => {
-    // TODO: signup store 에 value 저장
-    console.log(value);
+  const saveAuthData = useAuth();
 
-    navigate('/signup/step2');
-  };
-
-  const { errors, handleChange, handleSubmit } = useForm({
-    initialValues,
-    onSubmit,
-    validate,
-  });
+  const { signupFormErrors, handleSignupFormChange, handleSignupFormSubmit } =
+    useSignupForm({
+      onSuccess: ({ token, user }) => {
+        saveAuthData(token, user);
+        navigate('/signup/step2');
+      },
+      onFail: (error: unknown) => {
+        // TODO: 회원가입 실패 알림 모달 출력
+        console.error(error);
+      },
+    });
 
   return (
-    <SignupInputContainer buttonText="다음" onSubmit={handleSubmit}>
+    <SignupInputContainer
+      buttonText="회원가입"
+      onSubmit={handleSignupFormSubmit}
+    >
       <BasicInput
         label="email"
         placeholder="이메일을 입력해주세요"
-        onChange={handleChange}
-        errorMessage={errors.email}
+        onChange={handleSignupFormChange}
+        errorMessage={signupFormErrors.email}
         isRequired
       />
       <BasicInput
         type="password"
         label="password"
         placeholder="비밀번호를 입력해주세요"
-        onChange={handleChange}
-        errorMessage={errors.password}
+        onChange={handleSignupFormChange}
+        errorMessage={signupFormErrors.password}
         isRequired
       />
       <BasicInput
-        label="password confirm"
-        placeholder="비밀번호를 입력해주세요"
-        onChange={handleChange}
-        errorMessage={errors.passwordConfig}
+        type="password"
+        label="passwordConfirm"
+        placeholder="비밀번호 확인을 입력해주세요"
+        onChange={handleSignupFormChange}
+        errorMessage={signupFormErrors.passwordConfirm}
         isRequired
       />
       <BasicInput
         label="name"
         placeholder="이름을 입력해주세요"
-        onChange={handleChange}
-        errorMessage={errors.name}
+        onChange={handleSignupFormChange}
+        errorMessage={signupFormErrors.name}
         isRequired
       />
     </SignupInputContainer>

@@ -9,15 +9,15 @@ interface Props extends CardProps {
 
 const BasicCard = ({ children, to }: Props) => {
   return (
-    <StyledLink to={to}>
-      <StyledCard raised={true}>
+    <LinkStyled to={to}>
+      <CardStyled raised={true}>
         <CardActionArea>{children}</CardActionArea>
-      </StyledCard>
-    </StyledLink>
+      </CardStyled>
+    </LinkStyled>
   );
 };
 
-const StyledCard = styled(Card)(() => ({
+const CardStyled = styled(Card)(() => ({
   '& ': {
     transition: 'transform .2s ',
     '&:hover': {
@@ -26,7 +26,7 @@ const StyledCard = styled(Card)(() => ({
   },
 }));
 
-const StyledLink = styled(Link)(() => ({
+const LinkStyled = styled(Link)(() => ({
   textDecoration: 'none',
 }));
 export default BasicCard;

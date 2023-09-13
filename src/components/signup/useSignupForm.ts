@@ -1,5 +1,5 @@
 import { signup } from '@/api/auth/signup';
-import useForm, { FormErrors, FormValues } from '@/hooks/components/useForm';
+import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import { ResponseSignupType } from '@/types/api/signup';
 import validation from '@/utils/validations';
 

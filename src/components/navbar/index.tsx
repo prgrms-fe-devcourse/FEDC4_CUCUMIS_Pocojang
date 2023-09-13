@@ -13,7 +13,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setInput, locationSelector } from '@/stores/layout';
 import { userIdSelector } from '@/stores/auth';
-import useForm from '@/hooks/components/useForm';
+import useForm from '@/hooks/useForm';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
 

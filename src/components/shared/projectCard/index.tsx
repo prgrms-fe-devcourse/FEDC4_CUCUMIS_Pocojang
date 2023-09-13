@@ -10,7 +10,12 @@ interface Props {
   projectTitle: string;
   to: string;
 }
-const ProjectCardItem = ({ name, imageUrl, projectTitle, to }: Props) => {
+const ProjectCardItem = ({
+  name,
+  imageUrl = 'https://source.unsplash.com/random',
+  projectTitle,
+  to,
+}: Props) => {
   return (
     <BasicCard to={`/projects/${to}`}>
       <CardMedia component="img" alt={name} height={141} src={imageUrl} />

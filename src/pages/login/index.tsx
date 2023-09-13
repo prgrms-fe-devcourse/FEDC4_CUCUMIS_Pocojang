@@ -1,21 +1,48 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+import LoginInputContainer from '@/components/login/loginInputContainer';
+import BasicInput from '@/components/shared/input';
+import { useLoginForm } from '@/components/login/useLoginForm';
+import { useAuth } from '@/hooks/useAuth';
+import { ResponseLoginType } from '@/types/api/login';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const saveAuthData = useAuth();
+
+  const { handleLoginFormChange, handleLoginFormSubmit } = useLoginForm({
+    onSuccess: ({ token, user }: ResponseLoginType) => {
+      saveAuthData(token, user);
+      navigate('/', { replace: true });
+    },
+    onFail: (error: unknown) => {
+      // TODO: 로그인 실패 알림 모달 출력
+      console.error(error);
+    },
+  });
+
+  const handleClickSignup = () => {
+    navigate('/signup/step1');
+  };
+
   return (
-    <div>
-      <h1>Login</h1>
-      <form>
-        <p>
-          <input type="text" name="" id="" />
-        </p>
-        <p>
-          <input type="password" name="" id="" />
-        </p>
-        <button>로그인</button>
-        <button>
-          <Link to="/signup/step1">회원가입</Link>
-        </button>
-      </form>
-    </div>
+    <LoginInputContainer
+      onSubmit={handleLoginFormSubmit}
+      onClick={handleClickSignup}
+    >
+      <BasicInput
+        label="email"
+        placeholder="이메일을 입력해주세요"
+        onChange={handleLoginFormChange}
+        isRequired
+      />
+      <BasicInput
+        label="password"
+        type="password"
+        placeholder="비밀번호를 입력해주세요"
+        onChange={handleLoginFormChange}
+        isRequired
+      />
+    </LoginInputContainer>
   );
 }

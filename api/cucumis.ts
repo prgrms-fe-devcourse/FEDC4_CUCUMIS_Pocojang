@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const { API_END_POINT } = process.env;
@@ -14,10 +14,29 @@ export default async function (
   const auth = request.headers.authorization;
   const axiosConfig: AxiosRequestConfig = request.body;
 
-  const { status, data }: AxiosResponse = await axiosInstance({
+  const { status, data } = await axiosInstance({
     ...axiosConfig,
     headers: { Authorization: auth },
-  });
+  })
+    .then((response: AxiosResponse) => {
+      return {
+        status: response.status,
+        data: response.data,
+      };
+    })
+    .catch((error: AxiosError) => {
+      if (error.response) {
+        return {
+          status: error.response.status,
+          data: error.response.data,
+        };
+      }
+
+      return {
+        status: 500,
+        data: 'Internal Server Error',
+      };
+    });
 
   response.status(status).json(data);
 }

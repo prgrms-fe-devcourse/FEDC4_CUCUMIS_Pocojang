@@ -16,6 +16,7 @@ const BasicInput = ({
       {...props}
       required={isRequired}
       name={label}
+      label={label}
       helperText={errorMessage}
       error={errorMessage ? true : false}
       multiline={type === 'multiline'}

@@ -4,5 +4,5 @@ import api from '@/utils/api';
 export const signup = async (
   rq: RequestSignupType,
 ): Promise<ResponseSignupType> => {
-  return await api.post<RequestSignupType, ResponseSignupType>('login', rq);
+  return await api.post<RequestSignupType, ResponseSignupType>('signup', rq);
 };

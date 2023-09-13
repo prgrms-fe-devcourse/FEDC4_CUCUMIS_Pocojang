@@ -7,11 +7,13 @@ import { PROFILE_URL, PROJECT_MODIFYL_URL } from '@/consts/routes';
 import Comments from '@/components/comments';
 import useProjectDetail from '@/components/projects/useProjectDetail';
 
+const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
+
 export default function ProjectDetailPage() {
   const {
     projectId,
     author,
-    image,
+    image = DEFAULT_IMAGE,
     _id,
     title,
     contents,

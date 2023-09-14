@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
-import DUMMY_DATA from '@/consts/profileDetails';
+import DUMMY_DATA from '@/consts/projectDetail';
 
 const useProjectDetail = () => {
   const { projectId } = useParams();

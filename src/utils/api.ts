@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { BASE_URL } from '@/consts/api';
+import SESSION_STORAGE from '@/consts/sessionStorage';
+import session from '@/utils/sessionStorage';
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 type RequestOptions = {
@@ -13,9 +15,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  // TODO: localStorage 에서 token 가져오기
-  // const token = localStorage.getItem(AUTH);
-  const token = undefined;
+  const token = session.getItem(SESSION_STORAGE.TOKEN);
 
   if (token) {
     config.headers.set('Authorization', `Bearer ${token}`);

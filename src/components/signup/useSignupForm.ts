@@ -5,8 +5,7 @@ import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import { ResponseSignupType } from '@/types/api/signup';
 import validation from '@/utils/validations';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
-import { signupFormValuesSelector } from '@/stores/signup/selector';
-import { setSignupFormValues } from '@/stores/signup';
+import { setSignupFormValues, signupFormValuesSelector } from '@/stores/signup';
 
 const validateSignupForm = ({
   email,

@@ -1,11 +1,11 @@
-import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
+import { useEffect } from 'react';
 
-const initialExtraInformationFormValues = {
-  oneLiner: '',
-  technicalTools: '',
-  position: '',
-  details: '',
-};
+import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import {
+  extraInformationValuesSelector,
+  setExtraInputFormValues,
+} from '@/stores/signup';
 
 const validateExtraInformationForm = ({
   oneLiner,
@@ -33,6 +33,11 @@ export const useExtraInformationForm = ({
   onSuccess,
   onFail,
 }: SignupFormHookParameters) => {
+  const dispatch = useAppDispatch();
+  const extraInputFormValues: FormValues = useAppSelector(
+    extraInformationValuesSelector,
+  );
+
   const onSubmitExtraInformationForm = async ({
     oneLiner,
     technicalTools,
@@ -49,13 +54,18 @@ export const useExtraInformationForm = ({
     }
   };
 
-  const { errors, handleChange, handleSubmit } = useForm({
-    initialValues: initialExtraInformationFormValues,
+  const { values, errors, handleChange, handleSubmit } = useForm({
+    initialValues: extraInputFormValues,
     onSubmit: onSubmitExtraInformationForm,
     validate: validateExtraInformationForm,
   });
 
+  useEffect(() => {
+    dispatch(setExtraInputFormValues(values));
+  }, [dispatch, values]);
+
   return {
+    extraInformationFormValues: values,
     extraInformationFormErrors: errors,
     handleExtraInformationFormChange: handleChange,
     handleExtraInformationFormSubmit: handleSubmit,

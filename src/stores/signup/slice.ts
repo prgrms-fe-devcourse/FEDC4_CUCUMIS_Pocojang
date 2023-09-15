@@ -4,6 +4,7 @@ import { FormValues } from '@/hooks/useForm';
 
 export interface SignupState {
   signupFormValues: FormValues;
+  extraInformationFormValues: FormValues;
 }
 
 const initialState: SignupState = {
@@ -12,6 +13,12 @@ const initialState: SignupState = {
     password: '',
     passwordConfirm: '',
     name: '',
+  },
+  extraInformationFormValues: {
+    oneLiner: '',
+    techStack: '',
+    position: '',
+    details: '',
   },
 };
 
@@ -22,6 +29,10 @@ export const signupSlice = createSlice({
     setSignupFormValues: (state, action) => {
       const formValues = action.payload;
       state.signupFormValues = formValues;
+    },
+    setExtraInputFormValues: (state, action) => {
+      const formValues = action.payload;
+      state.extraInformationFormValues = formValues;
     },
   },
 });

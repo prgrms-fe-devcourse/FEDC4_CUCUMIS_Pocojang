@@ -7,6 +7,7 @@ import { ProjectDetail } from '@/stores/projectDetail/slice';
 import { setProjectDetailResponse } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
+import { PostType } from '@/types';
 
 // import type { CommentType } from '@/types';
 
@@ -22,45 +23,49 @@ const useProjectDetail = () => {
   };
 
   useEffect(() => {
-    const handleProjectDetail = async (postId: string) => {
+    const fetchPost = async (postId: string) => {
       try {
         const rs = await getPostId(postId);
 
-        const { title, requirements } = JSON.parse(rs.title);
-
-        const author = {
-          image: rs.author.image,
-          userId: rs.author._id,
-          fullName: rs.author.fullName,
-        };
-
-        const comments = rs.comments.map(({ _id, comment, author }) => ({
-          AvatarProps: {
-            imgSrc: author?.image,
-          },
-          author: author?.fullName,
-          comment,
-          userId: author?._id,
-          commentId: _id,
-        }));
-
-        const data: Partial<ProjectDetail> = {
-          postId: rs._id,
-          comments,
-          image: rs.image,
-          author: author,
-          createdAt: rs.createdAt,
-          title,
-          requirements,
-        };
-        dispatch(setProjectDetailResponse(data));
+        handlePost(rs);
       } catch (error) {
         console.log(error);
       }
     };
 
+    const handlePost = (rs: PostType) => {
+      const { author, comments, _id, image, createdAt } = rs;
+      const { title, requirements } = JSON.parse(rs.title);
+
+      const formattedComments = comments.map(({ _id, comment, author }) => ({
+        AvatarProps: {
+          imgSrc: author?.image,
+        },
+        author: author?.fullName,
+        comment,
+        userId: author?._id,
+        commentId: _id,
+      }));
+
+      const formatedPost: Partial<ProjectDetail> = {
+        postId: _id,
+        comments: formattedComments,
+        image: image,
+        author: {
+          image: author.image,
+          userId: author._id,
+          fullName: author.fullName,
+        },
+        createdAt,
+        title,
+        requirements,
+      };
+
+      dispatch(setProjectDetailResponse(formatedPost));
+    };
+
     if (projectId) {
-      handleProjectDetail('6503ed37a14c752383b6a8c1');
+      fetchPost('6503ed37a14c752383b6a8c1');
     }
     // 예외처리 잘못된 요청
   }, [projectId, dispatch]);

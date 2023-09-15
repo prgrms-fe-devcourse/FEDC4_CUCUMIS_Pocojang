@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -7,7 +7,9 @@ import { ProjectDetail } from '@/stores/projectDetail/slice';
 import { setProjectDetailResponse } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import { PostType } from '@/types';
+import { PostType, UserType } from '@/types';
+import session from '@/utils/sessionStorage';
+import SESSION_STORAGE from '@/consts/sessionStorage';
 
 // import type { CommentType } from '@/types';
 
@@ -16,11 +18,21 @@ const useProjectDetail = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [userId, setUserId] = useState('');
   const detail = useAppSelector(projectDetailSelector);
 
   const handleClick = (url: string, id: string) => {
     navigate(url + id);
   };
+
+  useEffect(() => {
+    const user = session.getItem<UserType>(SESSION_STORAGE.USER);
+
+    if (user) {
+      const { _id } = user;
+      setUserId(_id);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPost = async (postId: string) => {
@@ -65,7 +77,7 @@ const useProjectDetail = () => {
     };
 
     if (projectId) {
-      fetchPost('6503ed37a14c752383b6a8c1');
+      fetchPost('65043caee00d6d3413cb9ca9');
     }
     // 예외처리 잘못된 요청
   }, [projectId, dispatch]);
@@ -73,7 +85,7 @@ const useProjectDetail = () => {
   return {
     projectId,
     handleClick,
-    isAuthor: true,
+    isAuthor: detail.projectDetail.author.userId === userId,
     ...detail.projectDetail,
   };
 };

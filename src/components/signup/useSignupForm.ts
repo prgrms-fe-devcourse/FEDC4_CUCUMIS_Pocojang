@@ -1,14 +1,12 @@
+import { useEffect } from 'react';
+
 import { signup } from '@/api/auth/signup';
 import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import { ResponseSignupType } from '@/types/api/signup';
 import validation from '@/utils/validations';
-
-const initialSignupFormValues = {
-  email: '',
-  password: '',
-  passwordConfirm: '',
-  name: '',
-};
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { signupFormValuesSelector } from '@/stores/signup/selector';
+import { setSignupFormValues } from '@/stores/signup';
 
 const validateSignupForm = ({
   email,
@@ -44,6 +42,9 @@ export const useSignupForm = ({
   onSuccess,
   onFail,
 }: SignupFormHookParameters) => {
+  const dispatch = useAppDispatch();
+  const signupFormValues: FormValues = useAppSelector(signupFormValuesSelector);
+
   const onSubmitSignupForm = async ({ email, password, name }: FormValues) => {
     try {
       const rs = await signup({ email, password, fullName: name });
@@ -53,13 +54,18 @@ export const useSignupForm = ({
     }
   };
 
-  const { errors, handleChange, handleSubmit } = useForm({
-    initialValues: initialSignupFormValues,
+  const { values, errors, handleChange, handleSubmit } = useForm({
+    initialValues: signupFormValues,
     onSubmit: onSubmitSignupForm,
     validate: validateSignupForm,
   });
 
+  useEffect(() => {
+    dispatch(setSignupFormValues(values));
+  }, [dispatch, values]);
+
   return {
+    signupFormValues: values,
     signupFormErrors: errors,
     handleSignupFormChange: handleChange,
     handleSignupFormSubmit: handleSubmit,

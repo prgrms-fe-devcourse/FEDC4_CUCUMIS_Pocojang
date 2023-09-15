@@ -30,11 +30,11 @@ export interface ProjectDetail {
 }
 
 export interface ProjectDetailState {
-  projectDetail: ProjectDetail;
+  post: ProjectDetail;
 }
 
 const initialState: ProjectDetailState = {
-  projectDetail: {
+  post: {
     comments: [],
     postId: '',
     image: '',
@@ -54,8 +54,8 @@ export const projectDetailSlice = createSlice({
   name: 'projectDetail',
   initialState,
   reducers: {
-    setProjectDetailResponse: (state, action) => {
-      state.projectDetail = action.payload;
+    setPost: (state, action) => {
+      state.post = action.payload;
     },
   },
 });

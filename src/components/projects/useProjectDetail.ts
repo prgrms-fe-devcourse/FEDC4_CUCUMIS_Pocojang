@@ -4,21 +4,21 @@ import { useDispatch } from 'react-redux';
 
 import { getPostId } from '@/api/posts/postId';
 import { ProjectDetail } from '@/stores/projectDetail/slice';
-import { setProjectDetailResponse } from '@/stores/projectDetail';
+import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import { PostType, UserType } from '@/types';
+import type { PostType, UserType } from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 
-// import type { CommentType } from '@/types';
+const CUCUMIS_POSTID = '6503ed37a14c752383b6a8c1';
 
 const useProjectDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { projectId } = useParams();
-  const detail = useAppSelector(projectDetailSelector);
+  const { post } = useAppSelector(projectDetailSelector);
 
   const [userId, setUserId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -57,11 +57,11 @@ const useProjectDetail = () => {
 
       const formattedComments = comments.map(({ _id, comment, author }) => ({
         AvatarProps: {
-          imgSrc: author?.image,
+          imgSrc: author.image,
         },
-        author: author?.fullName,
+        author: author.fullName,
         comment,
-        userId: author?._id,
+        userId: author._id,
         commentId: _id,
       }));
 
@@ -79,11 +79,12 @@ const useProjectDetail = () => {
         requirements,
       };
 
-      dispatch(setProjectDetailResponse(formatedPost));
+      dispatch(setPost(formatedPost));
     };
 
     if (projectId) {
-      fetchPost('65043caee00d6d3413cb9ca9');
+      // fetchPost(projectId);
+      fetchPost(CUCUMIS_POSTID);
     }
     // 예외처리 잘못된 요청
   }, [projectId, dispatch]);
@@ -91,9 +92,9 @@ const useProjectDetail = () => {
   return {
     projectId,
     handleClick,
-    isAuthor: detail.projectDetail.author.userId === userId,
+    isAuthor: post.author.userId === userId,
     isLoading,
-    ...detail.projectDetail,
+    ...post,
   };
 };
 

@@ -4,4 +4,6 @@ import { FormValues } from '@/hooks/useForm';
 
 export const signupSelector = (state: RootState): SignupState => state.signup;
 export const signupFormValuesSelector = (state: RootState): FormValues =>
-  state.signup.formValues;
+  state.signup.signupFormValues;
+export const extraInputFormValuesSelector = (state: RootState): FormValues =>
+  state.signup.extraInputFormValues;

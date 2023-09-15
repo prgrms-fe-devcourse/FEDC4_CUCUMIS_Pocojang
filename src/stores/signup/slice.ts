@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { FormValues } from '@/hooks/useForm';
 
 export interface SignupState {
-  formValues: FormValues;
+  signupFormValues: FormValues;
 }
 
 const initialState: SignupState = {
-  formValues: {
+  signupFormValues: {
     email: '',
     password: '',
     passwordConfirm: '',
@@ -21,7 +21,7 @@ export const signupSlice = createSlice({
   reducers: {
     setSignupFormValues: (state, action) => {
       const formValues = action.payload;
-      state.formValues = formValues;
+      state.signupFormValues = formValues;
     },
   },
 });

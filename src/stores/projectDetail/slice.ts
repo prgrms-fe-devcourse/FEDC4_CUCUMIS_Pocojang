@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import DUMMY_DATA from '@/consts/projectDetail';
 import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 
 export interface Comment {
@@ -35,7 +34,20 @@ export interface ProjectDetailState {
 }
 
 const initialState: ProjectDetailState = {
-  projectDetail: DUMMY_DATA,
+  projectDetail: {
+    comments: [],
+    postId: '',
+    image: '',
+    author: {
+      image: '',
+      fullName: '',
+      userId: '',
+    },
+    createdAt: '',
+    updatedAt: '',
+    title: '',
+    requirements: '',
+  },
 };
 
 export const projectDetailSlice = createSlice({

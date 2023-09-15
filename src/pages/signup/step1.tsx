@@ -17,7 +17,7 @@ export default function SignupPage() {
   } = useSignupForm({
     onSuccess: ({ token, user }) => {
       saveAuthData(token, user);
-      navigate('/signup/step2');
+      navigate('/signup/step2', { replace: true });
     },
     onFail: (error: unknown) => {
       // TODO: 회원가입 실패 알림 모달 출력

@@ -6,17 +6,20 @@ import {
   extraInformationValuesSelector,
   setExtraInputFormValues,
 } from '@/stores/signup';
+import { updateUser } from '@/api/settings/updateUser';
+import { userFullNameSelector } from '@/stores/auth';
+import { UserType } from '@/types';
 
 const validateExtraInformationForm = ({
   oneLiner,
-  technicalTools,
+  techStack,
   position,
   details,
 }: FormValues): FormErrors => {
   const newErrors: FormErrors = {};
 
   if (!oneLiner) newErrors.oneLiner = 'please enter oneLiner';
-  if (!technicalTools) newErrors.technicalTools = 'please enter technicalTools';
+  if (!techStack) newErrors.techStack = 'please enter technicalTools';
   if (!position) newErrors.position = 'please enter position';
   if (!details) newErrors.details = 'please enter details';
 
@@ -24,8 +27,7 @@ const validateExtraInformationForm = ({
 };
 
 interface SignupFormHookParameters {
-  // TODO: create post response type 으로 바꾸기
-  onSuccess: (rs: unknown) => void;
+  onSuccess: (rs: UserType) => void;
   onFail: (error: unknown) => void;
 }
 
@@ -37,18 +39,16 @@ export const useExtraInformationForm = ({
   const extraInputFormValues: FormValues = useAppSelector(
     extraInformationValuesSelector,
   );
+  const fullName = useAppSelector(userFullNameSelector);
 
-  const onSubmitExtraInformationForm = async ({
-    oneLiner,
-    technicalTools,
-    position,
-    details,
-  }: FormValues) => {
+  const onSubmitExtraInformationForm = async (formValues: FormValues) => {
     try {
-      console.log(oneLiner, technicalTools, position, details);
-      // TODO: posts api 를 사용하여 프로필 게시글 작성
-      // const rs = post({oneLiner, technicalTools, position, details})
-      onSuccess('rs');
+      const userData = JSON.stringify(formValues);
+      const rs = await updateUser({
+        fullName,
+        username: userData,
+      });
+      onSuccess(rs);
     } catch (error) {
       onFail(error);
     }

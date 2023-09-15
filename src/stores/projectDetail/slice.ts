@@ -29,11 +29,9 @@ interface ProjectDetail {
   updatedAt: string;
   title: string;
   contents: string;
-  technicalSkill?: string[];
-  position?: string;
 }
 
-interface ProjectDetailState {
+export interface ProjectDetailState {
   projectDetail: ProjectDetail;
 }
 
@@ -41,7 +39,7 @@ const initialState: ProjectDetailState = {
   projectDetail: DUMMY_DATA,
 };
 
-export const ProjectDetailSlice = createSlice({
+export const projectDetailSlice = createSlice({
   name: 'projectDetail',
   initialState,
   reducers: {

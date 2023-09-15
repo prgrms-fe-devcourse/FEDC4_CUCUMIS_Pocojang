@@ -1,11 +1,12 @@
 import api from '@/utils/api';
-import type { RequestBodyUpdatePwType } from '@/types/api/settings/updatePassword/RequestBodyUpdatePwType';
+import { RequestBodyUpdateUserType } from '@/types/api/settings/updateUser/RequestBodyUpdateUserType';
+import { UserType } from '@/types';
 
 export const updateUser = async (
-  rq: RequestBodyUpdatePwType,
-): Promise<null> => {
-  return await api.post<RequestBodyUpdatePwType, null>(
-    '/settings/update-user',
+  rq: RequestBodyUpdateUserType,
+): Promise<UserType> => {
+  return await api.put<RequestBodyUpdateUserType, UserType>(
+    'settings/update-user',
     rq,
   );
 };

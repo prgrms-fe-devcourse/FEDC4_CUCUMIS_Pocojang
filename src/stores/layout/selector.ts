@@ -8,6 +8,7 @@ import { isLoginSelector, userIdSelector } from '@/stores/auth';
 export const layoutSelector = (state: RootState): LayoutState => state.layout;
 export const locationSelector = (state: RootState): string =>
   state.layout.location;
+export const inputSelector = (state: RootState): string => state.layout.input;
 
 export const headerTypeSelector = createSelector(
   locationSelector,

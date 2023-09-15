@@ -49,6 +49,7 @@ const useForm = ({ initialValues, onSubmit, validate }: FormProps) => {
   };
 
   return {
+    values,
     errors,
     isLoading,
     handleChange,

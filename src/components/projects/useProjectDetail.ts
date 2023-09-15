@@ -14,12 +14,14 @@ import SESSION_STORAGE from '@/consts/sessionStorage';
 // import type { CommentType } from '@/types';
 
 const useProjectDetail = () => {
-  const { projectId } = useParams();
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [userId, setUserId] = useState('');
+
+  const { projectId } = useParams();
   const detail = useAppSelector(projectDetailSelector);
+
+  const [userId, setUserId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = (url: string, id: string) => {
     navigate(url + id);
@@ -35,6 +37,8 @@ const useProjectDetail = () => {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
+
     const fetchPost = async (postId: string) => {
       try {
         const rs = await getPostId(postId);
@@ -42,6 +46,8 @@ const useProjectDetail = () => {
         handlePost(rs);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -86,6 +92,7 @@ const useProjectDetail = () => {
     projectId,
     handleClick,
     isAuthor: detail.projectDetail.author.userId === userId,
+    isLoading,
     ...detail.projectDetail,
   };
 };

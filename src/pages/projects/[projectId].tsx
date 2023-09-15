@@ -20,9 +20,12 @@ export default function ProjectDetailPage() {
     createdAt,
     handleClick,
     isAuthor,
+    isLoading,
   } = useProjectDetail();
 
-  return (
+  return isLoading ? (
+    <Box>로딩 중</Box>
+  ) : (
     <Stack spacing={3}>
       <ProjectImageStyled
         component="img"

@@ -35,6 +35,6 @@ const DUMMY_DATA = {
   createdAt: '2022.03.14',
   updatedAt: '2022.03.14 00:00',
   title: 'This is Title',
-  contents: `We need DesignerIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.`,
+  requirements: `We need DesignerIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.`,
 };
 export default DUMMY_DATA;

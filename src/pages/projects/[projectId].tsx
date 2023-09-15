@@ -15,7 +15,7 @@ export default function ProjectDetailPage() {
     author,
     image = DEFAULT_IMAGE,
     title,
-    contents,
+    requirements,
     comments,
     createdAt,
     handleClick,
@@ -36,7 +36,7 @@ export default function ProjectDetailPage() {
         alignContent="center"
       >
         <BasicAvatar
-          {...author}
+          imgSrc={author.image}
           onClick={() => handleClick(PROFILE_URL, author.userId)}
         />
         <TitleBoxStyled>
@@ -66,7 +66,7 @@ export default function ProjectDetailPage() {
       <Typography variant="h4">{title}</Typography>
       <Stack spacing={1}>
         <Typography color="gray">요구사항</Typography>
-        <Typography>{contents}</Typography>
+        <Typography>{requirements}</Typography>
       </Stack>
       <Divider variant="middle" />
       <Box>

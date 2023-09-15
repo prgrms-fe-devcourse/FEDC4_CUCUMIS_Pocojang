@@ -2,13 +2,14 @@ import { List } from '@mui/material';
 
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 
-type Comment = {
+export type Comment = {
   userId: string;
   author: string;
-  createdAt: string;
+  createdAt?: string;
   comment: string;
   AvatarProps: {
-    isUserOn: boolean;
+    imgSrc?: string;
+    isUserOn?: boolean;
   };
   isLastItem?: boolean;
 };

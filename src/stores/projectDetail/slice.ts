@@ -1,34 +1,33 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import DUMMY_DATA from '@/consts/projectDetail';
+import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 
-interface Comment {
-  AvatarProps: {
-    isUserOn: boolean;
-  };
+export interface Comment {
+  AvatarProps: BasicAvatarProps;
   userId: string;
   author: string;
-  createdAt: string;
   comment: string;
   isLastItem?: boolean;
+  createdAt?: string;
 }
 
 interface Author {
   image: string;
-  isUserOn: boolean;
+  isUserOn?: boolean;
   fullName: string;
-  userId: string;
+  userId: string; //_id
 }
 
-interface ProjectDetail {
+export interface ProjectDetail {
   comments: Comment[];
-  postId: string;
-  image: string;
+  postId: string; //_id
+  image?: string;
   author: Author;
   createdAt: string;
   updatedAt: string;
   title: string;
-  contents: string;
+  requirements: string;
 }
 
 export interface ProjectDetailState {

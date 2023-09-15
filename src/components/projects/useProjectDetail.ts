@@ -3,11 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { getPostId } from '@/api/posts/postId';
-import { ProjectDetail } from '@/stores/projectDetail/slice';
 import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type { PostType, UserType } from '@/types';
+import type { PostType, UserType, FormattedPost } from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 
@@ -65,15 +64,11 @@ const useProjectDetail = () => {
         commentId: _id,
       }));
 
-      const formatedPost: Partial<ProjectDetail> = {
+      const formatedPost: Partial<FormattedPost> = {
         postId: _id,
         comments: formattedComments,
         image: image,
-        author: {
-          image: author.image,
-          userId: author._id,
-          fullName: author.fullName,
-        },
+        author,
         createdAt,
         title,
         requirements,
@@ -92,7 +87,7 @@ const useProjectDetail = () => {
   return {
     projectId,
     handleClick,
-    isAuthor: post.author.userId === userId,
+    isAuthor: post.author._id === userId,
     isLoading,
     ...post,
   };

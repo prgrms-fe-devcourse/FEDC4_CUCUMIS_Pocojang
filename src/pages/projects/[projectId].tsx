@@ -40,7 +40,7 @@ export default function ProjectDetailPage() {
       >
         <BasicAvatar
           imgSrc={author.image}
-          onClick={() => handleClick(PROFILE_URL, author.userId)}
+          onClick={() => handleClick(PROFILE_URL, author._id ?? '')}
         />
         <TitleBoxStyled>
           <Stack

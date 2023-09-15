@@ -1,6 +1,6 @@
 import { LikeType } from './LikeType';
 import { ChannelType } from './ChannelType';
-import { CommentType, UserType } from '../';
+import { CommentType, FormattedComment, UserType } from '../';
 export interface PostType {
   likes: LikeType[];
   comments: CommentType[];
@@ -12,4 +12,16 @@ export interface PostType {
   author: UserType;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface FormattedPost {
+  likes: LikeType[];
+  comments: FormattedComment[];
+  postId: string;
+  image?: string;
+  author: Partial<UserType>;
+  createdAt: string;
+  updatedAt: string;
+  title: string;
+  requirements: string;
 }

@@ -12,16 +12,12 @@ import { UserType } from '@/types';
 
 const validateExtraInformationForm = ({
   oneLiner,
-  techStack,
-  position,
   details,
 }: FormValues): FormErrors => {
   const newErrors: FormErrors = {};
 
-  if (!oneLiner) newErrors.oneLiner = 'please enter oneLiner';
-  if (!techStack) newErrors.techStack = 'please enter technicalTools';
-  if (!position) newErrors.position = 'please enter position';
-  if (!details) newErrors.details = 'please enter details';
+  if (oneLiner.length > 30) newErrors.oneLiner = '30자 미만 입력 가능합니다.';
+  if (details.length > 1000) newErrors.details = '1000자 미만 입력 가능합니다.';
 
   return newErrors;
 };

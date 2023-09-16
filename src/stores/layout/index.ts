@@ -6,6 +6,7 @@ export const { setLocation, setInput } = layoutSlice.actions;
 export const {
   layoutSelector,
   locationSelector,
+  inputSelector,
   headerTypeSelector,
   titleSelector,
 } = selector;

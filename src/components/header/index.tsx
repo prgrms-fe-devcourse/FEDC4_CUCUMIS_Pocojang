@@ -11,7 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setInput, headerTypeSelector, titleSelector } from '@/stores/layout';
 import { isLoginSelector } from '@/stores/auth';
 import { HeaderType, Title } from '@/types/components/Header';
-import useForm from '@/hooks/useForm';
+import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import BasicChip from '@/components/shared/chip';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
@@ -22,13 +22,13 @@ const Header = () => {
   const headerType = useAppSelector(headerTypeSelector);
   const title = useAppSelector(titleSelector);
   const isLogin = useAppSelector(isLoginSelector);
-  const { handleChange, handleSubmit } = useForm({
+  const { values, handleChange, handleSubmit } = useForm({
     initialValues: { search: '' },
-    onSubmit: ({ search }) => {
+    onSubmit: ({ search }: FormValues) => {
       dispatch(setInput(search));
     },
-    validate: ({ search }) => {
-      const newErrors = { search: '' };
+    validate: ({ search }: FormValues) => {
+      const newErrors: FormErrors = {};
       if (!search) newErrors.search = '검색어를 입력해주세요.';
       return newErrors;
     },
@@ -78,6 +78,7 @@ const Header = () => {
             </LinkStyled>
             <FormStyled onSubmit={handleSubmit}>
               <BasicSearch
+                value={values.search}
                 onChange={handleChange}
                 placeholder="검색어를 입력해주세요"
               />

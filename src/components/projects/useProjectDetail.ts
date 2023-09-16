@@ -6,7 +6,12 @@ import { getPostId } from '@/api/posts/postId';
 import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type { PostType, UserType, FormattedPost } from '@/types';
+import type {
+  PostType,
+  UserType,
+  FormattedPost,
+  ProjectContent,
+} from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 
@@ -64,16 +69,18 @@ const useProjectDetail = () => {
         commentId: _id,
       }));
 
-      const formatedPost: Partial<FormattedPost> = {
+      const formatedPost: Partial<FormattedPost<ProjectContent>> = {
         postId: _id,
         comments: formattedComments,
         image: image,
         author,
         createdAt,
-        title,
-        requirements,
+        contents: {
+          title,
+          requirements,
+        },
       };
-
+      console.log(formatedPost);
       dispatch(setPost(formatedPost));
     };
 

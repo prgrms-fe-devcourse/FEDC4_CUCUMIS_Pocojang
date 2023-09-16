@@ -1,21 +1,10 @@
 import { List } from '@mui/material';
 
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
-
-export type Comment = {
-  userId: string;
-  author: string;
-  createdAt?: string;
-  comment: string;
-  AvatarProps: {
-    imgSrc?: string;
-    isUserOn?: boolean;
-  };
-  isLastItem?: boolean;
-};
+import { FormattedComment } from '@/types';
 
 interface Props {
-  comments: Comment[];
+  comments: FormattedComment[];
   url: string;
   onClick: (url: string, userId: string) => void;
 }

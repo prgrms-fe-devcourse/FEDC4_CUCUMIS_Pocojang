@@ -14,8 +14,7 @@ export default function ProjectDetailPage() {
     projectId,
     author,
     image = DEFAULT_IMAGE,
-    title,
-    requirements,
+    contents,
     comments,
     createdAt,
     handleClick,
@@ -30,7 +29,7 @@ export default function ProjectDetailPage() {
       <ProjectImageStyled
         component="img"
         src={image}
-        alt={title + "'s project image"}
+        alt={contents.title + "'s project image"}
       />
       <Stack
         direction="row"
@@ -66,10 +65,10 @@ export default function ProjectDetailPage() {
           </Stack>
         </TitleBoxStyled>
       </Stack>
-      <Typography variant="h4">{title}</Typography>
+      <Typography variant="h4">{contents.title}</Typography>
       <Stack spacing={1}>
         <Typography color="gray">요구사항</Typography>
-        <Typography>{requirements}</Typography>
+        <Typography>{contents.requirements}</Typography>
       </Stack>
       <Divider variant="middle" />
       <Box>

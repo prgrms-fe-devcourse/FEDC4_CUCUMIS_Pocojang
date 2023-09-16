@@ -14,6 +14,7 @@ import type {
 } from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
+import useComment from '@/components/comments/useComment';
 
 const CUCUMIS_POSTID = '6503ed37a14c752383b6a8c1';
 
@@ -23,6 +24,7 @@ const useProjectDetail = () => {
 
   const { projectId } = useParams();
   const { post } = useAppSelector(projectDetailSelector);
+  const { refreshPage } = useComment({ postId: CUCUMIS_POSTID });
 
   const [userId, setUserId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -89,7 +91,7 @@ const useProjectDetail = () => {
       fetchPost(CUCUMIS_POSTID);
     }
     // 예외처리 잘못된 요청
-  }, [projectId, dispatch]);
+  }, [projectId, dispatch, refreshPage]);
 
   return {
     projectId,

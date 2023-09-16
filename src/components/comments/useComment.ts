@@ -14,15 +14,18 @@ const useComment = ({ postId }: UseCommentProps) => {
 
   useEffect(() => {
     const submitComment = async () => {
-      await createComments({
-        comment: input,
-        postId,
-      });
-
+      try {
+        await createComments({
+          comment: input,
+          postId,
+        });
+      } catch (error) {
+        console.log(error);
+      }
       setRefreshPage((prev) => !prev);
     };
 
-    submitComment();
+    input && submitComment();
   }, [input, postId]);
 
   return {

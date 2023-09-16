@@ -84,7 +84,7 @@ const useProjectDetail = () => {
           details,
         },
       };
-      console.log(formatedPost);
+
       dispatch(setPost(formatedPost));
     };
 

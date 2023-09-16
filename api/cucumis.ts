@@ -11,12 +11,15 @@ export default async function (
   request: VercelRequest,
   response: VercelResponse,
 ) {
-  const auth = request.headers.authorization;
+  const { headers } = request;
+  const auth = headers.authorization;
+  const contentType = headers['content-type'];
+
   const axiosConfig: AxiosRequestConfig = request.body;
 
   const { status, data } = await axiosInstance({
     ...axiosConfig,
-    headers: { Authorization: auth },
+    headers: { Authorization: auth, 'Content-Type': contentType },
   })
     .then((response: AxiosResponse) => {
       return {

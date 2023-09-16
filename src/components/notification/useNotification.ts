@@ -1,25 +1,53 @@
-const useNotifications = () => {
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { NotificationsStateType } from '@/stores/notification/slice';
+import {
+  notificationSelector,
+  setNotification,
+  handleClick,
+} from '@/stores/notification';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { isLoginSelector } from '@/stores/auth';
+import { callNotifications } from '@/api/notifications';
+import { readNotifications } from '@/api/notifications/seen';
+
+//TODO 호출 타입 정리, api 호출에 대한 에러 처리, 타입 위치 및 이름
+const useNotification = () => {
   const notificationMessage: { [key: string]: string } = {
-    COMMENT: '님이 포스트에 댓글을 작성했습니다',
-    MESSAGE: '님이 메세지를 보냈습니다',
-    LIKE: '님이 포스트에 좋아요',
-    FOLLOW: '님이 팔로우 했습니다',
-  } as const;
+    comment: '님이 댓글을 추가했습니다.',
+    like: '님이 좋아요',
+    follow: '님이 팔로우',
+    message: '님이 메세지',
+  };
 
-  const dummyNotifications = [
-    { _id: '1', type: 'COMMENT', seen: true, name: 'user1' },
-    { _id: '2', type: 'MESSAGE', seen: true, name: 'user2' },
-    { _id: '3', type: 'FOLLOW', seen: false, name: 'user3' },
-    { _id: '4', type: 'COMMENT', seen: false, name: 'user4' },
-    { _id: '5', type: 'MESSAGE', seen: true, name: 'user5' },
-    { _id: '6', type: 'LIKE', seen: true, name: 'user6' },
-    { _id: '7', type: 'COMMENT', seen: false, name: 'user7' },
-    { _id: '8', type: 'LIKE', seen: true, name: 'user8' },
-    { _id: '9', type: 'COMMENT', seen: true, name: 'user9' },
-    { _id: '10', type: 'MESSAGE', seen: true, name: 'user10' },
-  ];
+  const dispatch = useAppDispatch();
+  const isLogin = useAppSelector(isLoginSelector);
+  const navigate = useNavigate();
 
-  return { notificationMessage, notifications: dummyNotifications };
+  useEffect(() => {
+    if (!isLogin) {
+      navigate('/login');
+    } else {
+      return () => {
+        readNotifications();
+      };
+    }
+  }, [isLogin, navigate]);
+
+  useEffect(() => {
+    if (isLogin)
+      callNotifications().then((data) => dispatch(setNotification(data)));
+  }, [dispatch, isLogin]);
+
+  const handleClickItem = (_id: string) => {
+    dispatch(handleClick(_id));
+  };
+
+  const notifications: NotificationsStateType[] =
+    useAppSelector(notificationSelector);
+
+  return { notificationMessage, notifications, handleClickItem };
 };
 
-export default useNotifications;
+export default useNotification;

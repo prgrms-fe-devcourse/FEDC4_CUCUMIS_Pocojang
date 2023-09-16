@@ -1,82 +1,105 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-const useDeveloperDetail = () => {
-  const { developerId } = useParams();
+import { getPostId } from '@/api/posts/postId';
+import { setPost } from '@/stores/projectDetail';
+import { useAppSelector } from '@/stores/hooks';
+import { projectDetailSelector } from '@/stores/projectDetail/selector';
+import type {
+  PostType,
+  UserType,
+  FormattedPost,
+  DeveloperContent,
+} from '@/types';
+import session from '@/utils/sessionStorage';
+import SESSION_STORAGE from '@/consts/sessionStorage';
 
+const CUCUMIS_POSTID = '650573ea09e45a4a41119f42';
+
+const useProjectDetail = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const onClick = (url: string, id: string) => {
+  const { developerId } = useParams();
+  const { post } = useAppSelector(projectDetailSelector);
+
+  const [userId, setUserId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = (url: string, id: string) => {
     navigate(url + id);
   };
 
+  useEffect(() => {
+    const user = session.getItem<UserType>(SESSION_STORAGE.USER);
+
+    if (user) {
+      const { _id } = user;
+      setUserId(_id);
+    }
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const fetchPost = async (postId: string) => {
+      try {
+        const rs = await getPostId(postId);
+
+        handlePost(rs);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const handlePost = (rs: PostType) => {
+      const { author, comments, _id, image, createdAt } = rs;
+      const { oneliner, techstack, position, details } = JSON.parse(rs.title);
+
+      const formattedComments = comments.map(({ _id, comment, author }) => ({
+        AvatarProps: {
+          imgSrc: author.image,
+        },
+        author: author.fullName,
+        comment,
+        userId: author._id,
+        commentId: _id,
+      }));
+
+      const formatedPost: Partial<FormattedPost<DeveloperContent>> = {
+        postId: _id,
+        comments: formattedComments,
+        image: image,
+        author,
+        createdAt,
+        contents: {
+          oneLiner: oneliner,
+          techStack: techstack,
+          position,
+          details,
+        },
+      };
+      console.log(formatedPost);
+      dispatch(setPost(formatedPost));
+    };
+
+    if (developerId) {
+      // fetchPost(developerId);
+      fetchPost(CUCUMIS_POSTID);
+    }
+    // 예외처리 잘못된 요청
+  }, [developerId, dispatch]);
+
   return {
     developerId,
-    onClick,
-    isAuthor: false,
-    ...DUMMY_DATA,
+    handleClick,
+    isAuthor: post.author._id === userId,
+    isLoading,
+    ...post,
   };
 };
 
-export default useDeveloperDetail;
-
-const DUMMY_DATA = {
-  likes: [],
-  comments: [
-    {
-      AvatarProps: {
-        isUserOn: false,
-      },
-      userId: '2',
-      author: '작성자2',
-      createdAt: '2022.03.14 00:00',
-      comment:
-        'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
-    },
-    {
-      AvatarProps: {
-        isUserOn: true,
-      },
-      userId: '3',
-      createdAt: '2022.03.14 00:00',
-      author: '작성자3',
-      comment:
-        'Check out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this linkCheck out this link.',
-
-      isLastItem: true,
-    },
-  ],
-  postId: '1',
-  image:
-    'https://www.zdnet.com/a/img/resize/ba1b1ab92085d777ab5e313b34c66a94b7aa1236/2023/06/05/79a43eb8-ce38-488c-8cc0-e04699aaca7f/bing.jpg?auto=webp&width=1280',
-  author: {
-    image:
-      'https://img.freepik.com/free-photo/world-smile-day-emojis-arrangement_23-2149024491.jpg?q=10&h=200',
-    isUserOn: true,
-    fullName: '사용자1',
-    userId: '3',
-  },
-  createdAt: '2022.03.14 00:00',
-  updatedAt: '2022.03.14 00:00',
-  title: 'This is Title',
-
-  technicalSkill: [
-    'HTML',
-    'CSS',
-    'JavaScript',
-    'React',
-    'Angular',
-    'Vue.js',
-    'Axios',
-    'TypeScript',
-    'Webpack',
-    'Babel',
-    'Sass/SCSS',
-    'Redux',
-    'GraphQL',
-    'Jest',
-    'Enzyme',
-  ],
-  position: 'FE',
-  contents:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ",
-};
+export default useProjectDetail;

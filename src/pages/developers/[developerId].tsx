@@ -8,33 +8,35 @@ import BasicButton from '@/components/shared/button';
 import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
 
+const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
+
 export default function DeveloperDetail() {
   const {
     developerId,
     author,
-    image,
-    title,
+    image = DEFAULT_IMAGE,
     comments,
-    technicalSkill,
-    position,
     contents,
-    onClick,
+    handleClick,
     isAuthor,
+    isLoading,
   } = useDeveloperDetails();
 
-  return (
+  return isLoading ? (
+    <Box>로딩 중</Box>
+  ) : (
     <Stack spacing={3}>
       <Box>
         <ProjectImageStyled
           component="img"
           src={image}
-          alt={title + "'s project image"}
+          alt={contents.oneLiner + "'s project image"}
         />
         <StackStyled direction="column" alignItems="center">
           <BasicAvatar
             {...author}
             size={90}
-            onClick={() => onClick(PROFILE_URL, author.userId)}
+            onClick={() => handleClick(PROFILE_URL, author.userId)}
           />
           <Typography noWrap>{author.fullName}</Typography>
         </StackStyled>
@@ -45,7 +47,9 @@ export default function DeveloperDetail() {
             size="small"
             label="수정하기"
             variant="outlined"
-            onClick={() => onClick(PROJECT_MODIFYL_URL, developerId as string)}
+            onClick={() =>
+              handleClick(PROJECT_MODIFYL_URL, developerId as string)
+            }
           />
         </ChipBoxStyled>
       ) : (
@@ -53,7 +57,7 @@ export default function DeveloperDetail() {
           <BasicButton variant="outlined">팔로우</BasicButton>
           <BasicButton
             variant="outlined"
-            onClick={() => onClick(DM_URL, developerId as string)}
+            onClick={() => handleClick(DM_URL, developerId as string)}
           >
             DM
           </BasicButton>
@@ -61,23 +65,27 @@ export default function DeveloperDetail() {
       )}
       <Stack spacing={1}>
         <Typography variant="h4">
-          {title}
-          <ChipStyled label={position} margin="0 8px" color="secondary" />
+          {contents.oneLiner}
+          <ChipStyled
+            label={contents.position}
+            margin="0 8px"
+            color="secondary"
+          />
         </Typography>
         <ChipsBoxStyled>
-          {technicalSkill.map((skill: string, i: number) => (
+          {contents.techStack?.map((skill: string, i: number) => (
             <ChipStyled label={skill} margin="0 8px 4px 0" key={i} />
           ))}
         </ChipsBoxStyled>
       </Stack>
       <Box>
         <Typography color="gray">자기소개</Typography>
-        <Typography>{contents}</Typography>
+        <Typography>{contents.details}</Typography>
       </Box>
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        <Comments comments={comments} onClick={onClick} url={PROFILE_URL} />
+        <Comments comments={comments} onClick={handleClick} url={PROFILE_URL} />
       </Box>
     </Stack>
   );

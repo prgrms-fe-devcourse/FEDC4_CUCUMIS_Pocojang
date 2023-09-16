@@ -46,7 +46,7 @@ const useProjectDetail = () => {
     const fetchPost = async (postId: string) => {
       try {
         const rs = await getPostId(postId);
-
+        console.log(rs.title);
         handlePost(rs);
       } catch (error) {
         console.log(error);

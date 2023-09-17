@@ -24,10 +24,10 @@ const DevelopersPage = () => {
         return (
           <DeveloperCardItem
             key={developer._id}
-            stacks={developer.stacks}
+            techStack={developer.techStack}
             AvatarProps={developer.AvatarProps}
             name={developer.name}
-            oneliner={developer.oneliner}
+            oneLiner={developer.oneLiner}
             description={developer.description}
             to={developer._id}
           />

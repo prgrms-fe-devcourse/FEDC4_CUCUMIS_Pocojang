@@ -1,146 +1,65 @@
+import { useEffect } from 'react';
+
+import { PostType, UserType } from '@/types';
+import { getChannelPosts } from '@/api/posts/channel/channelId';
+import { getOnlineUsers } from '@/api/users/onlineUsers';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import {
+  developerListSelector,
+  onlineUserListSelector,
+} from '@/stores/developers/selector';
+import { setDeveloperList, setOnlineUserList } from '@/stores/developers';
+
+//TODO parse, api 에러 처리, 무한스크롤 적용
+
+const DEVELOPER_CHANNEL_ID = '650557d36a9d603a4d150e7d';
+
 const useDevelopers = () => {
-  const AvatarProps = {
-    imgSrc: 'https://source.unsplash.com/random',
-    isUserOn: true,
-  };
-  const dummyOnlineUsers = [
-    { _id: 1, AvatarProps, label: 'user1' },
-    { _id: 2, AvatarProps, label: 'user1' },
-    { _id: 3, AvatarProps, label: 'user1' },
-    { _id: 4, AvatarProps, label: 'user1' },
-    { _id: 5, AvatarProps, label: 'user1' },
-    { _id: 6, AvatarProps, label: 'user1' },
-    { _id: 7, AvatarProps, label: 'user1' },
-    { _id: 8, AvatarProps, label: 'user1' },
-  ];
-  const dummyDevelopers = [
-    {
-      _id: '1',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: [],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-    {
-      _id: '2',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: ['react', 'js'],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-    {
-      _id: '3',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: ['react', 'js', 'javascripttypscrpitnodebabelwebpack', 'node.js'],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-    {
-      _id: '4',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: ['react', 'js', 'javascript', 'node.js'],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-    {
-      _id: '5',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: [
-        'react',
-        'js',
-        'javascript',
-        'node.js',
-        '넥슽',
-        'next.js',
-        'NEXT.js',
-      ],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-    {
-      _id: '6',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: [
-        'react',
-        'js',
-        'javascript',
-        'node.js',
-        '넥슽',
-        'next.js',
-        'NEXT.js',
-      ],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-    {
-      _id: '7',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: [
-        'react',
-        'js',
-        'javascript',
-        'node.js',
-        '넥슽',
-        'next.js',
-        'NEXT.js',
-      ],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-    {
-      _id: '8',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: [
-        'react',
-        'js',
-        'javascript',
-        'node.js',
-        '넥슽',
-        'next.js',
-        'NEXT.js',
-      ],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-    {
-      _id: '9',
-      AvatarProps,
-      oneliner: '동해물과 백두산이 마르고 닳도록 ',
-      name: '어쩌구씨',
-      stacks: [
-        'react',
-        'js',
-        'javascript',
-        'node.js',
-        '넥슽',
-        'next.js',
-        'NEXT.js',
-      ],
-      description:
-        '사람들은 다양한 이유로 웹 앱 또는 네이티브 앱을 선호합니다. React는 동일한 기술을 사용하여 웹 앱과 네이티브 앱을 모두 만들 수 있습니다. 각 플랫폼의 강점을 활용하여 모든 플랫폼에 적합한 인터페이스를 구현할 수 있습니다.',
-    },
-  ];
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    getOnlineUsers()
+      .then(parseOnlineUserList)
+      .then((list) => dispatch(setOnlineUserList(list)));
+    getChannelPosts({}, DEVELOPER_CHANNEL_ID)
+      .then(parseDeveloperPosts)
+      .then((posts) => {
+        dispatch(setDeveloperList(posts));
+      });
+  }, [dispatch]);
+
+  const developerList = useAppSelector(developerListSelector);
+  const onlineUserList = useAppSelector(onlineUserListSelector);
 
   return {
-    onlineDevelopers: dummyOnlineUsers,
-    developers: dummyDevelopers,
+    onlineDevelopers: onlineUserList,
+    developers: developerList,
   };
 };
 
 export default useDevelopers;
+
+const parseDeveloperPosts = (list: PostType[]) => {
+  return list.map((post) => {
+    const { _id, author, title } = post;
+    const { oneLiner, techStack, details } = JSON.parse(title);
+    return {
+      _id,
+      oneLiner,
+      description: details,
+      name: author.fullName,
+      techStack,
+      AvatarProps: { imgSrc: author.image, isUserOn: author.isOnline },
+    };
+  });
+};
+
+const parseOnlineUserList = (list: UserType[]) => {
+  return list.map((user) => {
+    const { _id, fullName, image, isOnline } = user;
+    return {
+      _id,
+      label: fullName,
+      AvatarProps: { imgSrc: image, isUserOn: isOnline },
+    };
+  });
+};

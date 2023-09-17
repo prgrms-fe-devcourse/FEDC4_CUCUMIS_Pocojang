@@ -6,13 +6,13 @@ import BasicCard from '@/components/shared/card';
 
 interface Props {
   name: string;
-  imageUrl: string;
+  imageUrl?: string;
   projectTitle: string;
   to: string;
 }
 const ProjectCardItem = ({
   name,
-  imageUrl = 'https://source.unsplash.com/random',
+  imageUrl = `/assets/Logo512.png`,
   projectTitle,
   to,
 }: Props) => {

@@ -6,11 +6,13 @@ import BasicChip from '@/components/shared/chip';
 import { PROFILE_URL, PROJECT_MODIFYL_URL } from '@/consts/routes';
 import Comments from '@/components/comments';
 import useProjectDetail from '@/components/projects/useProjectDetail';
+import ChipGroup from '@/components/shared/chipGroup';
 
 const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
 
 export default function ProjectDetailPage() {
   const {
+    CUCUMIS_POSTID,
     projectId,
     author,
     image = DEFAULT_IMAGE,
@@ -18,6 +20,7 @@ export default function ProjectDetailPage() {
     comments,
     createdAt,
     handleClick,
+    handleDeleteClick,
     isAuthor,
     isLoading,
   } = useProjectDetail();
@@ -54,13 +57,20 @@ export default function ProjectDetailPage() {
               </Typography>
             </Stack>
             {isAuthor && (
-              <BasicChip
-                label="수정하기"
-                variant="outlined"
-                onClick={() =>
-                  handleClick(PROJECT_MODIFYL_URL, projectId as string)
-                }
-              />
+              <ChipGroup>
+                <BasicChip
+                  label="수정"
+                  variant="outlined"
+                  onClick={() =>
+                    handleClick(PROJECT_MODIFYL_URL, projectId as string)
+                  }
+                />
+                <BasicChip
+                  label="삭제"
+                  variant="outlined"
+                  onClick={() => handleDeleteClick(CUCUMIS_POSTID as string)}
+                />
+              </ChipGroup>
             )}
           </Stack>
         </TitleBoxStyled>

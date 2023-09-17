@@ -15,6 +15,7 @@ import type {
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import useComment from '@/components/comments/useComment';
+import { getUserId } from '@/api/posts/delete';
 
 const CUCUMIS_POSTID = '650573ea09e45a4a41119f42';
 
@@ -31,6 +32,16 @@ const useProjectDetail = () => {
 
   const handleClick = (url: string, id: string) => {
     navigate(url + id);
+  };
+
+  const handleDeleteClick = async (id: string) => {
+    const ableToDelete = confirm('정말로 삭제하시겠습니까?');
+
+    if (ableToDelete) {
+      const res = await getUserId({ id });
+
+      res && navigate('/developers');
+    }
   };
 
   useEffect(() => {
@@ -96,8 +107,10 @@ const useProjectDetail = () => {
   }, [developerId, dispatch, refreshPage]);
 
   return {
+    CUCUMIS_POSTID,
     developerId,
     handleClick,
+    handleDeleteClick,
     isAuthor: post.author._id === userId,
     isLoading,
     ...post,

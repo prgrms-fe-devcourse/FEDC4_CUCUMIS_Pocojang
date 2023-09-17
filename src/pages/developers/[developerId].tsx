@@ -7,17 +7,20 @@ import { PROFILE_URL, PROJECT_MODIFYL_URL, DM_URL } from '@/consts/routes';
 import BasicButton from '@/components/shared/button';
 import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
+import ChipGroup from '@/components/shared/chipGroup';
 
 const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
 
 export default function DeveloperDetail() {
   const {
+    CUCUMIS_POSTID,
     developerId,
     author,
     image = DEFAULT_IMAGE,
     comments,
     contents,
     handleClick,
+    handleDeleteClick,
     isAuthor,
     isLoading,
   } = useDeveloperDetails();
@@ -41,28 +44,34 @@ export default function DeveloperDetail() {
           <Typography noWrap>{author.fullName}</Typography>
         </StackStyled>
       </Box>
-      {isAuthor ? (
-        <ChipBoxStyled>
-          <BasicChip
-            size="small"
-            label="수정하기"
-            variant="outlined"
-            onClick={() =>
-              handleClick(PROJECT_MODIFYL_URL, developerId as string)
-            }
-          />
-        </ChipBoxStyled>
-      ) : (
-        <Stack direction="row" spacing={1} sx={{ width: '100%' }}>
-          <BasicButton variant="outlined">팔로우</BasicButton>
-          <BasicButton
-            variant="outlined"
-            onClick={() => handleClick(DM_URL, developerId as string)}
-          >
-            DM
-          </BasicButton>
-        </Stack>
-      )}
+      <Stack direction="row" spacing={1} justifyContent="center">
+        {isAuthor ? (
+          <ChipGroup>
+            <BasicChip
+              label="수정"
+              variant="outlined"
+              onClick={() =>
+                handleClick(PROJECT_MODIFYL_URL, developerId as string)
+              }
+            />
+            <BasicChip
+              label="삭제"
+              variant="outlined"
+              onClick={() => handleDeleteClick(CUCUMIS_POSTID as string)}
+            />
+          </ChipGroup>
+        ) : (
+          <>
+            <BasicButton variant="outlined">팔로우</BasicButton>
+            <BasicButton
+              variant="outlined"
+              onClick={() => handleClick(DM_URL, developerId as string)}
+            >
+              DM
+            </BasicButton>
+          </>
+        )}
+      </Stack>
       <Stack spacing={1}>
         <Typography variant="h4">
           {contents.oneLiner}
@@ -99,10 +108,6 @@ const ProjectImageStyled = styled(Box)({
 
 const StackStyled = styled(Stack)({
   marginTop: '-5vh',
-});
-
-const ChipBoxStyled = styled(Box)({
-  textAlign: 'center',
 });
 
 const ChipsBoxStyled = styled(Box)({

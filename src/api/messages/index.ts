@@ -4,9 +4,9 @@ import type { RequestParamsMessagesType } from '@/types/api/messages/RequestPara
 
 export const messagesList = async (
   rq: RequestParamsMessagesType,
-): Promise<MessageType> => {
-  return await api.post<RequestParamsMessagesType, MessageType>(
-    '/messages/conversations',
+): Promise<MessageType[]> => {
+  return await api.get<RequestParamsMessagesType, MessageType[]>(
+    '/messages',
     rq,
   );
 };

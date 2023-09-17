@@ -28,9 +28,9 @@ const useInfiniteScroll = ({
     return new IntersectionObserver(
       (entries, observer) => {
         if (target?.current === null) return;
-        if (target.current.children.length === list.length) return;
         if (entries[0].isIntersecting) {
           console.log('pageUPdate');
+          console.log(list); // 린트 때문에 로그
           setPage((v) => {
             return v + 1;
           });

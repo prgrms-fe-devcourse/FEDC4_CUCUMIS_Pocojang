@@ -16,7 +16,7 @@ import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getUserId } from '@/api/posts/delete';
 
-const CUCUMIS_POSTID = '6505ddc5f125565ce7eb1e88';
+const CUCUMIS_POSTID = '6506de128a5d007382c4df2e';
 
 const useProjectDetail = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const useProjectDetail = () => {
     const fetchPost = async (postId: string) => {
       try {
         const rs = await getPostId(postId);
-
+        console.log(rs);
         handlePost(rs);
       } catch (error) {
         console.log(error);

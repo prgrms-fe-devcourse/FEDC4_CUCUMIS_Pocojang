@@ -16,7 +16,7 @@ import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getUserId } from '@/api/posts/delete';
 
-const CUCUMIS_POSTID = '650573ea09e45a4a41119f42';
+const CUCUMIS_POSTID = '6506dc1a8a5d007382c4deff';
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const useDeveloperDetail = () => {
     const fetchPost = async (postId: string) => {
       try {
         const rs = await getPostId(postId);
-
+        console.log(rs);
         handlePost(rs);
       } catch (error) {
         console.log(error);
@@ -68,7 +68,7 @@ const useDeveloperDetail = () => {
 
     const handlePost = (rs: PostType) => {
       const { author, comments, _id, image, createdAt } = rs;
-      const { oneliner, techstack, position, details } = JSON.parse(rs.title);
+      const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
 
       const formattedComments = comments.map(({ _id, comment, author }) => ({
         AvatarProps: {
@@ -87,8 +87,8 @@ const useDeveloperDetail = () => {
         author,
         createdAt,
         contents: {
-          oneLiner: oneliner,
-          techStack: techstack,
+          oneLiner,
+          techStack,
           position,
           details,
         },
@@ -102,7 +102,7 @@ const useDeveloperDetail = () => {
       fetchPost(CUCUMIS_POSTID);
     }
     // 예외처리 잘못된 요청
-  }, [developerId, dispatch, post]);
+  }, [developerId, dispatch]);
 
   return {
     CUCUMIS_POSTID,

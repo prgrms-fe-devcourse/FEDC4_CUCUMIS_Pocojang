@@ -15,6 +15,9 @@ import type {
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getUserId } from '@/api/posts/delete';
+import { getUserId as getUserInfo } from '@/api/users/userId';
+import { followUser } from '@/api/follow/create';
+import { unFollowUser } from '@/api/follow/delete';
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
@@ -25,6 +28,8 @@ const useDeveloperDetail = () => {
 
   const [userId, setUserId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserType>();
 
   const handleClick = (url: string, id: string) => {
     navigate(url + id);
@@ -40,6 +45,32 @@ const useDeveloperDetail = () => {
     }
   };
 
+  const handleFollowClick = async () => {
+    if (isFollowing) {
+      try {
+        const followerID = post.author.followers;
+        const followId = userInfo?.following.find(({ _id }) =>
+          followerID.includes(_id),
+        );
+
+        if (followId) {
+          const res = await unFollowUser({ id: followId._id });
+          console.log(res);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const res = await followUser({ userId: post.author._id });
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    navigate(0);
+  };
+
   useEffect(() => {
     const user = session.getItem<UserType>(SESSION_STORAGE.USER);
 
@@ -50,12 +81,33 @@ const useDeveloperDetail = () => {
   }, []);
 
   useEffect(() => {
+    const followerID = post.author.followers;
+
+    const getUserInfoById = async () => {
+      try {
+        const newUserInfo = await getUserInfo(userId);
+        setUserInfo(newUserInfo);
+
+        const isFollowedByUser = newUserInfo.following.some(({ _id }) =>
+          followerID.includes(_id),
+        );
+
+        setIsFollowing(isFollowedByUser);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getUserInfoById();
+  }, [post, userId]);
+
+  useEffect(() => {
     setIsLoading(true);
 
     const fetchPost = async (postId: string) => {
       try {
         const rs = await getPostId(postId);
-
+        console.log(rs);
         handlePost(rs);
       } catch (error) {
         console.log(error);
@@ -105,8 +157,10 @@ const useDeveloperDetail = () => {
     developerId,
     handleClick,
     handleDeleteClick,
+    handleFollowClick,
     isAuthor: post.author._id === userId,
     isLoading,
+    isFollowing,
     ...post,
   };
 };

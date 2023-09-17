@@ -20,8 +20,10 @@ export default function DeveloperDetail() {
     contents,
     handleClick,
     handleDeleteClick,
+    handleFollowClick,
     isAuthor,
     isLoading,
+    isFollowing,
   } = useDeveloperDetails();
 
   return isLoading ? (
@@ -61,7 +63,15 @@ export default function DeveloperDetail() {
           </ChipGroup>
         ) : (
           <>
-            <BasicButton variant="outlined">팔로우</BasicButton>
+            {isFollowing ? (
+              <BasicButton variant="outlined" onClick={handleFollowClick}>
+                언팔로우
+              </BasicButton>
+            ) : (
+              <BasicButton variant="outlined" onClick={handleFollowClick}>
+                팔로우
+              </BasicButton>
+            )}
             <BasicButton
               variant="outlined"
               onClick={() => handleClick(DM_URL, developerId as string)}

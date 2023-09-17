@@ -83,6 +83,7 @@ export default function ProjectDetailPage() {
       <Box>
         <Typography color="gray">댓글</Typography>
         <Comments
+          authorId={author._id}
           postId={projectId}
           comments={comments}
           onClick={handleClick}

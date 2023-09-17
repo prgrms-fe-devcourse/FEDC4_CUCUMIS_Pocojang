@@ -8,12 +8,14 @@ import { deleteComments } from '@/api/comments/delete';
 import session from '@/utils/sessionStorage';
 import type { UserType } from '@/types';
 import SESSION_STORAGE from '@/consts/sessionStorage';
+import { sendNotifications } from '@/api/notifications/create';
 
 interface UseCommentProps {
+  authorId: string;
   postId: string;
 }
 
-const useComment = ({ postId }: UseCommentProps) => {
+const useComment = ({ authorId, postId }: UseCommentProps) => {
   const { input } = useAppSelector(layoutSelector);
   const [userId, setUserId] = useState('');
   const navigate = useNavigate();
@@ -40,10 +42,18 @@ const useComment = ({ postId }: UseCommentProps) => {
   useEffect(() => {
     const submitComment = async () => {
       try {
-        await createComments({
+        const res = await createComments({
           comment: input,
           postId,
         });
+
+        await sendNotifications({
+          notificationType: 'COMMENT',
+          notificationTypeId: res._id,
+          userId: authorId,
+          postId,
+        });
+
         navigate(0);
       } catch (error) {
         console.log(error);
@@ -51,7 +61,7 @@ const useComment = ({ postId }: UseCommentProps) => {
     };
 
     input && submitComment();
-  }, [input, postId, navigate]);
+  }, [input, postId, userId, authorId, navigate]);
 
   return {
     userId,

@@ -7,14 +7,15 @@ import BasicChip from '../shared/chip';
 import useComment from './useComment';
 
 interface Props {
+  authorId: string;
   postId: string;
   comments: FormattedComment[];
   url: string;
   onClick: (url: string, userId: string) => void;
 }
 
-const Comments = ({ postId, comments, onClick, url }: Props) => {
-  const { userId, handleDeleteClick } = useComment({ postId });
+const Comments = ({ authorId, postId, comments, onClick, url }: Props) => {
+  const { userId, handleDeleteClick } = useComment({ authorId, postId });
 
   return (
     <List disablePadding>

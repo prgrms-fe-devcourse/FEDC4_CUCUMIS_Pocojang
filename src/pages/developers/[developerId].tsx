@@ -13,7 +13,6 @@ const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
 
 export default function DeveloperDetail() {
   const {
-    CUCUMIS_POSTID,
     developerId,
     author,
     image = DEFAULT_IMAGE,
@@ -57,7 +56,7 @@ export default function DeveloperDetail() {
             <BasicChip
               label="삭제"
               variant="outlined"
-              onClick={() => handleDeleteClick(CUCUMIS_POSTID as string)}
+              onClick={() => handleDeleteClick(developerId as string)}
             />
           </ChipGroup>
         ) : (
@@ -95,7 +94,7 @@ export default function DeveloperDetail() {
       <Box>
         <Typography color="gray">댓글</Typography>
         <Comments
-          postId={CUCUMIS_POSTID}
+          postId={developerId}
           comments={comments}
           onClick={handleClick}
           url={PROFILE_URL}

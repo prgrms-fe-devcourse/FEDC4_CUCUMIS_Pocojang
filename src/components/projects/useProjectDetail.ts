@@ -16,8 +16,6 @@ import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getUserId } from '@/api/posts/delete';
 
-const CUCUMIS_POSTID = '6506de128a5d007382c4df2e';
-
 const useProjectDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -57,7 +55,7 @@ const useProjectDetail = () => {
     const fetchPost = async (postId: string) => {
       try {
         const rs = await getPostId(postId);
-        console.log(rs);
+
         handlePost(rs);
       } catch (error) {
         console.log(error);
@@ -96,14 +94,12 @@ const useProjectDetail = () => {
     };
 
     if (projectId) {
-      // fetchPost(projectId);
-      fetchPost(CUCUMIS_POSTID);
+      fetchPost(projectId);
     }
     // 예외처리 잘못된 요청
   }, [projectId, dispatch]);
 
   return {
-    CUCUMIS_POSTID,
     projectId,
     handleClick,
     handleDeleteClick,

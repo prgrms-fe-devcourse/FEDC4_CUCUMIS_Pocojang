@@ -94,7 +94,12 @@ export default function DeveloperDetail() {
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        <Comments comments={comments} onClick={handleClick} url={PROFILE_URL} />
+        <Comments
+          postId={CUCUMIS_POSTID}
+          comments={comments}
+          onClick={handleClick}
+          url={PROFILE_URL}
+        />
       </Box>
     </Stack>
   );

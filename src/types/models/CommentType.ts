@@ -12,6 +12,7 @@ export interface CommentType {
 export interface FormattedComment {
   AvatarProps: BasicAvatarProps;
   userId: string;
+  commentId: string;
   author: string;
   comment: string;
   isLastItem?: boolean;

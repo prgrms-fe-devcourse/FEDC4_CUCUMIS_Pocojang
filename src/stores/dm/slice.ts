@@ -1,11 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export interface DMState {}
+import { MessageType } from '@/types';
 
-const initialState: DMState = {};
+export interface DMState {
+  messages: MessageType[];
+}
+
+const initialState: DMState = {
+  messages: [],
+};
 
 export const dmSlice = createSlice({
   name: 'dm',
   initialState,
-  reducers: {},
+  reducers: {
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+    },
+    addMessage: (state, action) => {
+      state.messages = [...state.messages, action.payload];
+    },
+  },
 });

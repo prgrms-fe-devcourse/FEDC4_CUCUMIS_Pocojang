@@ -18,6 +18,7 @@ import { getUserId } from '@/api/posts/delete';
 import { getUserId as getUserInfo } from '@/api/users/userId';
 import { followUser } from '@/api/follow/create';
 import { unFollowUser } from '@/api/follow/delete';
+import { sendNotifications } from '@/api/notifications/create';
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
@@ -36,9 +37,9 @@ const useDeveloperDetail = () => {
   };
 
   const handleDeleteClick = async (id: string) => {
-    const ableToDelete = confirm('정말로 삭제하시겠습니까?');
+    const isAbleToDelete = confirm('정말로 삭제하시겠습니까?');
 
-    if (ableToDelete) {
+    if (isAbleToDelete) {
       const res = await getUserId({ id });
 
       res && navigate('/developers');
@@ -63,7 +64,13 @@ const useDeveloperDetail = () => {
     } else {
       try {
         const res = await followUser({ userId: post.author._id });
-        console.log(res);
+
+        await sendNotifications({
+          notificationType: 'FOLLOW',
+          notificationTypeId: res._id,
+          userId: post.author._id,
+          postId: null,
+        });
       } catch (error) {
         console.log(error);
       }
@@ -107,7 +114,7 @@ const useDeveloperDetail = () => {
     const fetchPost = async (postId: string) => {
       try {
         const rs = await getPostId(postId);
-        console.log(rs);
+
         handlePost(rs);
       } catch (error) {
         console.log(error);

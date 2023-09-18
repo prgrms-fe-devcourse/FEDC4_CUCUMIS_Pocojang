@@ -44,6 +44,7 @@ const useForm = ({ initialValues, onSubmit, validate }: FormProps) => {
     } catch (error) {
       console.error(error);
     } finally {
+      setValues(initialValues);
       setIsLoading(false);
     }
   };

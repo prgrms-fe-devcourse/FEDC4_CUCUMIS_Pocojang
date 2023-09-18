@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { getUserId } from '@/api/users/userId';
 import { messagesList } from '@/api/messages';
@@ -12,6 +12,7 @@ import {
   setVisitingUser,
 } from '@/stores/layout';
 import { setMessages, addMessage, messagesSelector } from '@/stores/dm';
+import useInterval from '@/hooks/useInterval';
 
 interface DMDetailHookParameters {
   onGetFail: (error: unknown) => void;
@@ -33,29 +34,52 @@ export const useDMDetail = ({
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    messageEndRef.current?.scrollIntoView();
-  }, [messages]);
+  const getMessages = useCallback(
+    async (visitingUserId: string) => {
+      try {
+        const messageList = await messagesList({ userId: visitingUserId });
+        if (messageList.length > messages.length) {
+          dispatch(setMessages(messageList));
+        }
+      } catch (error) {
+        // TODO: message 불러오기 실패
+        onGetFail(error);
+      }
+    },
+    [messages, dispatch, onGetFail],
+  );
 
-  useEffect(() => {
-    const getDetails = async (visitingUserId: string) => {
+  const getVisitingUser = useCallback(
+    async (visitingUserId: string) => {
       try {
         const visitingUser = await getUserId(visitingUserId);
-        const messageList = await messagesList({ userId: visitingUserId });
         dispatch(setVisitingUser(visitingUser));
-        dispatch(setMessages(messageList));
       } catch (error) {
         // TODO: message 불러오기 실패
         onGetFail(error);
       } finally {
         setIsLoading(false);
       }
-    };
+    },
+    [dispatch, onGetFail],
+  );
 
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView();
+  }, [messages]);
+
+  useEffect(() => {
     if (visitingUserId) {
-      getDetails(visitingUserId);
+      getVisitingUser(visitingUserId);
+      getMessages(visitingUserId);
     }
-  }, [visitingUserId, dispatch, onGetFail]);
+  }, [getVisitingUser, getMessages, visitingUserId, dispatch, onGetFail]);
+
+  useInterval(() => {
+    if (visitingUserId) {
+      getMessages(visitingUserId);
+    }
+  }, 3000);
 
   useEffect(() => {
     const createMessage = async (rq: RequestBodyCreateMessagesType) => {

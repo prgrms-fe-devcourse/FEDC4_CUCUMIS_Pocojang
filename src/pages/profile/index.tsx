@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -20,7 +20,10 @@ import DUMMY_DATA from '@/components/profile/useProfile';
 const ProfilePage = () => {
   const { userId } = useParams();
   const [value, setValue] = useState(0);
-
+  const navigate = useNavigate();
+  const pageNavigate = (url: string) => {
+    navigate(url);
+  };
   return (
     <StyledWrapperBox>
       <StyledBox>
@@ -61,7 +64,11 @@ const ProfilePage = () => {
           {userId !== '1' && (
             <StyledBasicButtonStack direction={'row'}>
               <BasicButton variant="outlined" children="팔로우" />
-              <BasicButton variant="outlined" children="DM" />
+              <BasicButton
+                variant="outlined"
+                children="DM"
+                onClick={() => pageNavigate(`/dm/${userId}`)}
+              />
             </StyledBasicButtonStack>
           )}
         </Stack>

@@ -1,11 +1,21 @@
+import { useCallback } from 'react';
 import styled from '@emotion/styled';
 import Stack from '@mui/material/Stack';
 
-import useDMDetail from '@/components/dm/useDMDetail';
+import { useDMDetail } from '@/components/dm/useDMDetail';
 import Message from '@/components/dm/message';
 
-export default function DMPage() {
-  const { messages } = useDMDetail();
+export default function DMDetailPage() {
+  const { messages } = useDMDetail({
+    onGetFail: useCallback((error: unknown) => {
+      // TODO: message 불러오기 실패 알림
+      console.error(error);
+    }, []),
+    onSendFail: useCallback((error: unknown) => {
+      // TODO: message 보내기 실패 알림
+      console.error(error);
+    }, []),
+  });
 
   return (
     <StackStyled
@@ -14,13 +24,14 @@ export default function DMPage() {
       alignItems="stretch"
       spacing={0}
     >
-      {messages.map((data) => (
-        <Message
-          message={data.message}
-          isSender={data.isSender}
-          key={data._id}
-        />
-      ))}
+      {messages &&
+        messages.map((message) => (
+          <Message
+            message={message.message}
+            isSender={message.isSender}
+            key={message._id}
+          />
+        ))}
     </StackStyled>
   );
 }

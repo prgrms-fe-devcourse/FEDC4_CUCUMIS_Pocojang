@@ -3,7 +3,7 @@ import { Box, Divider, Stack, Typography } from '@mui/material';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
-import { PROFILE_URL, PROJECT_MODIFYL_URL, DM_URL } from '@/consts/routes';
+import { PROFILE_URL, DM_URL, SETTINGS_URL } from '@/consts/routes';
 import BasicButton from '@/components/shared/button';
 import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
@@ -51,9 +51,7 @@ export default function DeveloperDetail() {
             <BasicChip
               label="수정"
               variant="outlined"
-              onClick={() =>
-                handleClick(PROJECT_MODIFYL_URL, developerId as string)
-              }
+              onClick={() => handleClick(SETTINGS_URL)}
             />
             <BasicChip
               label="삭제"

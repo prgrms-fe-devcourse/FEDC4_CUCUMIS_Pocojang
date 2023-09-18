@@ -31,7 +31,7 @@ const useDeveloperDetail = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [userInfo, setUserInfo] = useState<UserType>();
 
-  const handleClick = (url: string, id: string) => {
+  const handleClick = (url: string, id: string = '') => {
     navigate(url + id);
   };
 

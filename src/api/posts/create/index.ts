@@ -1,8 +1,12 @@
 import api from '@/utils/api';
 import type { RequestBodyCreatePostType } from '@/types/api/posts/create/RequestBodyCreatePostType';
+import { PostType } from '@/types';
 
-export const getPostId = async (
+export const createPost = async (
   rq: RequestBodyCreatePostType,
-): Promise<null> => {
-  return await api.post<RequestBodyCreatePostType, null>('/posts/create', rq);
+): Promise<PostType> => {
+  return await api.post<RequestBodyCreatePostType, PostType>(
+    '/posts/create',
+    rq,
+  );
 };

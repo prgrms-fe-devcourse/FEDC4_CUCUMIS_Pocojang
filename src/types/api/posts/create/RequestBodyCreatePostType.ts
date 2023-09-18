@@ -1,5 +1,5 @@
 export interface RequestBodyCreatePostType {
   title: string;
-  image: BinaryData | null;
+  image?: BinaryData;
   channelId: string;
 }

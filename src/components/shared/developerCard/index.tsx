@@ -1,4 +1,5 @@
-import { CardContent, Grid, Typography, styled } from '@mui/material';
+import { CardContent, Grid, Typography } from '@mui/material';
+import styled from '@emotion/styled';
 
 import type BasicAvatarProps from '@/types/components/BasicAvatarProps';
 import BasicAvatar from '@/components/shared/avatar';
@@ -23,6 +24,7 @@ const DeveloperCardItem = ({
   techStack,
   to,
 }: Props) => {
+  console.log(techStack);
   return (
     <BasicCard to={`/developers/${to}`}>
       <CardContent>
@@ -38,9 +40,11 @@ const DeveloperCardItem = ({
               {name}
             </Typography>
             <ChipGroup>
-              {techStack.slice(0, 3).map((stack) => (
-                <ChipStyled key={stack} label={stack} />
-              ))}
+              {techStack &&
+                Array.isArray(techStack) &&
+                techStack.map((stack) => (
+                  <ChipStyled key={stack} label={stack} />
+                ))}
             </ChipGroup>
           </Grid>
         </Grid>

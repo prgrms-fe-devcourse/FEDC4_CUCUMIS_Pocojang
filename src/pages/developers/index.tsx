@@ -8,6 +8,8 @@ import useDevelopers from '@/components/developers/useDevelopers';
 
 const DevelopersPage = () => {
   const { onlineDevelopers, developers } = useDevelopers();
+
+  console.log(onlineDevelopers, developers);
   return (
     <Stack spacing={1} mt={1}>
       <StackStyled direction="row" spacing={4}>

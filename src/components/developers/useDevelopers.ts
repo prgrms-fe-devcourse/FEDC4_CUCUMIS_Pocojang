@@ -10,7 +10,7 @@ import {
 } from '@/stores/developers/selector';
 import { setDeveloperList, setOnlineUserList } from '@/stores/developers';
 
-//TODO parse, api 에러 처리, 무한스크롤 적용
+//TODO parse, api 에러 처리, 무한스크롤 적용, api 동시 호출
 
 const DEVELOPER_CHANNEL_ID = '650557d36a9d603a4d150e7d';
 
@@ -42,12 +42,13 @@ const parseDeveloperPosts = (list: PostType[]) => {
   return list.map((post) => {
     const { _id, author, title } = post;
     const { oneLiner, techStack, details } = JSON.parse(title);
+    const slicedTechStack = techStack.slice(0, 3);
     return {
       _id,
       oneLiner,
       description: details,
       name: author.fullName,
-      techStack,
+      techStack: slicedTechStack,
       AvatarProps: { imgSrc: author.image, isUserOn: author.isOnline },
     };
   });

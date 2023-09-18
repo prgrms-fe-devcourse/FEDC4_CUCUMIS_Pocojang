@@ -19,6 +19,7 @@ import { getUserId as getUserInfo } from '@/api/users/userId';
 import { followUser } from '@/api/follow/create';
 import { unFollowUser } from '@/api/follow/delete';
 import { sendNotifications } from '@/api/notifications/create';
+import { DEVELOPER_URL } from '@/consts/routes';
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
@@ -44,26 +45,22 @@ const useDeveloperDetail = () => {
     if (isAbleToDelete) {
       const res = await getUserId({ id });
 
-      res && navigate('/developers');
+      res && navigate(DEVELOPER_URL);
     }
   };
 
   const handleFollowClick = async () => {
-    if (buttonState.isFollowing) {
-      try {
-        const followerID = post.author.followers;
+    try {
+      if (buttonState.isFollowing) {
+        const followerIDList = post.author.followers;
         const followId = userInfo?.following.find(({ _id }) =>
-          followerID.includes(_id),
+          followerIDList.includes(_id),
         );
 
         if (followId) {
           await unFollowUser({ id: followId._id });
         }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
+      } else {
         const res = await followUser({ userId: post.author._id });
 
         await sendNotifications({
@@ -72,12 +69,8 @@ const useDeveloperDetail = () => {
           userId: post.author._id,
           postId: null,
         });
-      } catch (error) {
-        console.log(error);
       }
-    }
 
-    try {
       if (userInfo?._id) {
         const newUserInfo = await getUserInfo(userInfo._id);
         session.setItem(SESSION_STORAGE.USER, newUserInfo);
@@ -138,7 +131,6 @@ const useDeveloperDetail = () => {
     if (developerId) {
       fetchPost(developerId);
     }
-    // 예외처리 잘못된 요청
   }, [developerId, dispatch]);
 
   useEffect(() => {

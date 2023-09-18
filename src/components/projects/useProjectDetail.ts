@@ -15,6 +15,7 @@ import type {
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getUserId } from '@/api/posts/delete';
+import { PROJECT_URL } from '@/consts/routes';
 
 const useProjectDetail = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const useProjectDetail = () => {
     if (ableToDelete) {
       const res = await getUserId({ id });
 
-      res && navigate('/projects');
+      res && navigate(PROJECT_URL);
     }
   };
 
@@ -96,7 +97,6 @@ const useProjectDetail = () => {
     if (projectId) {
       fetchPost(projectId);
     }
-    // 예외처리 잘못된 요청
   }, [projectId, dispatch]);
 
   return {

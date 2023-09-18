@@ -27,7 +27,6 @@ const useDeveloperDetail = () => {
   const { developerId } = useParams();
   const { post } = useAppSelector(projectDetailSelector);
 
-  const [userId, setUserId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [userInfo, setUserInfo] = useState<UserType>();
@@ -55,8 +54,7 @@ const useDeveloperDetail = () => {
         );
 
         if (followId) {
-          const res = await unFollowUser({ id: followId._id });
-          console.log(res);
+          await unFollowUser({ id: followId._id });
         }
       } catch (error) {
         console.log(error);
@@ -75,38 +73,18 @@ const useDeveloperDetail = () => {
         console.log(error);
       }
     }
+
+    try {
+      if (userInfo?._id) {
+        const newUserInfo = await getUserInfo(userInfo._id);
+        session.setItem(SESSION_STORAGE.USER, newUserInfo);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     navigate(0);
   };
-
-  useEffect(() => {
-    const user = session.getItem<UserType>(SESSION_STORAGE.USER);
-
-    if (user) {
-      const { _id } = user;
-      setUserId(_id);
-    }
-  }, []);
-
-  useEffect(() => {
-    const followerID = post.author.followers;
-
-    const getUserInfoById = async () => {
-      try {
-        const newUserInfo = await getUserInfo(userId);
-        setUserInfo(newUserInfo);
-
-        const isFollowedByUser = newUserInfo.following.some(({ _id }) =>
-          followerID.includes(_id),
-        );
-
-        setIsFollowing(isFollowedByUser);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getUserInfoById();
-  }, [post, userId]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -160,12 +138,26 @@ const useDeveloperDetail = () => {
     // 예외처리 잘못된 요청
   }, [developerId, dispatch]);
 
+  useEffect(() => {
+    const user = session.getItem<UserType>(SESSION_STORAGE.USER);
+
+    if (user && post.author.followers) {
+      setUserInfo(user);
+
+      const followerID = post.author.followers;
+      const isFollowedByUser = user.following?.some(({ _id }) =>
+        followerID.includes(_id),
+      );
+      setIsFollowing(isFollowedByUser);
+    }
+  }, [post]);
+
   return {
     developerId,
     handleClick,
     handleDeleteClick,
     handleFollowClick,
-    isAuthor: post.author._id === userId,
+    isAuthor: post.author._id === userInfo?._id,
     isLoading,
     isFollowing,
     ...post,

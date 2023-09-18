@@ -39,30 +39,30 @@ const ProfilePage = () => {
     return myAccount._id === userId;
   };
 
-  const requestFollowing = async (userId: string) => {
-    const request = await followUser({ userId });
+  const requestFollowing = async () => {
+    const request = await followUser({ userId: userId as string });
     // TODO : 낙관적 업데이트 해줘야 함. => followList나 number등을 전부 state로 다룰 예정!
     console.log(request);
-    setButtonText(false);
+    setButtonText(true);
   };
 
   const deleteFollowing = async (id = '') => {
     const data = await unFollowUser({ id: id });
     console.log(data);
-    setButtonText(true);
+    setButtonText(false);
   };
 
   useEffect(() => {
     if (userId) {
       const isExistInMyFollowingList = async () => {
         const myData = await getUserId(myAccount._id);
-        myData.following.find(
-          (followingList) => followingList.user === userId,
-        ) && setButtonText(false);
+        const result = myData.following.find((e) => e.user === userId);
+        console.log(myData);
+        console.log(result);
+        result ? setButtonText(true) : setButtonText(false); // false로 안 해줬구나...
       };
       const requestUser = async (userId: string) => {
         const getUser = await getUserId(userId);
-        console.log(getUser);
         setCurrentUser(getUser);
       };
       isExistInMyFollowingList(); // 바뀔 때 버튼 상태를 처음에 보여줘야 하기 때문...!
@@ -112,15 +112,15 @@ const ProfilePage = () => {
             <StyledBasicButtonStack direction={'row'}>
               <BasicButton
                 variant="outlined"
-                children={buttonText ? '팔로잉' : '팔로잉 취소'}
+                children={buttonText ? '팔로잉 취소' : '팔로잉'}
                 onClick={async () => {
                   const myData = await getUserId(myAccount._id);
                   const followingObj = myData.following.find(
                     (e) => e.user === userId,
                   );
                   buttonText
-                    ? requestFollowing(userId as string)
-                    : deleteFollowing(followingObj?._id);
+                    ? deleteFollowing(followingObj?._id)
+                    : requestFollowing();
                 }}
               />
               <BasicButton

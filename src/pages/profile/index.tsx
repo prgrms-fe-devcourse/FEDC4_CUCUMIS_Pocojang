@@ -6,7 +6,7 @@ import {
   Stack,
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
 import Navbar from '@/components/navbar';
@@ -16,14 +16,27 @@ import BasicAvatar from '@/components/shared/avatar';
 import BasicButton from '@/components/shared/button';
 import BgProfile from '@/components/profile/bgProfile';
 import DUMMY_DATA from '@/components/profile/useProfile';
+import { getUserId } from '@/api/users/userId';
+import { UserType } from '@/types';
 
 const ProfilePage = () => {
   const { userId } = useParams();
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState<UserType>();
   const pageNavigate = (url: string) => {
     navigate(url);
   };
+
+  useEffect(() => {
+    if (userId) {
+      const requestUser = async (userId: string) => {
+        const getUser = await getUserId(userId);
+        setCurrentUser(getUser);
+      };
+      requestUser(userId);
+    }
+  }, [userId]);
   return (
     <StyledWrapperBox>
       <StyledBox>
@@ -89,16 +102,18 @@ const ProfilePage = () => {
         <StyledContentsWrapper>
           {value === 0 ? (
             <StyledItemWithAvatarBox>
-              {DUMMY_DATA.FOLLOWING_DUMMY_DATA.map(
-                ({ userName, userImgUrl }) => (
-                  <ItemWithAvatar
-                    name={userName}
-                    AvatarProps={{
-                      imgSrc: userImgUrl,
-                    }}
-                  />
-                ),
-              )}
+              {currentUser &&
+                currentUser.following.map(({ user }) => {
+                  return (
+                    <ItemWithAvatar
+                      name={user}
+                      AvatarProps={{
+                        imgSrc: user,
+                      }}
+                      to={`/profile/${user}`}
+                    />
+                  );
+                })}
             </StyledItemWithAvatarBox>
           ) : value === 1 ? (
             <StyledItemWithAvatarBox>

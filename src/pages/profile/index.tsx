@@ -57,15 +57,13 @@ const ProfilePage = () => {
       const isExistInMyFollowingList = async () => {
         const myData = await getUserId(myAccount._id);
         const result = myData.following.find((e) => e.user === userId);
-        console.log(myData);
-        console.log(result);
-        result ? setButtonText(true) : setButtonText(false); // false로 안 해줬구나...
+        result ? setButtonText(true) : setButtonText(false);
       };
       const requestUser = async (userId: string) => {
         const getUser = await getUserId(userId);
         setCurrentUser(getUser);
       };
-      isExistInMyFollowingList(); // 바뀔 때 버튼 상태를 처음에 보여줘야 하기 때문...!
+      isExistInMyFollowingList();
       requestUser(userId);
     }
   }, [userId, myAccount._id]);

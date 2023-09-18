@@ -114,7 +114,7 @@ const ProfilePage = () => {
           ) : value === 1 ? (
             <StyledItemWithAvatarBox>
               {currentUser &&
-                currentUser.following.map(({ follower }) => {
+                currentUser.followers.map(({ follower }) => {
                   return (
                     <ItemWithAvatar
                       name={follower}

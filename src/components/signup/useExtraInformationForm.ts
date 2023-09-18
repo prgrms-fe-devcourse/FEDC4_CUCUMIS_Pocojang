@@ -6,9 +6,9 @@ import {
   extraInformationValuesSelector,
   setExtraInputFormValues,
 } from '@/stores/signup';
-import { updateUser } from '@/api/settings/updateUser';
-import { userFullNameSelector } from '@/stores/auth';
-import { UserType } from '@/types';
+import { PostType } from '@/types';
+import { createPost } from '@/api/posts/create';
+import CHANNEL_ID from '@/consts/channels';
 
 const validateExtraInformationForm = ({
   oneLiner,
@@ -23,7 +23,7 @@ const validateExtraInformationForm = ({
 };
 
 interface SignupFormHookParameters {
-  onSuccess: (rs: UserType) => void;
+  onSuccess: (rs: PostType) => void;
   onFail: (error: unknown) => void;
 }
 
@@ -35,15 +35,15 @@ export const useExtraInformationForm = ({
   const extraInputFormValues: FormValues = useAppSelector(
     extraInformationValuesSelector,
   );
-  const fullName = useAppSelector(userFullNameSelector);
 
   const onSubmitExtraInformationForm = async (formValues: FormValues) => {
     try {
       const userData = JSON.stringify(formValues);
-      const rs = await updateUser({
-        fullName,
-        username: userData,
+      const rs = await createPost({
+        title: userData,
+        channelId: CHANNEL_ID.DEVELOPER,
       });
+
       onSuccess(rs);
     } catch (error) {
       onFail(error);

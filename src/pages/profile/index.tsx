@@ -16,9 +16,12 @@ import ProfileNav from '@/components/profile/profileNav';
 
 const ProfilePage = () => {
   const [currentUser, setCurrentUser] = useState<UserType>();
+  const [buttonText, setButtonText] = useState(false);
   const { userId } = useParams();
   const navigate = useNavigate();
   const [value, setValue] = useState<number | string>(0);
+  const myAccount = JSON.parse(sessionStorage.getItem('USER') as string);
+
   const navigationData = [
     { label: currentUser?.following.length || 0, title: '팔로잉' },
     { label: currentUser?.followers.length || 0, title: '팔로워' },
@@ -31,18 +34,26 @@ const ProfilePage = () => {
   };
 
   const checkIsMe = () => {
-    const myId = JSON.parse(sessionStorage.getItem('USER') as string);
-    return myId._id === userId;
+    return myAccount._id === userId;
   };
+
   useEffect(() => {
     if (userId) {
+      // 내 팔로잉 목록에 있으면.. 버튼은 "팔로잉 취소" 아니라면 "팔로우"
+      const isExistInMyFollowingList = async () => {
+        const myData = await getUserId(myAccount._id);
+        myData.following.find(
+          (followingList) => followingList.user === userId,
+        ) && setButtonText(true);
+      };
       const requestUser = async (userId: string) => {
         const getUser = await getUserId(userId);
         setCurrentUser(getUser);
       };
+      isExistInMyFollowingList(); // 바뀔 때 버튼 상태를 처음에 보여줘야 하기 때문...!
       requestUser(userId);
     }
-  }, [userId]);
+  }, [userId, myAccount._id]);
   return (
     <StyledWrapperBox>
       <StyledBox>
@@ -82,7 +93,10 @@ const ProfilePage = () => {
           </Box>
           {checkIsMe() || (
             <StyledBasicButtonStack direction={'row'}>
-              <BasicButton variant="outlined" children="팔로우" />
+              <BasicButton
+                variant="outlined"
+                children={buttonText ? '팔로잉 취소' : '팔로잉'}
+              />
               <BasicButton
                 variant="outlined"
                 children="DM"

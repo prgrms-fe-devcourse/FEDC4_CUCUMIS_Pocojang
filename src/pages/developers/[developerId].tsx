@@ -24,6 +24,7 @@ export default function DeveloperDetail() {
     isAuthor,
     isLoading,
     isFollowing,
+    isLoggedIn,
   } = useDeveloperDetails();
 
   return isLoading ? (
@@ -46,36 +47,40 @@ export default function DeveloperDetail() {
         </StackStyled>
       </Box>
       <Stack direction="row" spacing={1} justifyContent="center">
-        {isAuthor ? (
-          <ChipGroup>
-            <BasicChip
-              label="수정"
-              variant="outlined"
-              onClick={() => handleClick(SETTINGS_URL)}
-            />
-            <BasicChip
-              label="삭제"
-              variant="outlined"
-              onClick={() => handleDeleteClick(developerId as string)}
-            />
-          </ChipGroup>
-        ) : (
+        {isLoggedIn && (
           <>
-            {isFollowing ? (
-              <BasicButton variant="outlined" onClick={handleFollowClick}>
-                언팔로우
-              </BasicButton>
+            {isAuthor ? (
+              <ChipGroup>
+                <BasicChip
+                  label="수정"
+                  variant="outlined"
+                  onClick={() => handleClick(SETTINGS_URL)}
+                />
+                <BasicChip
+                  label="삭제"
+                  variant="outlined"
+                  onClick={() => handleDeleteClick(developerId as string)}
+                />
+              </ChipGroup>
             ) : (
-              <BasicButton variant="outlined" onClick={handleFollowClick}>
-                팔로우
-              </BasicButton>
+              <>
+                {isFollowing ? (
+                  <BasicButton variant="outlined" onClick={handleFollowClick}>
+                    언팔로우
+                  </BasicButton>
+                ) : (
+                  <BasicButton variant="outlined" onClick={handleFollowClick}>
+                    팔로우
+                  </BasicButton>
+                )}
+                <BasicButton
+                  variant="outlined"
+                  onClick={() => handleClick(DM_URL, developerId as string)}
+                >
+                  DM
+                </BasicButton>
+              </>
             )}
-            <BasicButton
-              variant="outlined"
-              onClick={() => handleClick(DM_URL, developerId as string)}
-            >
-              DM
-            </BasicButton>
           </>
         )}
       </Stack>

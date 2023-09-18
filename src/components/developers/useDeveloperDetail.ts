@@ -28,7 +28,10 @@ const useDeveloperDetail = () => {
   const { post } = useAppSelector(projectDetailSelector);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [buttonState, setButtonState] = useState({
+    isFollowing: false,
+    isLoggedIn: false,
+  });
   const [userInfo, setUserInfo] = useState<UserType>();
 
   const handleClick = (url: string, id: string = '') => {
@@ -46,7 +49,7 @@ const useDeveloperDetail = () => {
   };
 
   const handleFollowClick = async () => {
-    if (isFollowing) {
+    if (buttonState.isFollowing) {
       try {
         const followerID = post.author.followers;
         const followId = userInfo?.following.find(({ _id }) =>
@@ -148,7 +151,11 @@ const useDeveloperDetail = () => {
       const isFollowedByUser = user.following?.some(({ _id }) =>
         followerID.includes(_id),
       );
-      setIsFollowing(isFollowedByUser);
+      setButtonState({ isLoggedIn: true, isFollowing: isFollowedByUser });
+    }
+
+    if (!user) {
+      setButtonState((prev) => ({ ...prev, isLoggedIn: false }));
     }
   }, [post]);
 
@@ -159,7 +166,7 @@ const useDeveloperDetail = () => {
     handleFollowClick,
     isAuthor: post.author._id === userInfo?._id,
     isLoading,
-    isFollowing,
+    ...buttonState,
     ...post,
   };
 };

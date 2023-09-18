@@ -11,5 +11,11 @@ export const getOnlineUsers = async (): Promise<UserType[]> =>
 export const getUser = async (userId: string): Promise<UserType> =>
   api.get<undefined, UserType>(`/users/${userId}`);
 
+/**
+ * [ FormData Inputs ]
+ * @isCover string
+ * @image File
+ * 프로필 이미지 변경 시 isCover 값으로 'false', 커버 이미지 변경 시 isCover 값으로 'true' 전달
+ */
 export const uploadUserPhoto = async (request: FormData): Promise<UserType> =>
   api.post<FormData, UserType>('/users/upload-photo', request);

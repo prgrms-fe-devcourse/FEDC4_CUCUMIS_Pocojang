@@ -13,10 +13,12 @@ import BgProfile from '@/components/profile/bgProfile';
 import { getUserId } from '@/api/users/userId';
 import { UserType } from '@/types';
 import ProfileNav from '@/components/profile/profileNav';
+import { followUser } from '@/api/follow/create';
+import { unFollowUser } from '@/api/follow/delete';
 
 const ProfilePage = () => {
   const [currentUser, setCurrentUser] = useState<UserType>();
-  const [buttonText, setButtonText] = useState(false);
+  const [buttonText, setButtonText] = useState(true);
   const { userId } = useParams();
   const navigate = useNavigate();
   const [value, setValue] = useState<number | string>(0);
@@ -37,17 +39,30 @@ const ProfilePage = () => {
     return myAccount._id === userId;
   };
 
+  const requestFollowing = async (userId: string) => {
+    const request = await followUser({ userId });
+    // TODO : 낙관적 업데이트 해줘야 함. => followList나 number등을 전부 state로 다룰 예정!
+    console.log(request);
+    setButtonText(false);
+  };
+
+  const deleteFollowing = async (id = '') => {
+    const data = await unFollowUser({ id: id });
+    console.log(data);
+    setButtonText(true);
+  };
+
   useEffect(() => {
     if (userId) {
-      // 내 팔로잉 목록에 있으면.. 버튼은 "팔로잉 취소" 아니라면 "팔로우"
       const isExistInMyFollowingList = async () => {
         const myData = await getUserId(myAccount._id);
         myData.following.find(
           (followingList) => followingList.user === userId,
-        ) && setButtonText(true);
+        ) && setButtonText(false);
       };
       const requestUser = async (userId: string) => {
         const getUser = await getUserId(userId);
+        console.log(getUser);
         setCurrentUser(getUser);
       };
       isExistInMyFollowingList(); // 바뀔 때 버튼 상태를 처음에 보여줘야 하기 때문...!
@@ -85,17 +100,28 @@ const ProfilePage = () => {
               alignItems={'center'}
               justifyContent={'center'}
             >
-              <p>이름</p>
-              <Link to="/settings">
-                <SettingsIcon />
-              </Link>
+              <h3>{currentUser?.fullName}</h3>
+              {checkIsMe() && (
+                <Link to="/settings">
+                  <SettingsIcon />
+                </Link>
+              )}
             </Stack>
           </Box>
           {checkIsMe() || (
             <StyledBasicButtonStack direction={'row'}>
               <BasicButton
                 variant="outlined"
-                children={buttonText ? '팔로잉 취소' : '팔로잉'}
+                children={buttonText ? '팔로잉' : '팔로잉 취소'}
+                onClick={async () => {
+                  const myData = await getUserId(myAccount._id);
+                  const followingObj = myData.following.find(
+                    (e) => e.user === userId,
+                  );
+                  buttonText
+                    ? requestFollowing(userId as string)
+                    : deleteFollowing(followingObj?._id);
+                }}
               />
               <BasicButton
                 variant="outlined"

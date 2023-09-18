@@ -117,16 +117,18 @@ const ProfilePage = () => {
             </StyledItemWithAvatarBox>
           ) : value === 1 ? (
             <StyledItemWithAvatarBox>
-              {DUMMY_DATA.FOLLOWER_DUMMY_DATA.map(
-                ({ userName, userImgUrl }) => (
-                  <ItemWithAvatar
-                    name={userName}
-                    AvatarProps={{
-                      imgSrc: userImgUrl,
-                    }}
-                  />
-                ),
-              )}
+              {currentUser &&
+                currentUser.following.map(({ follower }) => {
+                  return (
+                    <ItemWithAvatar
+                      name={follower}
+                      AvatarProps={{
+                        imgSrc: follower,
+                      }}
+                      to={`/profile/${follower}`}
+                    />
+                  );
+                })}
             </StyledItemWithAvatarBox>
           ) : value === 2 ? (
             <>

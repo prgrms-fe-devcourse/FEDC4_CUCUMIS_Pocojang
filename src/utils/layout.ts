@@ -29,6 +29,7 @@ export const getTitle = (
   location: string,
   userId: string,
   isLogin: boolean,
+  visitingUserName: string,
 ) => {
   const path = location.split('/').filter((path) => path);
 
@@ -53,7 +54,7 @@ export const getTitle = (
     if (path.length === 1) {
       return Title.DM;
     } else if (path.length === 2) {
-      return path[1]; // TODO: DM 주고받는 유저 이름 가져오기
+      return visitingUserName;
     }
   }
   if (path[0] === 'profile') {

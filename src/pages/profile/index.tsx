@@ -30,6 +30,10 @@ const ProfilePage = () => {
     navigate(url);
   };
 
+  const checkIsMe = () => {
+    const myId = JSON.parse(sessionStorage.getItem('USER') as string);
+    return myId._id === userId;
+  };
   useEffect(() => {
     if (userId) {
       const requestUser = async (userId: string) => {
@@ -76,7 +80,7 @@ const ProfilePage = () => {
               </Link>
             </Stack>
           </Box>
-          {userId !== '1' && (
+          {checkIsMe() || (
             <StyledBasicButtonStack direction={'row'}>
               <BasicButton variant="outlined" children="팔로우" />
               <BasicButton

@@ -15,17 +15,18 @@ import { UserType } from '@/types';
 import ProfileNav from '@/components/profile/profileNav';
 
 const ProfilePage = () => {
-  const { userId } = useParams();
-  const [value, setValue] = useState<number | string>(0);
-  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<UserType>();
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const [value, setValue] = useState<number | string>(0);
   const navigationData = [
     { label: currentUser?.following.length || 0, title: '팔로잉' },
     { label: currentUser?.followers.length || 0, title: '팔로워' },
     { label: currentUser?.posts.length || 0, title: '포스트' },
     { label: currentUser?.likes.length || 0, title: '스크랩' },
   ];
-  const pageNavigate = (url: string) => {
+
+  const pageMove = (url: string) => {
     navigate(url);
   };
 
@@ -81,7 +82,7 @@ const ProfilePage = () => {
               <BasicButton
                 variant="outlined"
                 children="DM"
-                onClick={() => pageNavigate(`/dm/${userId}`)}
+                onClick={() => pageMove(`/dm/${userId}`)}
               />
             </StyledBasicButtonStack>
           )}

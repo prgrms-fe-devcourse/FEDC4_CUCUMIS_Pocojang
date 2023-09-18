@@ -1,10 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
-  Stack,
-} from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
@@ -15,15 +10,21 @@ import ProjectCardItem from '@/components/shared/projectCard';
 import BasicAvatar from '@/components/shared/avatar';
 import BasicButton from '@/components/shared/button';
 import BgProfile from '@/components/profile/bgProfile';
-import DUMMY_DATA from '@/components/profile/useProfile';
 import { getUserId } from '@/api/users/userId';
 import { UserType } from '@/types';
+import ProfileNav from '@/components/profile/profileNav';
 
 const ProfilePage = () => {
   const { userId } = useParams();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState<number | string>(0);
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<UserType>();
+  const navigationData = [
+    { label: currentUser?.following.length || 0, title: '팔로잉' },
+    { label: currentUser?.followers.length || 0, title: '팔로워' },
+    { label: currentUser?.posts.length || 0, title: '포스트' },
+    { label: currentUser?.likes.length || 0, title: '스크랩' },
+  ];
   const pageNavigate = (url: string) => {
     navigate(url);
   };
@@ -87,18 +88,13 @@ const ProfilePage = () => {
         </Stack>
       </StyledBox>
       <StyledMavigationBox>
-        <BottomNavigation
+        <ProfileNav
           value={value}
+          navigationData={navigationData}
           onChange={(_, newValue) => {
             setValue(newValue);
           }}
-          showLabels
-        >
-          {DUMMY_DATA.LIST_DUMMY_DATA.map(({ label, title }) => (
-            <BottomNavigationAction label={label} icon={title} />
-          ))}
-        </BottomNavigation>
-
+        />
         <StyledContentsWrapper>
           {value === 0 ? (
             <StyledItemWithAvatarBox>

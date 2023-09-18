@@ -7,11 +7,7 @@ interface ProfileNavType {
     | ((event: React.SyntheticEvent<Element, Event>, value: string) => void)
     | undefined;
 }
-export default function ProfileNav({
-  value,
-  navigationData,
-  onChange,
-}: ProfileNavType) {
+const ProfileNav = ({ value, navigationData, onChange }: ProfileNavType) => {
   return (
     <BottomNavigation value={value} onChange={onChange} showLabels>
       {navigationData.map(({ label, title }) => (
@@ -19,4 +15,6 @@ export default function ProfileNav({
       ))}
     </BottomNavigation>
   );
-}
+};
+
+export default ProfileNav;

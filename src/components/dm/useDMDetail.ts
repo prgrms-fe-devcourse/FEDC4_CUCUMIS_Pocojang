@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { getUserId } from '@/api/users/userId';
 import { messagesList } from '@/api/messages';
@@ -31,6 +31,7 @@ export const useDMDetail = ({
     isSender: message.sender._id === userId,
   }));
   const messageEndRef = useRef<HTMLDivElement | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView();
@@ -46,11 +47,11 @@ export const useDMDetail = ({
       } catch (error) {
         // TODO: message 불러오기 실패
         onGetFail(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    dispatch(setVisitingUser({}));
-    dispatch(setMessages([]));
     if (visitingUserId) {
       getDetails(visitingUserId);
     }
@@ -76,5 +77,5 @@ export const useDMDetail = ({
     }
   }, [input, visitingUserId, dispatch, onSendFail]);
 
-  return { messages, messageEndRef };
+  return { messages, messageEndRef, isLoading };
 };

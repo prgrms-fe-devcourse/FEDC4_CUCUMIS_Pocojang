@@ -1,12 +1,13 @@
 import { useCallback } from 'react';
 import styled from '@emotion/styled';
 import Stack from '@mui/material/Stack';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import { useDMDetail } from '@/components/dm/useDMDetail';
 import Message from '@/components/dm/message';
 
 export default function DMDetailPage() {
-  const { messages, messageEndRef } = useDMDetail({
+  const { messages, messageEndRef, isLoading } = useDMDetail({
     onGetFail: useCallback((error: unknown) => {
       // TODO: message 불러오기 실패 알림
       console.error(error);
@@ -17,7 +18,9 @@ export default function DMDetailPage() {
     }, []),
   });
 
-  return (
+  return isLoading ? (
+    <LinearProgress />
+  ) : (
     <StackStyled
       direction="column"
       justifyContent="flex-end"

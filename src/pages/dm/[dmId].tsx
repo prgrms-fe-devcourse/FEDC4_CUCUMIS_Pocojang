@@ -6,7 +6,7 @@ import { useDMDetail } from '@/components/dm/useDMDetail';
 import Message from '@/components/dm/message';
 
 export default function DMDetailPage() {
-  const { messages } = useDMDetail({
+  const { messages, messageEndRef } = useDMDetail({
     onGetFail: useCallback((error: unknown) => {
       // TODO: message 불러오기 실패 알림
       console.error(error);
@@ -32,10 +32,12 @@ export default function DMDetailPage() {
             key={message._id}
           />
         ))}
+      <div ref={messageEndRef}></div>
     </StackStyled>
   );
 }
 
 const StackStyled = styled(Stack)({
-  minHeight: 'calc(100vh - 120px);',
+  minHeight: 'calc(100vh - 120px)',
+  marginTop: '20px',
 });

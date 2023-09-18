@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { getUserId } from '@/api/users/userId';
 import { messagesList } from '@/api/messages';
@@ -30,6 +30,11 @@ export const useDMDetail = ({
     ...message,
     isSender: message.sender._id === userId,
   }));
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView();
+  }, [messages]);
 
   useEffect(() => {
     const getDetails = async (visitingUserId: string) => {
@@ -71,5 +76,5 @@ export const useDMDetail = ({
     }
   }, [input, visitingUserId, dispatch, onSendFail]);
 
-  return { messages };
+  return { messages, messageEndRef };
 };

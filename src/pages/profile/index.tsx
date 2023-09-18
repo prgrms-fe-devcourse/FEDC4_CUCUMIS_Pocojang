@@ -132,33 +132,31 @@ const ProfilePage = () => {
             </StyledItemWithAvatarBox>
           ) : value === 2 ? (
             <>
-              {DUMMY_DATA.CARD_DUMMY_DATA.map(
-                ({ name, imageUrl, to, projectTitle }) => (
-                  <StyledProjectCardItemBox>
+              {currentUser &&
+                currentUser.posts.map(({ _id, title, image }) => (
+                  <StyledProjectCardItemBox key={_id}>
                     <ProjectCardItem
-                      name={name}
-                      imageUrl={imageUrl}
-                      to={to}
-                      projectTitle={projectTitle}
+                      name={title}
+                      imageUrl={image as string}
+                      to={`/projects/${_id}`}
+                      projectTitle={title}
                     />
                   </StyledProjectCardItemBox>
-                ),
-              )}
+                ))}
             </>
           ) : (
             <>
-              {DUMMY_DATA.CARD_DUMMY_DATA.map(
-                ({ name, imageUrl, to, projectTitle }) => (
-                  <StyledProjectCardItemBox>
-                    <StyledProjectCardItem
-                      name={name}
-                      imageUrl={imageUrl}
-                      to={to}
-                      projectTitle={projectTitle}
+              {currentUser &&
+                currentUser.posts.map(({ _id, title, image }) => (
+                  <StyledProjectCardItemBox key={_id}>
+                    <ProjectCardItem
+                      name={title}
+                      imageUrl={image as string}
+                      to={`/projects/${_id}`}
+                      projectTitle={title}
                     />
                   </StyledProjectCardItemBox>
-                ),
-              )}
+                ))}
             </>
           )}
         </StyledContentsWrapper>
@@ -212,9 +210,9 @@ const StyledItemWithAvatarBox = styled(Box)({
   height: '100%',
 });
 
-const StyledProjectCardItem = styled(ProjectCardItem)({
-  border: '3px solid black',
-});
+// const StyledProjectCardItem = styled(ProjectCardItem)({
+//   border: '3px solid black',
+// });
 const StyledProjectCardItemBox = styled(Box)({
   width: '90%',
   margin: '10px auto',

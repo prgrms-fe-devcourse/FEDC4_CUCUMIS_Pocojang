@@ -14,16 +14,16 @@ const getParsedMultipart = (request: VercelRequest): FormData => {
 
   const formData = new FormData();
   for (let i = 0; i < parts.length; i++) {
-    const { name, data } = parts[i];
-    const value =
-      name === 'image'
-        ? (new Blob([Buffer.from(data)]) as File)
-        : data.toString('utf-8');
+    const { name, data, filename, type } = parts[i];
 
-    formData.append(name ?? '', value);
+    if (filename) {
+      const blob = new Blob([Buffer.from(data)], { type });
+      formData.append(name ?? '', blob, filename);
+    } else {
+      const string = data.toString('utf-8');
+      formData.append(name ?? '', string);
+    }
   }
-
-  console.log('formData', formData);
 
   return formData;
 };

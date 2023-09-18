@@ -10,9 +10,7 @@ export const updateUser = async (
 ): Promise<UserType> =>
   api.put<RequestUpdateUserType, UserType>('/settings/update-user', request);
 
-export const updatePassword = async (
-  request: RequestUpdatePasswordType,
-): Promise<undefined> =>
+export const updatePassword = async (request: RequestUpdatePasswordType) =>
   api.put<RequestUpdatePasswordType, undefined>(
     '/settings/update-password',
     request,

@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
-
-import { signup } from '@/api/auth/signup';
+import { signup } from '@/api/auth';
+import { ResponseSignupType } from '@/types/api/auth';
 import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
-import { ResponseSignupType } from '@/types/api/signup';
 import validation from '@/utils/validations';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setSignupFormValues, signupFormValuesSelector } from '@/stores/signup';

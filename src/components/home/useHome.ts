@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
 
 import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 import { PostType } from '@/types';
 import { getChannelPosts } from '@/api/posts';
-
-const PROJECT_CHANNEL_ID = '6503eaffa14c752383b6a8b8';
-const DEVELOPER_CHANNEL_ID = '650557d36a9d603a4d150e7d';
+import CHANNEL_ID from '@/consts/channels';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 
 interface DeveloperType {
   _id: string;
@@ -21,14 +20,23 @@ interface HomeType {
   projectTitle: string;
   developers?: DeveloperType[];
 }
-// TODO 동시 호출api 로 빼주기  온라인은 개발자리스트로 바꾸고 , 순수함수로 변환,홈페이지 리스를 여기서 파싱해서 만들어줘야된다.타입은 import 해오기 ,최대길이 예외처리
+// TODO최대길이 예외처리, api 예외처리
 const useHome = () => {
   const [homeList, setHomeList] = useState<HomeType[]>([]);
+  const target = useRef<HTMLDivElement>(null);
+  const { page } = useInfiniteScroll({ target, endPoint: 2, options: {} });
+
   useEffect(() => {
     axios
       .all([
-        getChannelPosts(PROJECT_CHANNEL_ID, { offset: 0, limit: 3 }),
-        getChannelPosts(DEVELOPER_CHANNEL_ID, { offset: 0, limit: 4 }),
+        getChannelPosts(CHANNEL_ID.PROJECT, {
+          offset: 0,
+          limit: 3 * page,
+        }),
+        getChannelPosts(CHANNEL_ID.DEVELOPER, {
+          offset: 0,
+          limit: 4 * page,
+        }),
       ])
       .then(
         axios.spread((projectList, developerList) => {
@@ -36,11 +44,9 @@ const useHome = () => {
         }),
       )
       .then((list) => setHomeList(list));
-  }, []);
+  }, [page]);
 
-  //각각 호출해서
-
-  return { homeList };
+  return { homeList, target };
 };
 export default useHome;
 
@@ -52,13 +58,13 @@ const parseProjectPosts = (list: PostType[]) => {
     return { _id, projectTitle, name: author.fullName, imageUrl: image };
   });
 };
+
 const parseDeveloperPosts = (list: PostType[]) => {
   return list.map((developerPost) => {
     const {
       _id,
       author: { fullName, image, isOnline },
-    } = developerPost; // 여기는 개발자채널의 post id이다. 아바타 클릭시 어디로 이동?
-
+    } = developerPost;
     return {
       _id,
       label: fullName,
@@ -70,27 +76,12 @@ const parseDeveloperPosts = (list: PostType[]) => {
 const parseHomeList = (projectList: PostType[], developerList: PostType[]) => {
   const projects: HomeType[] = parseProjectPosts(projectList);
   const developers: DeveloperType[] = parseDeveloperPosts(developerList);
-
-  projects[projects.length - 1] = {
-    ...projects[projects.length - 1],
-    developers,
-  };
-  return projects;
+  let page = 0;
+  return projects.map((project, index) => {
+    if ((index + 1) % 3 === 0) {
+      const sliced = developers.slice(page, page + 4);
+      page++;
+      return { ...project, developers: sliced };
+    } else return project;
+  });
 };
-
-/**
- * interface DeveloperType {
-  _id: string;
-  name: string;
-  AvatarProps: BasicAvatarProps;
-}
-
-interface HomeType {
-  _id: string;
-  imageUrl?: string;
-  name: string;
-  projectTitle: string;
-  de
-  developers?: DeveloperType[];
-}
- */

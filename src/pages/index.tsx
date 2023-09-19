@@ -8,13 +8,13 @@ import AvatarWithChip from '@/components/shared/avatarWithChip';
 
 //TODO 추천 개발자 컴포넌트로 빼기
 const HomePage = () => {
-  const { homeList } = useHome();
+  const { homeList, target } = useHome();
 
   return (
-    <Stack spacing={2} mt={1}>
+    <Stack spacing={2} mt={1} ref={target}>
       {homeList.map(({ _id, projectTitle, imageUrl, name, developers }) => {
         return (
-          <>
+          <DivStyled key={_id}>
             <ProjectCardItem
               key={_id}
               name={name}
@@ -24,7 +24,7 @@ const HomePage = () => {
             />
 
             {developers && (
-              <Box>
+              <Box mt={2}>
                 <Typography variant="body2" gutterBottom>
                   Developer Recommendation
                 </Typography>
@@ -34,7 +34,7 @@ const HomePage = () => {
                   justifyContent="space-evenly"
                 >
                   {developers.map(({ _id: avatarId, AvatarProps, label }) => (
-                    <LinkStyled to={`/developers/${avatarId}`}>
+                    <LinkStyled to={`/developers/${avatarId}`} key={avatarId}>
                       <AvatarWithChip
                         key={avatarId}
                         AvatarProps={AvatarProps}
@@ -45,7 +45,7 @@ const HomePage = () => {
                 </Stack>
               </Box>
             )}
-          </>
+          </DivStyled>
         );
       })}
     </Stack>
@@ -55,5 +55,5 @@ const HomePage = () => {
 const LinkStyled = styled(Link)({
   textDecoration: 'none',
 });
-
+const DivStyled = styled('div')({});
 export default HomePage;

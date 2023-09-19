@@ -9,8 +9,7 @@ import {
 } from '@/stores/notification';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { isLoginSelector } from '@/stores/auth';
-import { callNotifications } from '@/api/notifications';
-import { readNotifications } from '@/api/notifications/seen';
+import { getNotifications, readNotifications } from '@/api/notifications';
 
 //TODO 호출 타입 정리, api 호출에 대한 에러 처리, 타입 위치 및 이름
 const useNotification = () => {
@@ -37,7 +36,7 @@ const useNotification = () => {
 
   useEffect(() => {
     if (isLogin)
-      callNotifications().then((data) => dispatch(setNotification(data)));
+      getNotifications().then((data) => dispatch(setNotification(data)));
   }, [dispatch, isLogin]);
 
   const handleClickItem = (_id: string) => {

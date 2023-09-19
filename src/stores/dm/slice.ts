@@ -1,9 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { ConversationType, MessageType } from '@/types';
+import { ConversationType, MessageType, UserType } from '@/types';
+
+export interface ConversationDataType extends ConversationType {
+  dmUser?: UserType;
+  unReadCount?: number;
+}
 
 export interface DMState {
-  conversations: ConversationType[];
+  conversations: ConversationDataType[];
   messages: MessageType[];
 }
 

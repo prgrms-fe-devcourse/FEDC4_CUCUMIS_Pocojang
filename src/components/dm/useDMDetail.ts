@@ -5,13 +5,8 @@ import { getMessages, sendMessage } from '@/api/messages';
 import { RequestSendMessagesType } from '@/types/api/messages';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
+import { inputSelector, setVisitingUser } from '@/stores/layout';
 import {
-  locationSelector,
-  inputSelector,
-  setVisitingUser,
-} from '@/stores/layout';
-import {
-  setDMUserId,
   setMessages,
   addMessage,
   dmUserIdSelector,
@@ -29,7 +24,6 @@ export const useDMDetail = ({
   onSendFail,
 }: DMDetailHookParameters) => {
   const dispatch = useAppDispatch();
-  const location = useAppSelector(locationSelector);
   const userId = useAppSelector(userIdSelector);
   const input = useAppSelector(inputSelector);
   const dmUserId = useAppSelector(dmUserIdSelector);
@@ -39,10 +33,6 @@ export const useDMDetail = ({
   }));
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    dispatch(setDMUserId(location.split('/')[2]));
-  }, [dispatch, location]);
 
   const fetchMessages = useCallback(
     async (dmUserId: string) => {

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { getPostId } from '@/api/posts/postId';
 import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
@@ -14,12 +13,14 @@ import type {
 } from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
-import { getUserId } from '@/api/posts/delete';
-import { getUserId as getUserInfo } from '@/api/users/userId';
-import { followUser } from '@/api/follow/create';
-import { unFollowUser } from '@/api/follow/delete';
-import { sendNotifications } from '@/api/notifications/create';
+import { getPost, deletePost } from '@/api/posts';
+import { getUser } from '@/api/user';
+import { followUser, unFollowUser } from '@/api/follow';
+import { sendNotification } from '@/api/notifications';
 import { DEVELOPER_URL } from '@/consts/routes';
+// import { getUserId } from '@/api/posts/delete';
+// import { getUserId as getUserInfo } from '@/api/users/userId';
+// import { unFollowUser } from '@/api/follow/delete';
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const useDeveloperDetail = () => {
     const isAbleToDelete = confirm('정말로 삭제하시겠습니까?');
 
     if (isAbleToDelete) {
-      const res = await getUserId({ id });
+      const res = await deletePost({ id });
 
       res && navigate(DEVELOPER_URL);
     }
@@ -63,16 +64,15 @@ const useDeveloperDetail = () => {
       } else {
         const res = await followUser({ userId: post.author._id });
 
-        await sendNotifications({
+        await sendNotification({
           notificationType: 'FOLLOW',
           notificationTypeId: res._id,
           userId: post.author._id,
-          postId: null,
         });
       }
 
       if (userInfo?._id) {
-        const newUserInfo = await getUserInfo(userInfo._id);
+        const newUserInfo = await getUser(userInfo._id);
         session.setItem(SESSION_STORAGE.USER, newUserInfo);
       }
     } catch (error) {
@@ -87,7 +87,7 @@ const useDeveloperDetail = () => {
 
     const fetchPost = async (postId: string) => {
       try {
-        const rs = await getPostId(postId);
+        const rs = await getPost(postId);
 
         handlePost(rs);
       } catch (error) {

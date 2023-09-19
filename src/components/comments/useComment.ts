@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAppSelector } from '@/stores/hooks';
 import { layoutSelector } from '@/stores/layout';
-import { createComments } from '@/api/comments/create';
-import { deleteComments } from '@/api/comments/delete';
+import { createComment, deleteComment } from '@/api/comments';
 import session from '@/utils/sessionStorage';
 import type { UserType } from '@/types';
 import SESSION_STORAGE from '@/consts/sessionStorage';
-import { sendNotifications } from '@/api/notifications/create';
+import { sendNotification } from '@/api/notifications';
 
 interface UseCommentProps {
   authorId: string;
@@ -22,7 +21,7 @@ const useComment = ({ authorId, postId }: UseCommentProps) => {
 
   const handleDeleteClick = async (id: string) => {
     try {
-      await deleteComments({ id });
+      await deleteComment({ id });
     } catch (error) {
       console.log(error);
     }
@@ -42,12 +41,12 @@ const useComment = ({ authorId, postId }: UseCommentProps) => {
   useEffect(() => {
     const submitComment = async () => {
       try {
-        const res = await createComments({
+        const res = await createComment({
           comment: input,
           postId,
         });
 
-        await sendNotifications({
+        await sendNotification({
           notificationType: 'COMMENT',
           notificationTypeId: res._id,
           userId: authorId,

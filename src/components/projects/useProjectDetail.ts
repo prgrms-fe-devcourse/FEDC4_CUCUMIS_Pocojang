@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { getPostId } from '@/api/posts/postId';
+import { getPost, deletePost } from '@/api/posts';
 import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
@@ -14,7 +14,6 @@ import type {
 } from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
-import { getUserId } from '@/api/posts/delete';
 import { PROJECT_URL } from '@/consts/routes';
 
 const useProjectDetail = () => {
@@ -35,7 +34,7 @@ const useProjectDetail = () => {
     const ableToDelete = confirm('정말로 삭제하시겠습니까?');
 
     if (ableToDelete) {
-      const res = await getUserId({ id });
+      const res = await deletePost({ id });
 
       res && navigate(PROJECT_URL);
     }
@@ -55,7 +54,7 @@ const useProjectDetail = () => {
 
     const fetchPost = async (postId: string) => {
       try {
-        const rs = await getPostId(postId);
+        const rs = await getPost(postId);
 
         handlePost(rs);
       } catch (error) {

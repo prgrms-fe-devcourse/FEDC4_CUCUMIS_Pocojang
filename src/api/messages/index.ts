@@ -6,8 +6,8 @@ import {
   RequestSendMessagesType,
 } from '@/types/api/messages';
 
-export const getConversations = async (): Promise<ConversationType> =>
-  api.post<undefined, ConversationType>('/messages/conversations');
+export const getConversations = async (): Promise<ConversationType[]> =>
+  api.get<undefined, ConversationType[]>('/messages/conversations');
 
 export const getMessages = async (
   request: RequestGetMessagesType,

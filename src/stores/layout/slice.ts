@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { UserType } from '@/types';
+
 export interface LayoutState {
   location: string;
   input: string;
+  visitingUser?: UserType;
 }
 
 const currentLocation = window.location.pathname;
@@ -21,6 +24,9 @@ export const layoutSlice = createSlice({
     },
     setInput: (state, action) => {
       state.input = action.payload;
+    },
+    setVisitingUser: (state, action) => {
+      state.visitingUser = action.payload;
     },
   },
 });

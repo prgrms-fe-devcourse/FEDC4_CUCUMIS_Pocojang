@@ -1,12 +1,7 @@
-import { Link, useParams } from 'react-router-dom';
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
-  Stack,
-} from '@mui/material';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Box, Stack } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 
 import Navbar from '@/components/navbar';
@@ -15,12 +10,39 @@ import ProjectCardItem from '@/components/shared/projectCard';
 import BasicAvatar from '@/components/shared/avatar';
 import BasicButton from '@/components/shared/button';
 import BgProfile from '@/components/profile/bgProfile';
-import DUMMY_DATA from '@/components/profile/useProfile';
+import { getUser } from '@/api/user';
+import { UserType } from '@/types';
+import ProfileNav from '@/components/profile/profileNav';
 
 const ProfilePage = () => {
+  const [currentUser, setCurrentUser] = useState<UserType>();
   const { userId } = useParams();
-  const [value, setValue] = useState(0);
+  const navigate = useNavigate();
+  const [value, setValue] = useState<number | string>(0);
+  const navigationData = [
+    { label: currentUser?.following.length || 0, title: '팔로잉' },
+    { label: currentUser?.followers.length || 0, title: '팔로워' },
+    { label: currentUser?.posts.length || 0, title: '포스트' },
+    { label: currentUser?.likes.length || 0, title: '스크랩' },
+  ];
 
+  const pageMove = (url: string) => {
+    navigate(url);
+  };
+
+  const checkIsMe = () => {
+    const myId = JSON.parse(sessionStorage.getItem('USER') as string);
+    return myId._id === userId;
+  };
+  useEffect(() => {
+    if (userId) {
+      const requestUser = async (userId: string) => {
+        const getUserInfo = await getUser(userId);
+        setCurrentUser(getUserInfo);
+      };
+      requestUser(userId);
+    }
+  }, [userId]);
   return (
     <StyledWrapperBox>
       <StyledBox>
@@ -58,83 +80,84 @@ const ProfilePage = () => {
               </Link>
             </Stack>
           </Box>
-          {userId !== '1' && (
+          {checkIsMe() || (
             <StyledBasicButtonStack direction={'row'}>
               <BasicButton variant="outlined" children="팔로우" />
-              <BasicButton variant="outlined" children="DM" />
+              <BasicButton
+                variant="outlined"
+                children="DM"
+                onClick={() => pageMove(`/dm/${userId}`)}
+              />
             </StyledBasicButtonStack>
           )}
         </Stack>
       </StyledBox>
       <StyledMavigationBox>
-        <BottomNavigation
+        <ProfileNav
           value={value}
+          navigationData={navigationData}
           onChange={(_, newValue) => {
             setValue(newValue);
           }}
-          showLabels
-        >
-          {DUMMY_DATA.LIST_DUMMY_DATA.map(({ label, title }) => (
-            <BottomNavigationAction label={label} icon={title} />
-          ))}
-        </BottomNavigation>
-
+        />
         <StyledContentsWrapper>
           {value === 0 ? (
             <StyledItemWithAvatarBox>
-              {DUMMY_DATA.FOLLOWING_DUMMY_DATA.map(
-                ({ userName, userImgUrl }) => (
-                  <ItemWithAvatar
-                    name={userName}
-                    AvatarProps={{
-                      imgSrc: userImgUrl,
-                    }}
-                  />
-                ),
-              )}
+              {currentUser &&
+                currentUser.following.map(({ user }) => {
+                  return (
+                    <ItemWithAvatar
+                      name={user}
+                      AvatarProps={{
+                        imgSrc: user,
+                      }}
+                      to={`/profile/${user}`}
+                    />
+                  );
+                })}
             </StyledItemWithAvatarBox>
           ) : value === 1 ? (
             <StyledItemWithAvatarBox>
-              {DUMMY_DATA.FOLLOWER_DUMMY_DATA.map(
-                ({ userName, userImgUrl }) => (
-                  <ItemWithAvatar
-                    name={userName}
-                    AvatarProps={{
-                      imgSrc: userImgUrl,
-                    }}
-                  />
-                ),
-              )}
+              {currentUser &&
+                currentUser.followers.map(({ follower }) => {
+                  return (
+                    <ItemWithAvatar
+                      name={follower}
+                      AvatarProps={{
+                        imgSrc: follower,
+                      }}
+                      to={`/profile/${follower}`}
+                    />
+                  );
+                })}
             </StyledItemWithAvatarBox>
           ) : value === 2 ? (
             <>
-              {DUMMY_DATA.CARD_DUMMY_DATA.map(
-                ({ name, imageUrl, to, projectTitle }) => (
-                  <StyledProjectCardItemBox>
+              {currentUser &&
+                currentUser.posts.map(({ _id, title, image }) => (
+                  <StyledProjectCardItemBox key={_id}>
                     <ProjectCardItem
-                      name={name}
-                      imageUrl={imageUrl}
-                      to={to}
-                      projectTitle={projectTitle}
+                      name={title}
+                      imageUrl={image as string}
+                      to={`/projects/${_id}`}
+                      projectTitle={title}
                     />
                   </StyledProjectCardItemBox>
-                ),
-              )}
+                ))}
             </>
           ) : (
             <>
-              {DUMMY_DATA.CARD_DUMMY_DATA.map(
-                ({ name, imageUrl, to, projectTitle }) => (
-                  <StyledProjectCardItemBox>
-                    <StyledProjectCardItem
-                      name={name}
-                      imageUrl={imageUrl}
-                      to={to}
-                      projectTitle={projectTitle}
+              {currentUser &&
+                currentUser.posts.map(({ _id, title, image }) => (
+                  <StyledProjectCardItemBox key={_id}>
+                    <ProjectCardItem
+                      name={title}
+                      imageUrl={image as string}
+                      to={`/projects/${_id}`}
+                      projectTitle={title}
                     />
                   </StyledProjectCardItemBox>
-                ),
-              )}
+                ))}
             </>
           )}
         </StyledContentsWrapper>
@@ -188,9 +211,9 @@ const StyledItemWithAvatarBox = styled(Box)({
   height: '100%',
 });
 
-const StyledProjectCardItem = styled(ProjectCardItem)({
-  border: '3px solid black',
-});
+// const StyledProjectCardItem = styled(ProjectCardItem)({
+//   border: '3px solid black',
+// });
 const StyledProjectCardItemBox = styled(Box)({
   width: '90%',
   margin: '10px auto',

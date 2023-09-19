@@ -4,7 +4,7 @@ import LoginInputContainer from '@/components/login/loginInputContainer';
 import BasicInput from '@/components/shared/input';
 import { useLoginForm } from '@/components/login/useLoginForm';
 import { useAuth } from '@/hooks/useAuth';
-import { ResponseLoginType } from '@/types/api/login';
+import { ResponseLoginType } from '@/types/api/auth';
 
 export default function LoginPage() {
   const navigate = useNavigate();

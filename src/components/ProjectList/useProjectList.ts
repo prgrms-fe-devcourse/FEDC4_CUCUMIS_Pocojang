@@ -8,6 +8,7 @@ import { projectsSelector } from '@/stores/projects/selector';
 import { isLoginSelector } from '@/stores/auth';
 import { PostType } from '@/types';
 import { getChannelPosts } from '@/api/posts';
+import { inputSelector } from '@/stores/layout';
 
 export interface ProjectType {
   _id: string;
@@ -17,16 +18,18 @@ export interface ProjectType {
 }
 const CHANNEL_ID = '6503eaffa14c752383b6a8b8';
 
-// TODO JSON.parse 에러처리, 무한스크롤 최적화, 이미지 받기, 새로고침에 저장 하기, 검색, 채널명 상수 처리
+// TODO JSON.parse 에러처리, 무한스크롤 최적화, 검색,
 const useProjectList = () => {
   const navigate = useNavigate();
   const isLogin = useAppSelector(isLoginSelector);
   const target = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const list = useAppSelector(projectsSelector);
+  const headerSearchValue = useAppSelector(inputSelector);
+
   const { page } = useInfinityScroll({
     target,
-    endPoint: 2,
+    endPoint: 4,
     options: { threshold: 0.5 },
     list,
   });
@@ -34,6 +37,13 @@ const useProjectList = () => {
   const handleFabClick = () => {
     navigate('/projects/write');
   };
+
+  useEffect(() => {
+    const value = headerSearchValue.trim();
+    if (value.length < 1) return;
+    //TODO 검색 기능
+  }, [headerSearchValue]);
+
   useEffect(() => {
     // 두번호출떄문에 새로 업데이트
     getChannelPosts(CHANNEL_ID, { offset: 0, limit: page * 5 + 5 })

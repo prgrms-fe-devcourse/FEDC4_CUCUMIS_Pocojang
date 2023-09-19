@@ -1,4 +1,5 @@
-import { useEffect, useState, useMemo, useRef, MutableRefObject } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState, useRef, MutableRefObject } from 'react';
 
 import { ProjectType } from '@/components/ProjectList/useProjectList';
 
@@ -17,29 +18,24 @@ export interface IntersectionObserverOptions {
 
 const useInfiniteScroll = ({
   target,
-  endPoint = 1,
+  endPoint = 3,
   options: { root = null, rootMargin = '0px', threshold = 1 },
-  list,
 }: InfiniteScrollProps) => {
   const [page, setPage] = useState<number>(0);
   const currentChild = useRef<Element | null>(null);
 
-  const observer = useMemo(() => {
-    return new IntersectionObserver(
-      (entries, observer) => {
-        if (target?.current === null) return;
-        if (entries[0].isIntersecting) {
-          console.log('pageUPdate');
-          console.log(list); // 린트 때문에 로그
-          setPage((v) => {
-            return v + 1;
-          });
-          observer.disconnect();
-        }
-      },
-      { root, rootMargin, threshold },
-    );
-  }, [target, root, list, rootMargin, threshold]);
+  const observer = new IntersectionObserver(
+    (entries, observer) => {
+      if (target?.current === null) return;
+      if (entries[0].isIntersecting) {
+        setPage((v) => {
+          return v + 1;
+        });
+        observer.disconnect();
+      }
+    },
+    { root, rootMargin, threshold },
+  );
 
   useEffect(() => {
     if (target?.current === null) return;
@@ -47,10 +43,10 @@ const useInfiniteScroll = ({
     const { current } = target;
 
     const observeChild = current.children[current.children.length - endPoint];
-    console.log('observe before', observeChild, currentChild.current);
+
     if (observeChild && currentChild.current !== observeChild) {
       currentChild.current = observeChild;
-      console.log('observe start', observeChild);
+
       observer.observe(observeChild);
     }
 
@@ -59,7 +55,6 @@ const useInfiniteScroll = ({
 
       if (current !== null && observer) {
         observer.unobserve(current);
-        console.log('observe 끝');
       }
     };
   }, [page, target, observer, endPoint]);

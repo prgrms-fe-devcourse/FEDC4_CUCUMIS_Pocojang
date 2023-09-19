@@ -13,7 +13,6 @@ title이 projectTitle, 검색 후 요청 넣기
 */
 const ProjectPage = () => {
   const { handleFabClick, projects, target, isLogin } = useProjectList();
-  console.log(projects);
   return (
     <>
       {isLogin ? (

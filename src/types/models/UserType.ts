@@ -24,4 +24,5 @@ export interface UserType {
   email: string;
   createdAt: string;
   updatedAt: string;
+  username: string;
 }

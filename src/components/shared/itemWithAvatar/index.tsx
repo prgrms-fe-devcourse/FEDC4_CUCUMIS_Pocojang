@@ -15,6 +15,7 @@ import BasicAvatar from '@/components/shared/avatar';
 import ItemWithAvatarProps from '@/types/components/ItemWithAvatarProps';
 
 const ItemWithAvatar = ({
+  children,
   AvatarProps,
   name,
   message,
@@ -58,7 +59,7 @@ const ItemWithAvatar = ({
         ) : (
           <BoxStyled>{renderListItemText()}</BoxStyled>
         )}
-
+        {children}
         {renderUnReadCount()}
       </ListItem>
       {!isLastItem && <Divider variant="middle" />}

@@ -1,7 +1,5 @@
 import api from '@/utils/api';
-import type { RequestBodyPostUpdateType } from '@/types/api/posts/update/RequestBodyPostUpdateType';
-export const getPostId = async (
-  rq: RequestBodyPostUpdateType,
-): Promise<null> => {
-  return await api.put<RequestBodyPostUpdateType, null>('/posts/update', rq);
+
+export const getPostId = async (rq: FormData): Promise<null> => {
+  return await api.put<FormData, null>('/posts/update', rq);
 };

@@ -7,7 +7,7 @@ import BasicInput from '@/components/shared/input';
 import BasicButton from '@/components/shared/button';
 import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import { createPost, updatePost } from '@/api/posts';
-import { PROJECT_CHANNEL_ID } from '@/consts/channelId';
+import CHANNEL_ID from '@/consts/channels';
 
 export default function ProjectPost() {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export default function ProjectPost() {
 
       const formData = new FormData();
       formData.append('title', formatedTitle);
-      formData.append('channelId', PROJECT_CHANNEL_ID);
+      formData.append('channelId', CHANNEL_ID.PROJECT);
 
       selectedFile && formData.append('image', selectedFile);
 

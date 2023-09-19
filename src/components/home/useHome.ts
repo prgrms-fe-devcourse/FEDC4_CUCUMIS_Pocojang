@@ -27,8 +27,8 @@ const useHome = () => {
   useEffect(() => {
     axios
       .all([
-        getChannelPosts({ offset: 0, limit: 3 }, PROJECT_CHANNEL_ID),
-        getChannelPosts({ offset: 0, limit: 4 }, DEVELOPER_CHANNEL_ID),
+        getChannelPosts(PROJECT_CHANNEL_ID, { offset: 0, limit: 3 }),
+        getChannelPosts(DEVELOPER_CHANNEL_ID, { offset: 0, limit: 4 }),
       ])
       .then(
         axios.spread((projectList, developerList) => {

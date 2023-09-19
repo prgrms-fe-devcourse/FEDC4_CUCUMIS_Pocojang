@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { getPostId } from '@/api/posts/postId';
+import { getPost } from '@/api/posts';
 import type { PostType } from '@/types';
 
 export interface ProjectContent {
@@ -22,7 +22,7 @@ const usePost = () => {
       setIsLoading(true);
 
       try {
-        const rs = await getPostId(postId);
+        const rs = await getPost(postId);
 
         handlePost(rs);
       } catch (error) {

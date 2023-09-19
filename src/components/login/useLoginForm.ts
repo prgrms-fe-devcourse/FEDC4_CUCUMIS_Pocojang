@@ -1,5 +1,5 @@
-import { login } from '@/api/login';
-import { ResponseLoginType } from '@/types/api/login';
+import { login } from '@/api/auth';
+import { ResponseLoginType } from '@/types/api/auth';
 import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 
 const initialLoginFormValues: FormValues = {

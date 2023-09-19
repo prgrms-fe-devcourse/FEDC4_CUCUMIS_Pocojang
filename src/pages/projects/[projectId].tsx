@@ -6,6 +6,7 @@ import BasicChip from '@/components/shared/chip';
 import { PROFILE_URL, PROJECT_MODIFYL_URL } from '@/consts/routes';
 import Comments from '@/components/comments';
 import useProjectDetail from '@/components/projects/useProjectDetail';
+import ChipGroup from '@/components/shared/chipGroup';
 
 const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
 
@@ -14,21 +15,22 @@ export default function ProjectDetailPage() {
     projectId,
     author,
     image = DEFAULT_IMAGE,
-    _id,
-    title,
     contents,
-    comments,
     createdAt,
     handleClick,
+    handleDeleteClick,
     isAuthor,
+    isLoading,
   } = useProjectDetail();
 
-  return (
+  return isLoading ? (
+    <Box>로딩 중</Box>
+  ) : (
     <Stack spacing={3}>
       <ProjectImageStyled
         component="img"
         src={image}
-        alt={title + "'s project image"}
+        alt={contents.title + "'s project image"}
       />
       <Stack
         direction="row"
@@ -37,8 +39,8 @@ export default function ProjectDetailPage() {
         alignContent="center"
       >
         <BasicAvatar
-          {...author}
-          onClick={() => handleClick(PROFILE_URL, _id)}
+          imgSrc={author.image}
+          onClick={() => handleClick(PROFILE_URL, author._id ?? '')}
         />
         <TitleBoxStyled>
           <Stack
@@ -53,26 +55,33 @@ export default function ProjectDetailPage() {
               </Typography>
             </Stack>
             {isAuthor && (
-              <BasicChip
-                label="수정하기"
-                variant="outlined"
-                onClick={() =>
-                  handleClick(PROJECT_MODIFYL_URL, projectId as string)
-                }
-              />
+              <ChipGroup>
+                <BasicChip
+                  label="수정"
+                  variant="outlined"
+                  onClick={() =>
+                    handleClick(PROJECT_MODIFYL_URL, projectId as string)
+                  }
+                />
+                <BasicChip
+                  label="삭제"
+                  variant="outlined"
+                  onClick={() => handleDeleteClick(projectId as string)}
+                />
+              </ChipGroup>
             )}
           </Stack>
         </TitleBoxStyled>
       </Stack>
-      <Typography variant="h4">{title}</Typography>
+      <Typography variant="h4">{contents.title}</Typography>
       <Stack spacing={1}>
         <Typography color="gray">요구사항</Typography>
-        <Typography>{contents}</Typography>
+        <Typography>{contents.requirements}</Typography>
       </Stack>
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        <Comments comments={comments} onClick={handleClick} url={PROFILE_URL} />
+        <Comments />
       </Box>
     </Stack>
   );

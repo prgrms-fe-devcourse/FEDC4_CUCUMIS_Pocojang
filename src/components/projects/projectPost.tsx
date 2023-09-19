@@ -6,8 +6,7 @@ import usePost from '@/components/projects/usePost';
 import BasicInput from '@/components/shared/input';
 import BasicButton from '@/components/shared/button';
 import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
-import { getPostId as createPost } from '@/api/posts/create';
-import { getPostId as updatePost } from '@/api/posts/update';
+import { createPost, updatePost } from '@/api/posts';
 import { PROJECT_CHANNEL_ID } from '@/consts/channelId';
 
 export default function ProjectPost() {

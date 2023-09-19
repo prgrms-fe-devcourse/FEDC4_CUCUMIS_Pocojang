@@ -34,7 +34,7 @@ const BoxStyled = styled(Box)({
     bottom: 0,
     width: 0,
     height: 0,
-    border: '20px solid transparent',
+    border: '12px solid transparent',
     borderBottom: 0,
     marginBottom: '-8px',
   },

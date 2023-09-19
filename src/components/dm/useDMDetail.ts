@@ -65,7 +65,7 @@ export const useDMDetail = ({
     [dispatch, onGetFail],
   );
 
-  const fetchMessagesSeen = useCallback(
+  const updateMessagesSeen = useCallback(
     async (dmUserId: string) => {
       try {
         await readMessages({ sender: dmUserId });
@@ -84,14 +84,20 @@ export const useDMDetail = ({
     if (dmUserId) {
       fetchMessages(dmUserId);
       fetchVisitingUser(dmUserId);
-      fetchMessagesSeen(dmUserId);
+      updateMessagesSeen(dmUserId);
     }
-  }, [dmUserId, dispatch, fetchMessages, fetchVisitingUser, fetchMessagesSeen]);
+  }, [
+    dmUserId,
+    dispatch,
+    fetchMessages,
+    fetchVisitingUser,
+    updateMessagesSeen,
+  ]);
 
   useInterval(() => {
     if (dmUserId) {
       fetchMessages(dmUserId);
-      fetchMessagesSeen(dmUserId);
+      updateMessagesSeen(dmUserId);
     }
   }, 3000);
 

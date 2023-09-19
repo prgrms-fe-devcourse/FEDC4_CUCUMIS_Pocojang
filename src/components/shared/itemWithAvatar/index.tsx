@@ -23,6 +23,7 @@ const ItemWithAvatar = ({
   to,
   isLastItem = false,
   isComment = false,
+  ...props
 }: ItemWithAvatarProps) => {
   const renderUnReadCount = () => {
     if (unReadCount) {
@@ -50,7 +51,7 @@ const ItemWithAvatar = ({
 
   return (
     <>
-      <ListItem alignItems="center">
+      <ListItem alignItems="center" {...props}>
         <BasicAvatar size={40} alt={`${name}'s profile`} {...AvatarProps} />
         {to ? (
           <ListItemButton component={Link} to={to ? to : ''}>

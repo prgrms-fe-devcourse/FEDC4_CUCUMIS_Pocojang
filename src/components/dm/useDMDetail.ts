@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { getUserId } from '@/api/users/userId';
-import { messagesList } from '@/api/messages';
-import { sendMessage } from '@/api/messages/create';
-import { RequestBodyCreateMessagesType } from '@/types/api/messages/create/RequestBodyCreateMessagesType';
+import { getUser } from '@/api/user';
+import { getMessages, sendMessage } from '@/api/messages';
+import { RequestSendMessagesType } from '@/types/api/messages';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
 import {
@@ -34,12 +33,12 @@ export const useDMDetail = ({
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getMessages = useCallback(
+  const fetchMessages = useCallback(
     async (visitingUserId: string) => {
       try {
-        const messageList = await messagesList({ userId: visitingUserId });
-        if (messageList.length > messages.length) {
-          dispatch(setMessages(messageList));
+        const responseMessages = await getMessages({ userId: visitingUserId });
+        if (responseMessages.length > messages.length) {
+          dispatch(setMessages(responseMessages));
         }
       } catch (error) {
         // TODO: message 불러오기 실패
@@ -49,10 +48,10 @@ export const useDMDetail = ({
     [messages, dispatch, onGetFail],
   );
 
-  const getVisitingUser = useCallback(
+  const fetchVisitingUser = useCallback(
     async (visitingUserId: string) => {
       try {
-        const visitingUser = await getUserId(visitingUserId);
+        const visitingUser = await getUser(visitingUserId);
         dispatch(setVisitingUser(visitingUser));
       } catch (error) {
         // TODO: message 불러오기 실패
@@ -70,19 +69,19 @@ export const useDMDetail = ({
 
   useEffect(() => {
     if (visitingUserId) {
-      getVisitingUser(visitingUserId);
-      getMessages(visitingUserId);
+      fetchVisitingUser(visitingUserId);
+      fetchMessages(visitingUserId);
     }
-  }, [getVisitingUser, getMessages, visitingUserId, dispatch, onGetFail]);
+  }, [fetchVisitingUser, fetchMessages, visitingUserId, dispatch, onGetFail]);
 
   useInterval(() => {
     if (visitingUserId) {
-      getMessages(visitingUserId);
+      fetchMessages(visitingUserId);
     }
   }, 3000);
 
   useEffect(() => {
-    const createMessage = async (rq: RequestBodyCreateMessagesType) => {
+    const createMessage = async (rq: RequestSendMessagesType) => {
       try {
         const message = await sendMessage(rq);
         dispatch(addMessage(message));

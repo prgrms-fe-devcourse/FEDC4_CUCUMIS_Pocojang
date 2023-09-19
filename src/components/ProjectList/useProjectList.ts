@@ -3,11 +3,11 @@ import { useEffect, useRef } from 'react';
 
 import { setList } from '@/stores/projects';
 import useInfinityScroll from '@/hooks/useInfiniteScroll';
-import { getChannelPosts } from '@/api/posts/channel/channelId';
 import { useAppSelector, useAppDispatch } from '@/stores/hooks';
 import { projectsSelector } from '@/stores/projects/selector';
 import { isLoginSelector } from '@/stores/auth';
 import { PostType } from '@/types';
+import { getChannelPosts } from '@/api/posts';
 
 export interface ProjectType {
   _id: string;

@@ -13,12 +13,11 @@ export default function ExtraInformationPage() {
     handleExtraInformationFormSubmit,
   } = useExtraInformationForm({
     onSuccess: () => {
-      navigate('/');
+      navigate('/', { replace: true });
     },
     onFail: (error: unknown) => {
       // TODO: 추가 정보 입력 실패 알림 모달 출력
       console.error(error);
-      navigate('/');
     },
   });
 
@@ -35,7 +34,7 @@ export default function ExtraInformationPage() {
         isRequired={false}
       />
       <BasicInput
-        label="technicalTools"
+        label="techStack"
         placeholder="기술 스택을 추가해주세요"
         onChange={handleExtraInformationFormChange}
         errorMessage={extraInformationFormErrors.technicalTools}

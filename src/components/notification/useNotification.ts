@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { NotificationsStateType } from '@/stores/notification/slice';
+import { Notification } from '@/stores/notification/slice';
 import {
   notificationSelector,
   setNotification,
@@ -11,15 +11,8 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { isLoginSelector } from '@/stores/auth';
 import { getNotifications, readNotifications } from '@/api/notifications';
 
-//TODO 호출 타입 정리, api 호출에 대한 에러 처리, 타입 위치 및 이름
+//TODO  api 호출에 대한 에러 처리, 타입 위치 및 이름, user정보에 가져오고 인터벌 처리?
 const useNotification = () => {
-  const notificationMessage: { [key: string]: string } = {
-    comment: '님이 댓글을 추가했습니다.',
-    like: '님이 좋아요',
-    follow: '님이 팔로우',
-    message: '님이 메세지',
-  };
-
   const dispatch = useAppDispatch();
   const isLogin = useAppSelector(isLoginSelector);
   const navigate = useNavigate();
@@ -39,14 +32,19 @@ const useNotification = () => {
       getNotifications().then((data) => dispatch(setNotification(data)));
   }, [dispatch, isLogin]);
 
-  const handleClickItem = (_id: string) => {
+  const readNotification = (_id: string) => {
     dispatch(handleClick(_id));
   };
 
-  const notifications: NotificationsStateType[] =
-    useAppSelector(notificationSelector);
+  const notifications: Notification[] = useAppSelector(notificationSelector);
 
-  return { notificationMessage, notifications, handleClickItem };
+  return { notificationMessage, notifications, readNotification };
 };
 
 export default useNotification;
+const notificationMessage: { [key: string]: string } = {
+  comment: '님이 댓글을 추가했습니다.',
+  like: '님이 좋아요를 눌렀습니다.',
+  follow: '님이 팔로우했습니다.',
+  message: '님이 메세지를 보냈습니다.',
+};

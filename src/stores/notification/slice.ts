@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { NotificationType } from '@/types';
 
-export interface NotificationsStateType {
+export interface Notification {
   isSeen: boolean;
   _id: string;
   name: string;
@@ -11,7 +11,7 @@ export interface NotificationsStateType {
 
 export const notificationSlice = createSlice({
   name: 'notification',
-  initialState: { notifications: [] as NotificationsStateType[] },
+  initialState: { notifications: [] as Notification[] },
   reducers: {
     handleClick: (state, { payload }) => {
       state.notifications = state.notifications.map((notification) => {

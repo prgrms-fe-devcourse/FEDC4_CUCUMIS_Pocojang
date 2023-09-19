@@ -13,7 +13,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setInput, locationSelector } from '@/stores/layout';
 import { userIdSelector } from '@/stores/auth';
-import useForm from '@/hooks/useForm';
+import useForm, { FormValues, FormErrors } from '@/hooks/useForm';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
 
@@ -24,13 +24,13 @@ const Navbar = () => {
   const path = useAppSelector(locationSelector)
     .split('/')
     .filter((path) => path);
-  const { handleChange, handleSubmit } = useForm({
+  const { values, handleChange, handleSubmit } = useForm({
     initialValues: { search: '' },
-    onSubmit: ({ search }) => {
+    onSubmit: ({ search }: FormValues) => {
       dispatch(setInput(search));
     },
-    validate: ({ search }) => {
-      const newErrors = { search: '' };
+    validate: ({ search }: FormValues) => {
+      const newErrors: FormErrors = {};
       if (!search) newErrors.search = '내용을 입력해주세요.';
       return newErrors;
     },
@@ -68,6 +68,7 @@ const Navbar = () => {
           <FormStyled onSubmit={handleSubmit}>
             <BasicSearch
               onChange={handleChange}
+              value={values.search}
               placeholder="내용을 입력해주세요"
             />
             <BasicIconButton type="submit">

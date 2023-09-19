@@ -1,7 +1,7 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Box, Stack } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from '@emotion/styled';
 
 import Navbar from '@/components/navbar';
@@ -10,81 +10,63 @@ import ProjectCardItem from '@/components/shared/projectCard';
 import BasicAvatar from '@/components/shared/avatar';
 import BasicButton from '@/components/shared/button';
 import BgProfile from '@/components/profile/bgProfile';
-import { getUserId } from '@/api/users/userId';
-import { UserType } from '@/types';
 import ProfileNav from '@/components/profile/profileNav';
-import { followUser } from '@/api/follow/create';
-import { unFollowUser } from '@/api/follow/delete';
+import ProfileChangeButton from '@/components/profile/profileChangeButton';
+import useProfile from '@/components/profile/useProfile';
 
 const ProfilePage = () => {
-  const [currentUser, setCurrentUser] = useState<UserType>();
-  const [buttonText, setButtonText] = useState(true);
-  const { userId } = useParams();
-  const navigate = useNavigate();
+  const {
+    navigationData,
+    userState,
+    buttonState,
+    followingOrUnFollowing,
+    isMe,
+    goNextPage,
+    userId,
+    handleFileChange,
+  } = useProfile();
+
   const [value, setValue] = useState<number | string>(0);
-  const myAccount = JSON.parse(sessionStorage.getItem('USER') as string);
-
-  const navigationData = [
-    { label: currentUser?.following.length || 0, title: '팔로잉' },
-    { label: currentUser?.followers.length || 0, title: '팔로워' },
-    { label: currentUser?.posts.length || 0, title: '포스트' },
-    { label: currentUser?.likes.length || 0, title: '스크랩' },
-  ];
-
-  const pageMove = (url: string) => {
-    navigate(url);
-  };
-
-  const checkIsMe = () => {
-    return myAccount._id === userId;
-  };
-
-  const requestFollowing = async () => {
-    const request = await followUser({ userId: userId as string });
-    // TODO : 낙관적 업데이트 해줘야 함. => followList나 number등을 전부 state로 다룰 예정!
-    console.log(request);
-    setButtonText(true);
-  };
-
-  const deleteFollowing = async (id = '') => {
-    const data = await unFollowUser({ id: id });
-    console.log(data);
-    setButtonText(false);
-  };
-
-  useEffect(() => {
-    if (userId) {
-      const isExistInMyFollowingList = async () => {
-        const myData = await getUserId(myAccount._id);
-        const result = myData.following.find((e) => e.user === userId);
-        result ? setButtonText(true) : setButtonText(false);
-      };
-      const requestUser = async (userId: string) => {
-        const getUser = await getUserId(userId);
-        setCurrentUser(getUser);
-      };
-      isExistInMyFollowingList();
-      requestUser(userId);
-    }
-  }, [userId, myAccount._id]);
   return (
     <StyledWrapperBox>
       <StyledBox>
+        {isMe(userId as string) && (
+          <ProfileChangeButton
+            onChange={handleFileChange}
+            id={'background-photo'}
+          />
+        )}
         <BgProfile
           variant="square"
           sx={{ width: '100%', height: '141px' }}
-          src={
-            'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg'
-          }
+          src={userState?.coverImage as string}
         />
         <StyledProfileWrapper>
           <StyledBasicAvatar
-            imgSrc="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg"
+            imgSrc={userState?.image as string}
             alt="프로필사진"
             size={90}
             isUserOn={true}
           />
+          {isMe(userId as string) && (
+            <ProfileChangeButton
+              onChange={handleFileChange}
+              id={'profile-photo'}
+            />
+          )}
         </StyledProfileWrapper>
+        <Stack
+          flexDirection={'row'}
+          alignItems={'center'}
+          justifyContent={'center'}
+        >
+          <h3>{userState?.fullName}</h3>
+          {isMe(userId as string) && (
+            <Link to="/settings">
+              <SettingsIcon />
+            </Link>
+          )}
+        </Stack>
       </StyledBox>
       <StyledBox>
         <Stack
@@ -92,39 +74,23 @@ const ProfilePage = () => {
           alignItems={'center'}
           justifyContent={'center'}
         >
-          <Box>
-            <Stack
-              direction={'row'}
-              alignItems={'center'}
-              justifyContent={'center'}
-            >
-              <h3>{currentUser?.fullName}</h3>
-              {checkIsMe() && (
-                <Link to="/settings">
-                  <SettingsIcon />
-                </Link>
-              )}
-            </Stack>
-          </Box>
-          {checkIsMe() || (
+          {isMe(userId as string) || (
             <StyledBasicButtonStack direction={'row'}>
               <BasicButton
                 variant="outlined"
-                children={buttonText ? '팔로잉 취소' : '팔로잉'}
+                children={buttonState ? '팔로잉 취소' : '팔로잉'}
                 onClick={async () => {
-                  const myData = await getUserId(myAccount._id);
-                  const followingObj = myData.following.find(
-                    (e) => e.user === userId,
+                  const data = await followingOrUnFollowing(
+                    buttonState as boolean,
+                    userId as string,
                   );
-                  buttonText
-                    ? deleteFollowing(followingObj?._id)
-                    : requestFollowing();
+                  console.log(data);
                 }}
               />
               <BasicButton
                 variant="outlined"
                 children="DM"
-                onClick={() => pageMove(`/dm/${userId}`)}
+                onClick={() => goNextPage(`/dm/${userId}`)}
               />
             </StyledBasicButtonStack>
           )}
@@ -141,8 +107,8 @@ const ProfilePage = () => {
         <StyledContentsWrapper>
           {value === 0 ? (
             <StyledItemWithAvatarBox>
-              {currentUser &&
-                currentUser.following.map(({ user }) => {
+              {userState &&
+                userState.following.map(({ user }) => {
                   return (
                     <ItemWithAvatar
                       name={user}
@@ -156,8 +122,8 @@ const ProfilePage = () => {
             </StyledItemWithAvatarBox>
           ) : value === 1 ? (
             <StyledItemWithAvatarBox>
-              {currentUser &&
-                currentUser.followers.map(({ follower }) => {
+              {userState &&
+                userState.followers.map(({ follower }) => {
                   return (
                     <ItemWithAvatar
                       name={follower}
@@ -171,8 +137,8 @@ const ProfilePage = () => {
             </StyledItemWithAvatarBox>
           ) : value === 2 ? (
             <>
-              {currentUser &&
-                currentUser.posts.map(({ _id, title, image }) => (
+              {userState &&
+                userState.posts.map(({ _id, title, image }) => (
                   <StyledProjectCardItemBox key={_id}>
                     <ProjectCardItem
                       name={title}
@@ -185,8 +151,8 @@ const ProfilePage = () => {
             </>
           ) : (
             <>
-              {currentUser &&
-                currentUser.posts.map(({ _id, title, image }) => (
+              {userState &&
+                userState.posts.map(({ _id, title, image }) => (
                   <StyledProjectCardItemBox key={_id}>
                     <ProjectCardItem
                       name={title}
@@ -249,9 +215,6 @@ const StyledItemWithAvatarBox = styled(Box)({
   height: '100%',
 });
 
-// const StyledProjectCardItem = styled(ProjectCardItem)({
-//   border: '3px solid black',
-// });
 const StyledProjectCardItemBox = styled(Box)({
   width: '90%',
   margin: '10px auto',

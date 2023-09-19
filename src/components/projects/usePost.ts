@@ -1,19 +1,72 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+
+import { getPost } from '@/api/posts';
+import type { PostType } from '@/types';
+
+export interface ProjectContent {
+  title: string;
+  requirements: string;
+}
 
 const usePost = () => {
   const { projectId } = useParams();
 
-  if (projectId) {
-    return { projectId, ...DUMMY_DATA };
-  }
+  const [isLoading, setIsLoading] = useState(false);
+  const [contents, setContents] = useState({ title: '', requirements: '' });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<string | null>(null);
 
-  return { title: '', contents: '' };
+  useEffect(() => {
+    const fetchPost = async (postId: string) => {
+      setIsLoading(true);
+
+      try {
+        const rs = await getPost(postId);
+
+        handlePost(rs);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (projectId) {
+      fetchPost(projectId);
+    }
+  }, [projectId]);
+
+  const handlePost = (rs: PostType) => {
+    const { title, requirements } = JSON.parse(rs.title);
+
+    setContents({ title, requirements });
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0] || null;
+
+      if (file) {
+        setSelectedFile(file);
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          setImageFile(reader.result as string);
+        };
+      }
+    }
+  };
+
+  return {
+    projectId,
+    ...contents,
+    isLoading,
+    handleFileChange,
+    selectedFile,
+    imageFile,
+  };
 };
 
 export default usePost;
-
-const DUMMY_DATA = {
-  title: 'this is title',
-  contents:
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-};

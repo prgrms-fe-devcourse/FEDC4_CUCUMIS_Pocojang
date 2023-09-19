@@ -3,5 +3,5 @@ export interface RequestFollowUserType {
 }
 
 export interface RequestUnFollowUserType {
-  userId: string;
+  id: string;
 }

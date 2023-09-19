@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { signup } from '@/api/auth';
 import { ResponseSignupType } from '@/types/api/auth';
 import useForm, { FormErrors, FormValues } from '@/hooks/useForm';

@@ -7,7 +7,7 @@ import {
   setExtraInputFormValues,
 } from '@/stores/signup';
 import { PostType } from '@/types';
-import { createPost } from '@/api/posts/create';
+import { createPost } from '@/api/posts';
 import CHANNEL_ID from '@/consts/channels';
 
 const validateExtraInformationForm = ({
@@ -39,10 +39,11 @@ export const useExtraInformationForm = ({
   const onSubmitExtraInformationForm = async (formValues: FormValues) => {
     try {
       const userData = JSON.stringify(formValues);
-      const rs = await createPost({
-        title: userData,
-        channelId: CHANNEL_ID.DEVELOPER,
-      });
+      const formData = new FormData();
+      formData.append('title', userData);
+      formData.append('channelId', CHANNEL_ID.DEVELOPER);
+
+      const rs = await createPost(formData);
 
       onSuccess(rs);
     } catch (error) {

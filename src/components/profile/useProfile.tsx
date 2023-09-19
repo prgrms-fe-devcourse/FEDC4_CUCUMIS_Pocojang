@@ -18,6 +18,7 @@ export default function useProfile() {
     { label: userState?.posts.length || 0, title: '포스트' },
     { label: userState?.likes.length || 0, title: '스크랩' },
   ];
+  const [value, setValue] = useState<number | string>(0);
   const [selectedFile, setSelectedFile] = useState<File | null>();
   const [fileName, setFileName] = useState<string>('파일을 선택하세요.');
   const { userId } = useParams();
@@ -60,6 +61,12 @@ export default function useProfile() {
     navigate(url);
   };
 
+  const navigationMoving = (
+    _: React.SyntheticEvent<Element, Event>,
+    newValue: string,
+  ) => {
+    setValue(newValue);
+  };
   const changeProfile = (user: UserType, value: boolean) => {
     const newObj = { ...userState };
     if (value) {
@@ -104,6 +111,8 @@ export default function useProfile() {
 
   return {
     navigationData,
+    value,
+    navigationMoving,
     userId,
     userState,
     buttonState,

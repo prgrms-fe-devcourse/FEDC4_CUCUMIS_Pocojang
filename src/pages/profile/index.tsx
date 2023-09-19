@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Box, Stack } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useState } from 'react';
 import styled from '@emotion/styled';
 
 import Navbar from '@/components/navbar';
@@ -17,6 +16,8 @@ import useProfile from '@/components/profile/useProfile';
 const ProfilePage = () => {
   const {
     navigationData,
+    value,
+    navigationMoving,
     userState,
     buttonState,
     followingOrUnFollowing,
@@ -26,7 +27,6 @@ const ProfilePage = () => {
     handleFileChange,
   } = useProfile();
 
-  const [value, setValue] = useState<number | string>(0);
   return (
     <StyledWrapperBox>
       <StyledBox>
@@ -100,9 +100,7 @@ const ProfilePage = () => {
         <ProfileNav
           value={value}
           navigationData={navigationData}
-          onChange={(_, newValue) => {
-            setValue(newValue);
-          }}
+          onChange={navigationMoving}
         />
         <StyledContentsWrapper>
           {value === 0 ? (

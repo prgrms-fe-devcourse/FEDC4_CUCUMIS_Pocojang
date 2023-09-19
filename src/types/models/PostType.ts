@@ -1,6 +1,7 @@
 import { LikeType } from './LikeType';
 import { ChannelType } from './ChannelType';
 import { CommentType, FormattedComment, UserType } from '../';
+
 export interface PostType {
   likes: LikeType[];
   comments: CommentType[];

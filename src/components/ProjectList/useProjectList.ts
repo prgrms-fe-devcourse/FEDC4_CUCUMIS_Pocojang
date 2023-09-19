@@ -11,7 +11,7 @@ import { getChannelPosts } from '@/api/posts';
 
 export interface ProjectType {
   _id: string;
-  imageUrl?: string;
+  image?: string;
   name: string;
   projectTitle: string;
 }
@@ -57,10 +57,11 @@ const parseProjectList = (list: PostType[]) => {
   return list.map((project) => {
     const {
       _id,
+      image,
       author: { fullName },
       title: content,
     } = project;
     const { title } = JSON.parse(content);
-    return { _id, name: fullName, projectTitle: title };
+    return { _id, name: fullName, projectTitle: title, image };
   });
 };

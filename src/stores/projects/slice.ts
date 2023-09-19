@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface ProjectType {
   _id: string;
-  imageUrl?: string;
+  image?: string;
   name: string;
   projectTitle: string;
 }

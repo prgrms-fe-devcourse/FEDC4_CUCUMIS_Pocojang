@@ -7,11 +7,10 @@ import AvatarWithChip from '@/components/shared/avatarWithChip';
 import useDevelopers from '@/components/developers/useDevelopers';
 
 const DevelopersPage = () => {
-  const { onlineDevelopers, developers } = useDevelopers();
+  const { onlineDevelopers, developers, target } = useDevelopers();
 
-  console.log(onlineDevelopers, developers);
   return (
-    <Stack spacing={1} mt={1}>
+    <Stack ref={target} spacing={1} mt={1}>
       <StackStyled direction="row" spacing={4}>
         {onlineDevelopers.map((developer) => (
           <LinkStyled key={developer._id} to={`/dm/${developer._id}`}>

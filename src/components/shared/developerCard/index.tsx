@@ -24,7 +24,6 @@ const DeveloperCardItem = ({
   techStack,
   to,
 }: Props) => {
-  console.log(techStack);
   return (
     <BasicCard to={`/developers/${to}`}>
       <CardContent>

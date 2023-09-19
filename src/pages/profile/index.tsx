@@ -10,7 +10,7 @@ import ProjectCardItem from '@/components/shared/projectCard';
 import BasicAvatar from '@/components/shared/avatar';
 import BasicButton from '@/components/shared/button';
 import BgProfile from '@/components/profile/bgProfile';
-import { getUserId } from '@/api/users/userId';
+import { getUser } from '@/api/user';
 import { UserType } from '@/types';
 import ProfileNav from '@/components/profile/profileNav';
 
@@ -37,8 +37,8 @@ const ProfilePage = () => {
   useEffect(() => {
     if (userId) {
       const requestUser = async (userId: string) => {
-        const getUser = await getUserId(userId);
-        setCurrentUser(getUser);
+        const getUserInfo = await getUser(userId);
+        setCurrentUser(getUserInfo);
       };
       requestUser(userId);
     }

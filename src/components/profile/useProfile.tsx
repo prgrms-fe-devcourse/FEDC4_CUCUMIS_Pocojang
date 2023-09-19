@@ -10,7 +10,7 @@ import { unFollowUser } from '@/api/follow/delete';
 import { uploadPhoto } from '@/api/users/uploadPhoto';
 
 export default function useProfile() {
-  const [buttonState, setButtonState] = useState<boolean>(); // true이면 팔로잉, false이면 팔로잉 취소(이미 돼 있음)
+  const [buttonState, setButtonState] = useState<boolean>();
   const [userState, setUserState] = useState<UserType>();
   const navigationData = [
     { label: userState?.following.length || 0, title: '팔로잉' },

@@ -1,50 +1,115 @@
-const useDMDetail = () => {
-  const messages = [
-    {
-      _id: '1',
-      message: '안녕하세요 현석팀!',
-      isSender: true,
-    },
-    {
-      _id: '2',
-      message: '만나서 반갑습니다.',
-      isSender: false,
-    },
-    {
-      _id: '3',
-      message: '프로젝트 같이해요',
-      isSender: true,
-    },
-    {
-      _id: '4',
-      message: '반갑습니다~!',
-      isSender: true,
-    },
-    {
-      _id: '5',
-      message:
-        '프로젝트 요구사항: 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구',
-      isSender: false,
-    },
-    {
-      _id: '6',
-      message: '입니다!',
-      isSender: false,
-    },
-    {
-      _id: '7',
-      message: '좋아요!',
-      isSender: true,
-    },
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-    {
-      _id: '8',
-      message: '👍❤️‍🔥',
-      isSender: true,
-    },
-  ];
+import { getUser } from '@/api/user';
+import { getMessages, sendMessage } from '@/api/messages';
+import { RequestSendMessagesType } from '@/types/api/messages';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { userIdSelector } from '@/stores/auth';
+import {
+  locationSelector,
+  inputSelector,
+  setVisitingUser,
+} from '@/stores/layout';
+import {
+  setDMUserId,
+  setMessages,
+  addMessage,
+  dmUserIdSelector,
+  messagesSelector,
+} from '@/stores/dm';
+import useInterval from '@/hooks/useInterval';
 
-  return { messages };
+interface DMDetailHookParameters {
+  onGetFail: (error: unknown) => void;
+  onSendFail: (error: unknown) => void;
+}
+
+export const useDMDetail = ({
+  onGetFail,
+  onSendFail,
+}: DMDetailHookParameters) => {
+  const dispatch = useAppDispatch();
+  const location = useAppSelector(locationSelector);
+  const userId = useAppSelector(userIdSelector);
+  const input = useAppSelector(inputSelector);
+  const dmUserId = useAppSelector(dmUserIdSelector);
+  const messages = useAppSelector(messagesSelector).map((message) => ({
+    ...message,
+    isSender: message.sender._id === userId,
+  }));
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    dispatch(setDMUserId(location.split('/')[2]));
+  }, [dispatch, location]);
+
+  const fetchMessages = useCallback(
+    async (dmUserId: string) => {
+      try {
+        const responseMessages = await getMessages({ userId: dmUserId });
+        if (responseMessages.length > messages.length) {
+          dispatch(setMessages(responseMessages));
+        }
+      } catch (error) {
+        // TODO: message 불러오기 실패
+        onGetFail(error);
+      }
+    },
+    [messages, dispatch, onGetFail],
+  );
+
+  const fetchVisitingUser = useCallback(
+    async (dmUserId: string) => {
+      try {
+        const visitingUser = await getUser(dmUserId);
+        dispatch(setVisitingUser(visitingUser));
+      } catch (error) {
+        // TODO: message 불러오기 실패
+        onGetFail(error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [dispatch, onGetFail],
+  );
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView();
+  }, [messages]);
+
+  useEffect(() => {
+    if (dmUserId) {
+      fetchVisitingUser(dmUserId);
+      fetchMessages(dmUserId);
+    }
+  }, [fetchVisitingUser, fetchMessages, dmUserId, dispatch, onGetFail]);
+
+  useInterval(() => {
+    if (dmUserId) {
+      fetchMessages(dmUserId);
+    }
+  }, 3000);
+
+  useEffect(() => {
+    const createMessage = async (rq: RequestSendMessagesType) => {
+      try {
+        const message = await sendMessage(rq);
+        dispatch(addMessage(message));
+      } catch (error) {
+        // TODO: message 보내기 실패
+        onSendFail(error);
+      }
+    };
+
+    if (input) {
+      const message = {
+        message: input,
+        receiver: dmUserId,
+      };
+      createMessage(message);
+    }
+  }, [input, dmUserId, dispatch, onSendFail]);
+
+  return { messages, messageEndRef, isLoading };
 };
-
-export default useDMDetail;

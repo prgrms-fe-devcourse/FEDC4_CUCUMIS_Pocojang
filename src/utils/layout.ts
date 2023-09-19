@@ -65,7 +65,7 @@ export const getTitle = (
       if (isLogin && path[1] === userId) {
         return Title.PROFILE;
       } else {
-        return path[1]; // TODO: 프로필 유저 이름 가져오기
+        return visitingUserName;
       }
     }
   }

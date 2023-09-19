@@ -38,15 +38,16 @@ export const useDMDetail = ({
     async (dmUserId: string) => {
       try {
         const responseMessages = await getMessages({ userId: dmUserId });
-        if (responseMessages.length > messages.length) {
-          dispatch(setMessages(responseMessages));
-        }
+        const sortedMessages = responseMessages.sort(
+          (a, b) => +new Date(a.createdAt) - +new Date(b.createdAt),
+        );
+        dispatch(setMessages(sortedMessages));
       } catch (error) {
         // TODO: message 불러오기 실패
         onGetFail(error);
       }
     },
-    [messages, dispatch, onGetFail],
+    [dispatch, onGetFail],
   );
 
   const fetchVisitingUser = useCallback(

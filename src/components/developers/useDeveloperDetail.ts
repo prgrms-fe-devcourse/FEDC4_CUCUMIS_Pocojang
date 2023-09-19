@@ -5,7 +5,13 @@ import { useDispatch } from 'react-redux';
 import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type { PostType, UserType, FormattedPost, CommentType } from '@/types';
+import type {
+  PostType,
+  UserType,
+  FormattedPost,
+  CommentType,
+  DeveloperContent,
+} from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getPost, deletePost } from '@/api/posts';
@@ -38,7 +44,7 @@ const useDeveloperDetail = () => {
   const dispatch = useDispatch();
 
   const { developerId } = useParams();
-  const { post } = useAppSelector(projectDetailSelector);
+  const { post } = useAppSelector(projectDetailSelector<DeveloperContent>);
 
   const [isLoading, setIsLoading] = useState(false);
   const [buttonState, setButtonState] = useState({
@@ -122,7 +128,7 @@ const useDeveloperDetail = () => {
       const { author, comments, _id, image, createdAt } = rs;
       const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
 
-      const formatedPost: Partial<FormattedPost> = {
+      const formatedPost: Partial<FormattedPost<DeveloperContent>> = {
         postId: _id,
         comments: formattedPost(comments),
         image: image,

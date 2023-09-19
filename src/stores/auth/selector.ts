@@ -8,6 +8,8 @@ export const tokenSelector = (state: RootState): string =>
   state.auth.token ?? '';
 export const userIdSelector = (state: RootState): string =>
   state.auth.user?._id ?? '';
+export const userFullNameSelector = (state: RootState): string =>
+  state.auth.user?.fullName ?? '';
 
 export const isLoginSelector = createSelector(tokenSelector, (token: string) =>
   Boolean(token),

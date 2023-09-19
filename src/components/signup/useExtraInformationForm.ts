@@ -1,31 +1,29 @@
-import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
+import { useEffect } from 'react';
 
-const initialExtraInformationFormValues = {
-  oneLiner: '',
-  technicalTools: '',
-  position: '',
-  details: '',
-};
+import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import {
+  extraInformationValuesSelector,
+  setExtraInputFormValues,
+} from '@/stores/signup';
+import { PostType } from '@/types';
+import { createPost } from '@/api/posts';
+import CHANNEL_ID from '@/consts/channels';
 
 const validateExtraInformationForm = ({
   oneLiner,
-  technicalTools,
-  position,
   details,
 }: FormValues): FormErrors => {
   const newErrors: FormErrors = {};
 
-  if (!oneLiner) newErrors.oneLiner = 'please enter oneLiner';
-  if (!technicalTools) newErrors.technicalTools = 'please enter technicalTools';
-  if (!position) newErrors.position = 'please enter position';
-  if (!details) newErrors.details = 'please enter details';
+  if (oneLiner.length > 30) newErrors.oneLiner = '30자 미만 입력 가능합니다.';
+  if (details.length > 1000) newErrors.details = '1000자 미만 입력 가능합니다.';
 
   return newErrors;
 };
 
 interface SignupFormHookParameters {
-  // TODO: create post response type 으로 바꾸기
-  onSuccess: (rs: unknown) => void;
+  onSuccess: (rs: PostType) => void;
   onFail: (error: unknown) => void;
 }
 
@@ -33,29 +31,38 @@ export const useExtraInformationForm = ({
   onSuccess,
   onFail,
 }: SignupFormHookParameters) => {
-  const onSubmitExtraInformationForm = async ({
-    oneLiner,
-    technicalTools,
-    position,
-    details,
-  }: FormValues) => {
+  const dispatch = useAppDispatch();
+  const extraInputFormValues: FormValues = useAppSelector(
+    extraInformationValuesSelector,
+  );
+
+  const onSubmitExtraInformationForm = async (formValues: FormValues) => {
     try {
-      console.log(oneLiner, technicalTools, position, details);
-      // TODO: posts api 를 사용하여 프로필 게시글 작성
-      // const rs = post({oneLiner, technicalTools, position, details})
-      onSuccess('rs');
+      const userData = JSON.stringify(formValues);
+      const formData = new FormData();
+      formData.append('title', userData);
+      formData.append('channelId', CHANNEL_ID.DEVELOPER);
+
+      const rs = await createPost(formData);
+
+      onSuccess(rs);
     } catch (error) {
       onFail(error);
     }
   };
 
-  const { errors, handleChange, handleSubmit } = useForm({
-    initialValues: initialExtraInformationFormValues,
+  const { values, errors, handleChange, handleSubmit } = useForm({
+    initialValues: extraInputFormValues,
     onSubmit: onSubmitExtraInformationForm,
     validate: validateExtraInformationForm,
   });
 
+  useEffect(() => {
+    dispatch(setExtraInputFormValues(values));
+  }, [dispatch, values]);
+
   return {
+    extraInformationFormValues: values,
     extraInformationFormErrors: errors,
     handleExtraInformationFormChange: handleChange,
     handleExtraInformationFormSubmit: handleSubmit,

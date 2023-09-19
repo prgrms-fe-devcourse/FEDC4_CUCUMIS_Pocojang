@@ -10,7 +10,13 @@ import {
   inputSelector,
   setVisitingUser,
 } from '@/stores/layout';
-import { setMessages, addMessage, messagesSelector } from '@/stores/dm';
+import {
+  setDMUserId,
+  setMessages,
+  addMessage,
+  dmUserIdSelector,
+  messagesSelector,
+} from '@/stores/dm';
 import useInterval from '@/hooks/useInterval';
 
 interface DMDetailHookParameters {
@@ -23,9 +29,10 @@ export const useDMDetail = ({
   onSendFail,
 }: DMDetailHookParameters) => {
   const dispatch = useAppDispatch();
-  const visitingUserId = useAppSelector(locationSelector).split('/')[2];
+  const location = useAppSelector(locationSelector);
   const userId = useAppSelector(userIdSelector);
   const input = useAppSelector(inputSelector);
+  const dmUserId = useAppSelector(dmUserIdSelector);
   const messages = useAppSelector(messagesSelector).map((message) => ({
     ...message,
     isSender: message.sender._id === userId,
@@ -33,10 +40,14 @@ export const useDMDetail = ({
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    dispatch(setDMUserId(location.split('/')[2]));
+  }, [dispatch, location]);
+
   const fetchMessages = useCallback(
-    async (visitingUserId: string) => {
+    async (dmUserId: string) => {
       try {
-        const responseMessages = await getMessages({ userId: visitingUserId });
+        const responseMessages = await getMessages({ userId: dmUserId });
         if (responseMessages.length > messages.length) {
           dispatch(setMessages(responseMessages));
         }
@@ -49,9 +60,9 @@ export const useDMDetail = ({
   );
 
   const fetchVisitingUser = useCallback(
-    async (visitingUserId: string) => {
+    async (dmUserId: string) => {
       try {
-        const visitingUser = await getUser(visitingUserId);
+        const visitingUser = await getUser(dmUserId);
         dispatch(setVisitingUser(visitingUser));
       } catch (error) {
         // TODO: message 불러오기 실패
@@ -68,15 +79,15 @@ export const useDMDetail = ({
   }, [messages]);
 
   useEffect(() => {
-    if (visitingUserId) {
-      fetchVisitingUser(visitingUserId);
-      fetchMessages(visitingUserId);
+    if (dmUserId) {
+      fetchVisitingUser(dmUserId);
+      fetchMessages(dmUserId);
     }
-  }, [fetchVisitingUser, fetchMessages, visitingUserId, dispatch, onGetFail]);
+  }, [fetchVisitingUser, fetchMessages, dmUserId, dispatch, onGetFail]);
 
   useInterval(() => {
-    if (visitingUserId) {
-      fetchMessages(visitingUserId);
+    if (dmUserId) {
+      fetchMessages(dmUserId);
     }
   }, 3000);
 
@@ -94,11 +105,11 @@ export const useDMDetail = ({
     if (input) {
       const message = {
         message: input,
-        receiver: visitingUserId,
+        receiver: dmUserId,
       };
       createMessage(message);
     }
-  }, [input, visitingUserId, dispatch, onSendFail]);
+  }, [input, dmUserId, dispatch, onSendFail]);
 
   return { messages, messageEndRef, isLoading };
 };

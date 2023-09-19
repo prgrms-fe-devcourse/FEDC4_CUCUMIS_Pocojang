@@ -31,8 +31,8 @@ const ProfileChangeButton = ({ onChange, id }: Type) => {
 
 const InputBoxStyled = styled(Box)({
   position: 'absolute',
-  left: '5px',
-  top: '5px',
+  left: '0',
+  top: '0',
   zIndex: '1000',
 });
 

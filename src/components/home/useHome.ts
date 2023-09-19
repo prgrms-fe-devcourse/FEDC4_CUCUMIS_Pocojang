@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import BasicAvatarProps from '@/types/components/BasicAvatarProps';
-import { getChannelPosts } from '@/api/posts/channel/channelId';
 import { PostType } from '@/types';
+import { getChannelPosts } from '@/api/posts';
 
 const PROJECT_CHANNEL_ID = '6503eaffa14c752383b6a8b8';
 const DEVELOPER_CHANNEL_ID = '650557d36a9d603a4d150e7d';

@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 
 import { PostType, UserType } from '@/types';
-import { getChannelPosts } from '@/api/posts/channel/channelId';
-import { getOnlineUsers } from '@/api/users/onlineUsers';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import {
   developerListSelector,
   onlineUserListSelector,
 } from '@/stores/developers/selector';
 import { setDeveloperList, setOnlineUserList } from '@/stores/developers';
+import { getOnlineUsers } from '@/api/user';
+import { getChannelPosts } from '@/api/posts';
 
 //TODO parse, api 에러 처리, 무한스크롤 적용, api 동시 호출
 
@@ -20,7 +20,7 @@ const useDevelopers = () => {
     getOnlineUsers()
       .then(parseOnlineUserList)
       .then((list) => dispatch(setOnlineUserList(list)));
-    getChannelPosts({}, DEVELOPER_CHANNEL_ID)
+    getChannelPosts(DEVELOPER_CHANNEL_ID, {})
       .then(parseDeveloperPosts)
       .then((posts) => {
         dispatch(setDeveloperList(posts));

@@ -11,10 +11,8 @@ import { getOnlineUsers } from '@/api/user';
 import { getChannelPosts } from '@/api/posts';
 import { inputSelector } from '@/stores/layout/selector';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
-
+import CHANNEL_ID from '@/consts/channels';
 //TODOapi 에러 처리, 채널id 상수화 , 검색
-
-const DEVELOPER_CHANNEL_ID = '650557d36a9d603a4d150e7d';
 
 const useDevelopers = () => {
   const dispatch = useAppDispatch();
@@ -30,12 +28,11 @@ const useDevelopers = () => {
   });
 
   useEffect(() => {
-    if (page === 1) {
-      getOnlineUsers()
-        .then(parseOnlineUserList)
-        .then((list) => dispatch(setOnlineUserList(list)));
-    }
-    getChannelPosts(DEVELOPER_CHANNEL_ID, { offset: 0, limit: page * 10 })
+    getOnlineUsers()
+      .then(parseOnlineUserList)
+      .then((list) => dispatch(setOnlineUserList(list)));
+
+    getChannelPosts(CHANNEL_ID.DEVELOPER, { offset: 0, limit: page * 10 })
       .then(parseDeveloperPosts)
       .then((posts) => {
         dispatch(setDeveloperList(posts));
@@ -46,7 +43,7 @@ const useDevelopers = () => {
     const value = headerSearchValue.trim();
     if (value.length < 1) return;
     //TODO 검색하기
-  });
+  }, [headerSearchValue]);
 
   return {
     target,

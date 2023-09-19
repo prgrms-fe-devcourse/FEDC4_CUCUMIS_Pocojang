@@ -12,7 +12,7 @@ import { getChannelPosts } from '@/api/posts';
 import { inputSelector } from '@/stores/layout/selector';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import CHANNEL_ID from '@/consts/channels';
-//TODOapi 에러 처리, 채널id 상수화 , 검색
+//TODOapi 에러 처리
 
 const useDevelopers = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +42,7 @@ const useDevelopers = () => {
   useEffect(() => {
     const value = headerSearchValue.trim();
     if (value.length < 1) return;
-    //TODO 검색하기
+    //TODO 검색하기, api 동기적으로 만들고 로딩처리
   }, [headerSearchValue]);
 
   return {

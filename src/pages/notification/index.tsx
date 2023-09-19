@@ -1,20 +1,21 @@
 import { Stack } from '@mui/material';
 
 import NotificationItem from '@/components/notification/NotificationItem';
-import useNotifications from '@/components/notification/useNotification';
+import useNotification from '@/components/notification/useNotification';
 
 const NotificationPage = () => {
-  //TODO 클릭시 읽음 처리
-  const { notificationMessage, notifications } = useNotifications();
+  const { notificationMessage, notifications, readNotification } =
+    useNotification();
+
   return (
     <Stack spacing={2}>
-      {notifications.map(({ _id, type, seen, name }) => (
+      {notifications.map(({ _id, type, isSeen, name }) => (
         <NotificationItem
           onClick={() => {
-            console.log('읽음 처리');
+            readNotification(_id);
           }}
           key={_id}
-          seen={seen}
+          isSeen={isSeen}
         >
           {name + notificationMessage[type]}
         </NotificationItem>

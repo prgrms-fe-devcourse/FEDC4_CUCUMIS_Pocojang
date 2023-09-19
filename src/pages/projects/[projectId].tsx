@@ -16,7 +16,6 @@ export default function ProjectDetailPage() {
     author,
     image = DEFAULT_IMAGE,
     contents,
-    comments,
     createdAt,
     handleClick,
     handleDeleteClick,
@@ -82,13 +81,7 @@ export default function ProjectDetailPage() {
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        <Comments
-          authorId={author._id}
-          postId={projectId}
-          comments={comments}
-          onClick={handleClick}
-          url={PROFILE_URL}
-        />
+        <Comments />
       </Box>
     </Stack>
   );

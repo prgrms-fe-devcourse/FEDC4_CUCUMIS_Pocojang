@@ -5,22 +5,33 @@ import { useDispatch } from 'react-redux';
 import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type {
-  PostType,
-  UserType,
-  FormattedPost,
-  DeveloperContent,
-} from '@/types';
+import type { PostType, UserType, FormattedPost, CommentType } from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getPost, deletePost } from '@/api/posts';
 import { getUser } from '@/api/user';
 import { followUser, unFollowUser } from '@/api/follow';
 import { sendNotification } from '@/api/notifications';
-import { DEVELOPER_URL } from '@/consts/routes';
-// import { getUserId } from '@/api/posts/delete';
-// import { getUserId as getUserInfo } from '@/api/users/userId';
-// import { unFollowUser } from '@/api/follow/delete';
+import {
+  DEVELOPER_URL,
+  DM_URL,
+  PROFILE_URL,
+  SETTINGS_URL,
+} from '@/consts/routes';
+
+const formattedPost = (comments: CommentType[]) => {
+  const formattedComments = comments.map(({ _id, comment, author }) => ({
+    AvatarProps: {
+      imgSrc: author.image,
+    },
+    author: author.fullName,
+    comment,
+    userId: author._id,
+    commentId: _id,
+  }));
+
+  return formattedComments;
+};
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
@@ -36,15 +47,21 @@ const useDeveloperDetail = () => {
   });
   const [userInfo, setUserInfo] = useState<UserType>();
 
-  const handleClick = (url: string, id: string = '') => {
-    navigate(url + id);
+  const handleAvatarClick = () => {
+    navigate(PROFILE_URL + developerId);
+  };
+  const handleSettingClick = () => {
+    navigate(SETTINGS_URL);
+  };
+  const handleDMClick = () => {
+    navigate(DM_URL + developerId);
   };
 
-  const handleDeleteClick = async (id: string) => {
+  const handleDeleteClick = async () => {
     const isAbleToDelete = confirm('정말로 삭제하시겠습니까?');
 
-    if (isAbleToDelete) {
-      const res = await deletePost({ id });
+    if (isAbleToDelete && developerId) {
+      const res = await deletePost({ id: developerId });
 
       res && navigate(DEVELOPER_URL);
     }
@@ -54,21 +71,25 @@ const useDeveloperDetail = () => {
     try {
       if (buttonState.isFollowing) {
         const followerIDList = post.author.followers;
-        const followId = userInfo?.following.find(({ _id }) =>
-          followerIDList.includes(_id),
-        );
+        if (followerIDList) {
+          const followId = userInfo?.following.find(({ _id }) =>
+            followerIDList.includes(_id),
+          );
 
-        if (followId) {
-          await unFollowUser({ id: followId._id });
+          if (followId) {
+            await unFollowUser({ id: followId._id });
+          }
         }
       } else {
-        const res = await followUser({ userId: post.author._id });
+        if (post.author._id) {
+          const res = await followUser({ userId: post.author._id });
 
-        await sendNotification({
-          notificationType: 'FOLLOW',
-          notificationTypeId: res._id,
-          userId: post.author._id,
-        });
+          await sendNotification({
+            notificationType: 'FOLLOW',
+            notificationTypeId: res._id,
+            userId: post.author._id,
+          });
+        }
       }
 
       if (userInfo?._id) {
@@ -101,19 +122,9 @@ const useDeveloperDetail = () => {
       const { author, comments, _id, image, createdAt } = rs;
       const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
 
-      const formattedComments = comments.map(({ _id, comment, author }) => ({
-        AvatarProps: {
-          imgSrc: author.image,
-        },
-        author: author.fullName,
-        comment,
-        userId: author._id,
-        commentId: _id,
-      }));
-
-      const formatedPost: Partial<FormattedPost<DeveloperContent>> = {
+      const formatedPost: Partial<FormattedPost> = {
         postId: _id,
-        comments: formattedComments,
+        comments: formattedPost(comments),
         image: image,
         author,
         createdAt,
@@ -153,7 +164,9 @@ const useDeveloperDetail = () => {
 
   return {
     developerId,
-    handleClick,
+    handleSettingClick,
+    handleDMClick,
+    handleAvatarClick,
     handleDeleteClick,
     handleFollowClick,
     isAuthor: post.author._id === userInfo?._id,

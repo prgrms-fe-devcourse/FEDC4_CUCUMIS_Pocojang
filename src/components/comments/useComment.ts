@@ -8,13 +8,11 @@ import session from '@/utils/sessionStorage';
 import type { UserType } from '@/types';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { sendNotification } from '@/api/notifications';
+import { projectDetailSelector } from '@/stores/projectDetail/selector';
+import { PROFILE_URL } from '@/consts/routes';
 
-interface UseCommentProps {
-  authorId: string;
-  postId: string;
-}
-
-const useComment = ({ authorId, postId }: UseCommentProps) => {
+const useComment = () => {
+  const { post } = useAppSelector(projectDetailSelector);
   const { input } = useAppSelector(layoutSelector);
   const [userId, setUserId] = useState('');
   const navigate = useNavigate();
@@ -26,6 +24,10 @@ const useComment = ({ authorId, postId }: UseCommentProps) => {
       console.log(error);
     }
     navigate(0);
+  };
+
+  const handleAvatarClick = (id: string) => {
+    navigate(PROFILE_URL + id);
   };
 
   useEffect(() => {
@@ -43,14 +45,14 @@ const useComment = ({ authorId, postId }: UseCommentProps) => {
       try {
         const res = await createComment({
           comment: input,
-          postId,
+          postId: post.postId,
         });
 
         await sendNotification({
           notificationType: 'COMMENT',
           notificationTypeId: res._id,
-          userId: authorId,
-          postId,
+          userId: post.author._id as string,
+          postId: post.postId,
         });
 
         navigate(0);
@@ -60,11 +62,13 @@ const useComment = ({ authorId, postId }: UseCommentProps) => {
     };
 
     input && submitComment();
-  }, [input, postId, userId, authorId, navigate]);
+  }, [input, userId, navigate, post.author._id, post.postId]);
 
   return {
+    comments: post.comments,
     userId,
     handleDeleteClick,
+    handleAvatarClick,
   };
 };
 

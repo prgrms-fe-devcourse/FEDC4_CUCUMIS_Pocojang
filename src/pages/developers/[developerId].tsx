@@ -3,7 +3,6 @@ import { Box, Divider, Stack, Typography } from '@mui/material';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
-import { PROFILE_URL, DM_URL, SETTINGS_URL } from '@/consts/routes';
 import BasicButton from '@/components/shared/button';
 import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
@@ -13,12 +12,12 @@ const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
 
 export default function DeveloperDetail() {
   const {
-    developerId,
     author,
     image = DEFAULT_IMAGE,
-    comments,
     contents,
-    handleClick,
+    handleSettingClick,
+    handleDMClick,
+    handleAvatarClick,
     handleDeleteClick,
     handleFollowClick,
     isAuthor,
@@ -38,11 +37,7 @@ export default function DeveloperDetail() {
           alt={contents.oneLiner + "'s project image"}
         />
         <StackStyled direction="column" alignItems="center">
-          <BasicAvatar
-            {...author}
-            size={90}
-            onClick={() => handleClick(PROFILE_URL, author.userId)}
-          />
+          <BasicAvatar {...author} size={90} onClick={handleAvatarClick} />
           <Typography noWrap>{author.fullName}</Typography>
         </StackStyled>
       </Box>
@@ -54,12 +49,12 @@ export default function DeveloperDetail() {
                 <BasicChip
                   label="수정"
                   variant="outlined"
-                  onClick={() => handleClick(SETTINGS_URL)}
+                  onClick={handleSettingClick}
                 />
                 <BasicChip
                   label="삭제"
                   variant="outlined"
-                  onClick={() => handleDeleteClick(developerId as string)}
+                  onClick={handleDeleteClick}
                 />
               </ChipGroup>
             ) : (
@@ -73,10 +68,7 @@ export default function DeveloperDetail() {
                     팔로우
                   </BasicButton>
                 )}
-                <BasicButton
-                  variant="outlined"
-                  onClick={() => handleClick(DM_URL, developerId as string)}
-                >
+                <BasicButton variant="outlined" onClick={handleDMClick}>
                   DM
                 </BasicButton>
               </>
@@ -88,7 +80,7 @@ export default function DeveloperDetail() {
         <Typography variant="h4">
           {contents.oneLiner}
           <ChipStyled
-            label={contents.position}
+            label={contents.position as string}
             margin="0 8px"
             color="secondary"
           />
@@ -106,13 +98,7 @@ export default function DeveloperDetail() {
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
-        <Comments
-          authorId={author._id}
-          postId={developerId}
-          comments={comments}
-          onClick={handleClick}
-          url={PROFILE_URL}
-        />
+        <Comments />
       </Box>
     </Stack>
   );

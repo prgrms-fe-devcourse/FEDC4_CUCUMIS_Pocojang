@@ -15,7 +15,7 @@ export interface PostType {
   updatedAt: string;
 }
 
-export interface FormattedPost<T> {
+export interface FormattedPost {
   likes: LikeType[];
   comments: FormattedComment[];
   postId: string;
@@ -23,12 +23,19 @@ export interface FormattedPost<T> {
   author: Partial<UserType>;
   createdAt: string;
   updatedAt: string;
-  contents: T;
+  contents: {
+    title?: string;
+    requirements?: string;
+    oneLiner?: string;
+    techStack?: string[];
+    position?: string;
+    details?: string;
+  };
 }
 
 export interface ProjectContent {
-  title: string;
-  requirements: string;
+  title?: string;
+  requirements?: string;
 }
 
 export interface DeveloperContent {

@@ -15,7 +15,7 @@ export interface UserType {
   posts: PostType[];
   likes: LikeType[];
   comments: string[];
-  followers: FollowType[];
+  followers: string[];
   following: FollowType[];
   notifications: NotificationType[];
   messages: MessageType[];

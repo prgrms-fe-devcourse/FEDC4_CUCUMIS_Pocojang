@@ -2,33 +2,25 @@ import { List } from '@mui/material';
 
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 import { FormattedComment } from '@/types';
+import BasicChip from '@/components/shared/chip';
+import useComment from '@/components/comments/useComment';
 
-import BasicChip from '../shared/chip';
-import useComment from './useComment';
-
-interface Props {
-  authorId: string;
-  postId: string;
-  comments: FormattedComment[];
-  url: string;
-  onClick: (url: string, userId: string) => void;
-}
-
-const Comments = ({ authorId, postId, comments, onClick, url }: Props) => {
-  const { userId, handleDeleteClick } = useComment({ authorId, postId });
+const Comments = () => {
+  const { comments, userId, handleDeleteClick, handleAvatarClick } =
+    useComment();
 
   return (
     <List disablePadding>
-      {comments.map(
+      {(comments as FormattedComment[]).map(
         ({ author, comment, userId: writerId, commentId, AvatarProps }, i) => (
           <ItemWithAvatar
             name={author}
             message={comment}
-            key={i}
+            key={commentId}
             isComment={true}
             AvatarProps={{
               ...AvatarProps,
-              onClick: () => onClick(url, writerId),
+              onClick: () => handleAvatarClick(writerId),
             }}
             isLastItem={i === comments.length - 1}
           >

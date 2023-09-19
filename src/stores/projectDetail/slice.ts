@@ -1,16 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import type {
-  DeveloperContent,
-  FormattedPost,
-  ProjectContent,
-} from '@/types/models/PostType';
+import type { FormattedPost } from '@/types/models/PostType';
 
-export interface ProjectDetailState<T> {
-  post: FormattedPost<T>;
+export interface ProjectDetailState {
+  post: FormattedPost;
 }
 
-const initialState: ProjectDetailState<ProjectContent | DeveloperContent> = {
+const initialState: ProjectDetailState = {
   post: {
     likes: [],
     comments: [],

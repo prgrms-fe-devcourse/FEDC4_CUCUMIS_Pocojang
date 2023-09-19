@@ -6,12 +6,7 @@ import { getPost, deletePost } from '@/api/posts';
 import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type {
-  PostType,
-  UserType,
-  FormattedPost,
-  ProjectContent,
-} from '@/types';
+import type { PostType, UserType, FormattedPost } from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { PROJECT_URL } from '@/consts/routes';
@@ -78,7 +73,7 @@ const useProjectDetail = () => {
         commentId: _id,
       }));
 
-      const formatedPost: Partial<FormattedPost<ProjectContent>> = {
+      const formatedPost: Partial<FormattedPost> = {
         postId: _id,
         comments: formattedComments,
         image: image,

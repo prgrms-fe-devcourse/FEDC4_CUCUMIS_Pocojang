@@ -36,7 +36,7 @@ const useProjectList = () => {
   };
   useEffect(() => {
     // 두번호출떄문에 새로 업데이트
-    getChannelPosts({ offset: 0, limit: page * 5 + 5 }, CHANNEL_ID)
+    getChannelPosts(CHANNEL_ID, { offset: 0, limit: page * 5 + 5 })
       .then((list) => parseProjectList(list))
       .then((projects) => {
         dispatch(setList(projects));

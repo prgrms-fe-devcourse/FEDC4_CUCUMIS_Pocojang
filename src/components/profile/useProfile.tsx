@@ -4,14 +4,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import session from '@/utils/sessionStorage';
 import { UserType } from '@/types';
-import { getUserId } from '@/api/users/userId';
-import { followUser } from '@/api/follow/create';
-import { unFollowUser } from '@/api/follow/delete';
-import { uploadPhoto } from '@/api/users/uploadPhoto';
+import { getUser, uploadUserPhoto } from '@/api/user';
+import { followUser, unFollowUser } from '@/api/follow';
 
 export default function useProfile() {
   const [buttonState, setButtonState] = useState<boolean>();
-  const [userState, setUserState] = useState<UserType>();
+  const [followingList, setFollowingList] = useState<UserType[]>();
+  const [followerList, setFollowerList] = useState<UserType[]>();
+  const [userState, setUserState] = useState<UserType | null>(null);
+
+  const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true); // 유저 데이터 로딩 상태
+  const [isLoadingFollowing, setIsLoadingFollowing] = useState<boolean>(true); // following 데이터 로딩 상태
+  const [isLoadingFollowers, setIsLoadingFollowers] = useState<boolean>(true); // followers 데이터 로딩 상태
   const navigationData = [
     { label: userState?.following.length || 0, title: '팔로잉' },
     { label: userState?.followers.length || 0, title: '팔로워' },
@@ -28,22 +32,19 @@ export default function useProfile() {
     return session.getItem<UserType>(SESSION_STORAGE.USER);
   };
   const getUserInfo = async (userId: string) => {
-    const userInfo = await getUserId(userId);
+    const userInfo = await getUser(userId);
     return userInfo;
   };
   const isMe = (userId: string) => {
     return getMyInfo()?._id === userId;
   };
 
-  const followingOrUnFollowing = async (
-    buttonState: boolean,
-    userId: string,
-  ) => {
+  const checkFollowingStatus = async (buttonState: boolean, userId: string) => {
     if (!buttonState) {
       await followUser({ userId });
       setButtonState((prev) => !prev);
     } else if (buttonState) {
-      const me = await getUserInfo(getMyInfo()?._id as string);
+      const me = await getUser(getMyInfo()?._id as string);
       const followingObj = me.following.find((e) => e.user === userId);
       await unFollowUser({ id: followingObj?._id as string });
       setButtonState((prev) => !prev);
@@ -51,7 +52,7 @@ export default function useProfile() {
   };
 
   const isInMyFollowingList = useCallback(async (userId: string) => {
-    const data = await getUserInfo(getMyInfo()?._id as string);
+    const data = await getUser(getMyInfo()?._id as string);
     const result = data.following.find((e) => e.user === userId);
     result ? setButtonState(true) : setButtonState(false);
     return result;
@@ -95,20 +96,73 @@ export default function useProfile() {
     formData.append('image', file);
     formData.append('isCover', String(id === 'profile-photo' ? false : true));
 
-    const upload = await uploadPhoto(formData);
+    const upload = await uploadUserPhoto(formData);
     console.log(selectedFile);
     changeProfile(upload, id === 'profile-photo' ? false : true);
   };
 
   useEffect(() => {
     const request = async () => {
-      const user = await getUserInfo(userId as string);
-      setUserState(user);
-      isInMyFollowingList(userId as string);
+      setIsLoadingUser(true);
+      try {
+        const user = await getUserInfo(userId as string);
+        setUserState(user);
+        isInMyFollowingList(userId as string);
+      } catch (e) {
+        console.error('error >> ', e);
+      } finally {
+        // setIsLoadingUser(false); // 바로 x
+      }
     };
+
     request();
   }, [userId, isInMyFollowingList]);
 
+  // Following 데이터 가져오기
+  useEffect(() => {
+    if (userState) {
+      const { following } = userState;
+      const fetchData = async () => {
+        setIsLoadingFollowing(true);
+
+        try {
+          const followingData = await Promise.all(
+            following.map(({ user }) => getUser(user)),
+          );
+          setFollowingList(followingData);
+        } catch (error) {
+          console.error('Following 데이터 가져오기 오류:', error);
+        } finally {
+          setIsLoadingFollowing(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [userState]);
+
+  // Followers 데이터 가져오기
+  useEffect(() => {
+    if (userState) {
+      const { followers } = userState;
+      const fetchData = async () => {
+        setIsLoadingFollowers(true);
+
+        try {
+          const followersData = await Promise.all(
+            followers.map(({ follower }) => getUser(follower)),
+          );
+          setFollowerList(followersData);
+        } catch (error) {
+          console.error('Followers 데이터 가져오기 오류:', error);
+        } finally {
+          setIsLoadingFollowers(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [userState]);
   return {
     navigationData,
     value,
@@ -119,9 +173,14 @@ export default function useProfile() {
     getMyInfo,
     getUserInfo,
     isMe,
-    followingOrUnFollowing,
+    checkFollowingStatus,
     isInMyFollowingList,
     goNextPage,
     handleFileChange,
+    followerList,
+    followingList,
+    isLoadingUser,
+    isLoadingFollowers,
+    isLoadingFollowing,
   };
 }

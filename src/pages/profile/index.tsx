@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Skeleton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import styled from '@emotion/styled';
 
@@ -15,16 +15,20 @@ import useProfile from '@/components/profile/useProfile';
 
 const ProfilePage = () => {
   const {
+    followerList,
+    followingList,
     navigationData,
     value,
     navigationMoving,
     userState,
     buttonState,
-    followingOrUnFollowing,
+    checkFollowingStatus,
     isMe,
     goNextPage,
     userId,
     handleFileChange,
+    isLoadingFollowers,
+    isLoadingFollowing,
   } = useProfile();
 
   return (
@@ -60,7 +64,13 @@ const ProfilePage = () => {
           alignItems={'center'}
           justifyContent={'center'}
         >
-          <h3>{userState?.fullName}</h3>
+          <h3>
+            {userState ? (
+              userState.fullName
+            ) : (
+              <SkeletonStyled animation="wave" />
+            )}
+          </h3>
           {isMe(userId as string) && (
             <Link to="/settings">
               <SettingsIcon />
@@ -80,7 +90,7 @@ const ProfilePage = () => {
                 variant="outlined"
                 children={buttonState ? '팔로잉 취소' : '팔로잉'}
                 onClick={async () => {
-                  const data = await followingOrUnFollowing(
+                  const data = await checkFollowingStatus(
                     buttonState as boolean,
                     userId as string,
                   );
@@ -105,33 +115,43 @@ const ProfilePage = () => {
         <StyledContentsWrapper>
           {value === 0 ? (
             <StyledItemWithAvatarBox>
-              {userState &&
-                userState.following.map(({ user }) => {
-                  return (
-                    <ItemWithAvatar
-                      name={user}
-                      AvatarProps={{
-                        imgSrc: user,
-                      }}
-                      to={`/profile/${user}`}
-                    />
-                  );
-                })}
+              {isLoadingFollowing ? (
+                <SkeletonStyled variant="rectangular" />
+              ) : followingList ? (
+                followingList.map(({ _id, fullName, image }) => (
+                  <ItemWithAvatar
+                    key={_id}
+                    name={fullName + '유저'}
+                    AvatarProps={{ imgSrc: image }}
+                    to={`/profile/${_id}`}
+                  />
+                ))
+              ) : (
+                // 로딩 중일 때 스켈레톤 UI 표시
+                <SkeletonStyled />
+              )}
             </StyledItemWithAvatarBox>
           ) : value === 1 ? (
             <StyledItemWithAvatarBox>
-              {userState &&
-                userState.followers.map(({ follower }) => {
-                  return (
-                    <ItemWithAvatar
-                      name={follower}
-                      AvatarProps={{
-                        imgSrc: follower,
-                      }}
-                      to={`/profile/${follower}`}
-                    />
-                  );
-                })}
+              {isLoadingFollowers ? (
+                <SkeletonStyled
+                  variant="rectangular"
+                  width={'100%'}
+                  height={'100%'}
+                />
+              ) : followerList ? (
+                followerList.map(({ _id, fullName, image }) => (
+                  <ItemWithAvatar
+                    key={_id}
+                    name={fullName + '유저'}
+                    AvatarProps={{ imgSrc: image }}
+                    to={`/profile/${_id}`}
+                  />
+                ))
+              ) : (
+                // 로딩 중일 때 스켈레톤 UI 표시
+                <SkeletonStyled />
+              )}
             </StyledItemWithAvatarBox>
           ) : value === 2 ? (
             <>
@@ -218,4 +238,8 @@ const StyledProjectCardItemBox = styled(Box)({
   margin: '10px auto',
 });
 
+const SkeletonStyled = styled(Skeleton)({
+  width: '100%',
+  height: '100%',
+});
 export default ProfilePage;

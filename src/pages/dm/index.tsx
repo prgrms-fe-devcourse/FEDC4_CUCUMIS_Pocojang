@@ -25,7 +25,7 @@ export default function DMListPage() {
             message={conversation.message}
             unReadCount={conversation.unReadCount}
             onClick={() => handleConversationClick(conversation.dmUser)}
-            AvatarProps={{}}
+            AvatarProps={{ imgSrc: conversation.dmUser.image }}
             key={conversation._id}
           />
         ))}

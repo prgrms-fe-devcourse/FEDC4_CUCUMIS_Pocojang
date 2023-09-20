@@ -6,33 +6,23 @@ import useHome from '@/components/home/useHome';
 import ProjectCardItem from '@/components/shared/projectCard';
 import AvatarWithChip from '@/components/shared/avatarWithChip';
 
+//TODO 추천 개발자 컴포넌트로 빼기,초기 두번 렌더링
 const HomePage = () => {
-  const { projects, onlineDevelopers } = useHome();
-
+  const { homeList, target } = useHome();
   return (
     <Stack spacing={2} mt={1}>
-      {projects.map(({ _id, projectTitle, imageUrl, name }, index) => {
-        if ((index + 1) % 2 !== 0) {
-          return (
+      {homeList.map(({ _id, projectTitle, imageUrl, name, developers }) => {
+        return (
+          <DivStyled key={_id}>
             <ProjectCardItem
-              key={_id}
               name={name}
               imageUrl={imageUrl}
               projectTitle={projectTitle}
               to={_id}
             />
-          );
-        } else {
-          return (
-            <>
-              <ProjectCardItem
-                key={_id}
-                name={name}
-                imageUrl={imageUrl}
-                projectTitle={projectTitle}
-                to={_id}
-              />
-              <Box key={_id + '@'}>
+
+            {developers && (
+              <Box mt={2}>
                 <Typography variant="body2" gutterBottom>
                   Developer Recommendation
                 </Typography>
@@ -41,23 +31,22 @@ const HomePage = () => {
                   spacing={2}
                   justifyContent="space-evenly"
                 >
-                  {onlineDevelopers
-                    .slice((index + 1) / 2 - 1, (index + 1) / 2 + 3)
-                    .map(({ _id: avatarId, avatarProps, label }) => (
-                      <LinkStyled to={`/dm/${avatarId}`}>
-                        <AvatarWithChip
-                          key={avatarId + '@@'}
-                          AvatarProps={avatarProps}
-                          label={label}
-                        />
-                      </LinkStyled>
-                    ))}
+                  {developers.map(({ _id: avatarId, AvatarProps, label }) => (
+                    <LinkStyled to={`/developers/${avatarId}`} key={avatarId}>
+                      <AvatarWithChip
+                        key={avatarId}
+                        AvatarProps={AvatarProps}
+                        label={label}
+                      />
+                    </LinkStyled>
+                  ))}
                 </Stack>
               </Box>
-            </>
-          );
-        }
+            )}
+          </DivStyled>
+        );
       })}
+      <Box ref={target}></Box>
     </Stack>
   );
 };
@@ -65,5 +54,5 @@ const HomePage = () => {
 const LinkStyled = styled(Link)({
   textDecoration: 'none',
 });
-
+const DivStyled = styled('div')({});
 export default HomePage;

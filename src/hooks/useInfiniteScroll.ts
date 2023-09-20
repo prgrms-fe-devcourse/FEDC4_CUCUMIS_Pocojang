@@ -1,63 +1,33 @@
-import { useEffect, useState, useMemo, useRef, MutableRefObject } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useRef, useState } from 'react';
 
 export interface InfiniteScrollProps {
-  target: MutableRefObject<HTMLDivElement | null>;
-  endPoint?: number;
-  options: IntersectionObserverOptions;
+  options?: IntersectionObserverInit;
 }
 
-export interface IntersectionObserverOptions {
-  root?: Element | null;
-  rootMargin?: string;
-  threshold?: number;
-}
+const useInfiniteScroll = ({ options }: InfiniteScrollProps) => {
+  const pageEnd = useRef<HTMLDivElement | null>(null);
+  const [page, setPage] = useState(0);
 
-const useInfiniteScroll = ({
-  target,
-  endPoint = 1,
-  options: { root = null, rootMargin = '0px', threshold = 1 },
-}: InfiniteScrollProps) => {
-  const [page, setPage] = useState<number>(0);
-  const currentChild = useRef<Element | null>(null);
-
-  const observer = useMemo(() => {
-    return new IntersectionObserver(
-      (entries, observer) => {
-        if (target?.current === null) return;
-
-        if (entries[0].isIntersecting) {
-          setPage((v) => v + 1);
-          observer.disconnect();
-        }
-      },
-      { root, rootMargin, threshold },
-    );
-  }, [target, root, rootMargin, threshold]);
+  const loadMore = () => {
+    setPage((prev) => prev + 1);
+  };
 
   useEffect(() => {
-    if (target?.current === null) return;
+    if (!pageEnd.current) return;
 
-    const { current } = target;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) loadMore();
+    }, options);
 
-    const observeChild = current.children[current.children.length - endPoint];
-    if (observeChild && currentChild.current !== observeChild) {
-      currentChild.current = observeChild;
-      observer.observe(observeChild);
-    }
+    observer.observe(pageEnd.current);
 
-    return () => {
-      const { current } = target;
-
-      if (current !== null && observer) {
-        observer.unobserve(current);
-      }
+    () => {
+      if (pageEnd.current) observer.unobserve(pageEnd.current);
     };
-  }, [page, target, observer, endPoint]);
+  }, []);
 
-  return {
-    page,
-    setPage,
-  };
+  return { page, pageEnd };
 };
 
 export default useInfiniteScroll;

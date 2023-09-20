@@ -12,6 +12,8 @@ import DMListPage from '@/pages/dm';
 import DMPage from '@/pages/dm/[dmId]';
 import ProfilePage from '@/pages/profile';
 import SettingsPage from '@/pages/settings';
+import PasswordSettingPage from '@/pages/settings/password';
+import ProfileSettingPage from '@/pages/settings/profile';
 import LoginPage from '@/pages/login';
 import SignupPage from '@/pages/signup/step1';
 import ExtraInformationPage from '@/pages/signup/step2';
@@ -109,8 +111,21 @@ export const router = createBrowserRouter(
         },
         {
           path: 'settings',
-          element: <SettingsPage />,
           errorElement: <NotFoundPage />,
+          children: [
+            {
+              index: true,
+              element: <SettingsPage />,
+            },
+            {
+              path: 'password',
+              element: <PasswordSettingPage />,
+            },
+            {
+              path: 'profile',
+              element: <ProfileSettingPage />,
+            },
+          ],
         },
         {
           path: 'login',

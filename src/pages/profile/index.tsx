@@ -1,4 +1,6 @@
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';

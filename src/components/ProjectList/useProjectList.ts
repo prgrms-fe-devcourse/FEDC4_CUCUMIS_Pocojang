@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 
 import { setList } from '@/stores/projects';
 import useInfinityScroll from '@/hooks/useInfiniteScroll';
@@ -22,22 +22,20 @@ export interface ProjectType {
 const useProjectList = () => {
   const navigate = useNavigate();
   const isLogin = useAppSelector(isLoginSelector);
-  const target = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch();
   const list = useAppSelector(projectsSelector);
+  const testList = useRef(list);
+  const dispatch = useAppDispatch();
   const headerSearchValue = useAppSelector(inputSelector);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { page } = useInfinityScroll({
-    target,
-    endPoint: 4,
-    options: { threshold: 0.5 },
-    list,
-  });
+  const { page, pageEnd } = useInfinityScroll({ options: { threshold: 1 } });
 
   const handleFabClick = () => {
     navigate('/projects/write');
   };
+  useEffect(() => {
+    testList.current = list;
+  }, [list]);
 
   useEffect(() => {
     const searchProjects = async (value: string) => {
@@ -56,20 +54,27 @@ const useProjectList = () => {
     searchProjects(encoded);
   }, [headerSearchValue, dispatch]);
 
-  useEffect(() => {
-    // 두번호출떄문에 새로 업데이트
-    getChannelPosts(CHANNEL_ID.PROJECT, { offset: 0, limit: page * 5 + 5 })
-      .then((list) => parseProjectList(list))
-      .then((projects) => {
-        dispatch(setList(projects));
+  const fetchProjects = useCallback(
+    async (page: number) => {
+      const res = await getChannelPosts(CHANNEL_ID.PROJECT, {
+        offset: page * 5,
+        limit: 5,
       });
-  }, [page, dispatch]);
+      const data: ProjectType[] = parseProjectList(res);
+      dispatch(setList([...testList.current, ...data]));
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    fetchProjects(page);
+  }, [page, fetchProjects]);
 
   return {
     handleFabClick,
     projects: list,
     isLogin,
-    target,
+    target: pageEnd,
     isLoading,
   };
 };

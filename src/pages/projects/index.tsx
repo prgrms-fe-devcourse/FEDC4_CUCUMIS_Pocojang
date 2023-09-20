@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
 import ProjectCardItem from '@/components/shared/projectCard';
@@ -20,7 +20,7 @@ const ProjectPage = () => {
           <Add />
         </MainFab>
       )}
-      <Stack spacing={1} ref={target}>
+      <Stack spacing={1}>
         {projects &&
           projects.map((project) => (
             <ProjectCardItem
@@ -31,6 +31,7 @@ const ProjectPage = () => {
               to={project._id}
             />
           ))}
+        <Box ref={target}></Box>
       </Stack>
     </>
   );

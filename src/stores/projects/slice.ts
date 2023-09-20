@@ -12,7 +12,7 @@ export const projectsSlice = createSlice({
   initialState: { list: [] as ProjectType[] },
   reducers: {
     setList: (state, { payload }) => {
-      state.list = payload;
+      state.list = [...state.list, ...payload];
     },
   },
 });

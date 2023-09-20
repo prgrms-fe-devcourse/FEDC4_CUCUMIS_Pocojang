@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useCallback, useState, useRef } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 
 import { setList } from '@/stores/projects';
 import useInfinityScroll from '@/hooks/useInfiniteScroll';
@@ -23,7 +23,6 @@ const useProjectList = () => {
   const navigate = useNavigate();
   const isLogin = useAppSelector(isLoginSelector);
   const list = useAppSelector(projectsSelector);
-  const testList = useRef(list);
   const dispatch = useAppDispatch();
   const headerSearchValue = useAppSelector(inputSelector);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -33,9 +32,6 @@ const useProjectList = () => {
   const handleFabClick = () => {
     navigate('/projects/write');
   };
-  useEffect(() => {
-    testList.current = list;
-  }, [list]);
 
   useEffect(() => {
     const searchProjects = async (value: string) => {
@@ -61,7 +57,7 @@ const useProjectList = () => {
         limit: 5,
       });
       const data: ProjectType[] = parseProjectList(res);
-      dispatch(setList([...testList.current, ...data]));
+      dispatch(setList(data));
     },
     [dispatch],
   );

@@ -2,6 +2,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
+import { Stack, Box } from '@mui/material';
 
 import Navbar from '@/components/navbar';
 import ItemWithAvatar from '@/components/shared/itemWithAvatar';

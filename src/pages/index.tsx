@@ -6,17 +6,15 @@ import useHome from '@/components/home/useHome';
 import ProjectCardItem from '@/components/shared/projectCard';
 import AvatarWithChip from '@/components/shared/avatarWithChip';
 
-//TODO 추천 개발자 컴포넌트로 빼기
+//TODO 추천 개발자 컴포넌트로 빼기,초기 두번 렌더링
 const HomePage = () => {
   const { homeList, target } = useHome();
-
   return (
-    <Stack spacing={2} mt={1} ref={target}>
+    <Stack spacing={2} mt={1}>
       {homeList.map(({ _id, projectTitle, imageUrl, name, developers }) => {
         return (
           <DivStyled key={_id}>
             <ProjectCardItem
-              key={_id}
               name={name}
               imageUrl={imageUrl}
               projectTitle={projectTitle}
@@ -48,6 +46,7 @@ const HomePage = () => {
           </DivStyled>
         );
       })}
+      <Box ref={target}></Box>
     </Stack>
   );
 };

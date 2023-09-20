@@ -1,5 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import BasicAvatarProps from '@/types/components/BasicAvatarProps';
 import { PostType } from '@/types';
@@ -23,30 +22,24 @@ interface HomeType {
 // TODO최대길이 예외처리, api 예외처리
 const useHome = () => {
   const [homeList, setHomeList] = useState<HomeType[]>([]);
-  const target = useRef<HTMLDivElement>(null);
-  const { page } = useInfiniteScroll({ target, endPoint: 2, options: {} });
+  const { page, pageEnd } = useInfiniteScroll({ options: {} });
 
   useEffect(() => {
-    axios
-      .all([
-        getChannelPosts(CHANNEL_ID.PROJECT, {
-          offset: 0,
-          limit: 3 * page,
-        }),
-        getChannelPosts(CHANNEL_ID.DEVELOPER, {
-          offset: 0,
-          limit: 4 * page,
-        }),
-      ])
-      .then(
-        axios.spread((projectList, developerList) => {
-          return parseHomeList(projectList, developerList);
-        }),
-      )
-      .then((list) => setHomeList(list));
+    Promise.all([
+      getChannelPosts(CHANNEL_ID.PROJECT, {
+        offset: page * 3,
+        limit: 3,
+      }),
+      getChannelPosts(CHANNEL_ID.DEVELOPER, {
+        offset: page * 4,
+        limit: 4,
+      }),
+    ])
+      .then((lists) => parseHomeList(...lists))
+      .then((result) => setHomeList((state) => [...state, ...result]));
   }, [page]);
 
-  return { homeList, target };
+  return { homeList, target: pageEnd };
 };
 export default useHome;
 
@@ -76,12 +69,10 @@ const parseDeveloperPosts = (list: PostType[]) => {
 const parseHomeList = (projectList: PostType[], developerList: PostType[]) => {
   const projects: HomeType[] = parseProjectPosts(projectList);
   const developers: DeveloperType[] = parseDeveloperPosts(developerList);
-  let page = 0;
-  return projects.map((project, index) => {
-    if ((index + 1) % 3 === 0) {
-      const sliced = developers.slice(page, page + 4);
-      page++;
-      return { ...project, developers: sliced };
-    } else return project;
-  });
+  projects[projects.length - 1] = {
+    ...projects[projects.length - 1],
+    developers,
+  };
+
+  return projects;
 };

@@ -1,60 +1,111 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+import { getPost, deletePost } from '@/api/posts';
+import { setPost } from '@/stores/projectDetail';
+import { useAppSelector } from '@/stores/hooks';
+import { projectDetailSelector } from '@/stores/projectDetail/selector';
+import type {
+  PostType,
+  UserType,
+  FormattedPost,
+  ProjectContent,
+} from '@/types';
+import session from '@/utils/sessionStorage';
+import SESSION_STORAGE from '@/consts/sessionStorage';
+import { PROJECT_URL } from '@/consts/routes';
 
 const useProjectDetail = () => {
-  const { projectId } = useParams();
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { projectId } = useParams();
+  const { post } = useAppSelector(projectDetailSelector<ProjectContent>);
+
+  const [userId, setUserId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = (url: string, id: string) => {
     navigate(url + id);
   };
 
+  const handleDeleteClick = async (id: string) => {
+    const ableToDelete = confirm('정말로 삭제하시겠습니까?');
+
+    if (ableToDelete) {
+      const res = await deletePost({ id });
+
+      res && navigate(PROJECT_URL);
+    }
+  };
+
+  useEffect(() => {
+    const user = session.getItem<UserType>(SESSION_STORAGE.USER);
+
+    if (user) {
+      const { _id } = user;
+      setUserId(_id);
+    }
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const fetchPost = async (postId: string) => {
+      try {
+        const rs = await getPost(postId);
+
+        handlePost(rs);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const handlePost = (rs: PostType) => {
+      const { author, comments, _id, image, createdAt } = rs;
+      const { title, requirements } = JSON.parse(rs.title);
+
+      const formattedComments = comments.map(({ _id, comment, author }) => ({
+        AvatarProps: {
+          imgSrc: author.image,
+        },
+        author: author.fullName,
+        comment,
+        userId: author._id,
+        commentId: _id,
+      }));
+
+      const formatedPost: Partial<FormattedPost<ProjectContent>> = {
+        postId: _id,
+        comments: formattedComments,
+        image: image,
+        author,
+        createdAt,
+        contents: {
+          title,
+          requirements,
+        },
+      };
+
+      dispatch(setPost(formatedPost));
+    };
+
+    if (projectId) {
+      fetchPost(projectId);
+    }
+  }, [projectId, dispatch]);
+
   return {
     projectId,
     handleClick,
-    isAuthor: true,
-    ...DUMMY_DATA,
+    handleDeleteClick,
+    isAuthor: post.author._id === userId,
+    isLoading,
+    ...post,
   };
 };
 
 export default useProjectDetail;
-
-const DUMMY_DATA = {
-  likes: [],
-  comments: [
-    {
-      AvatarProps: {
-        isUserOn: true,
-      },
-      _id: '2',
-      author: '작성자2',
-      createdAt: '2022.03.14 00:00',
-      comment:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    },
-    {
-      AvatarProps: {
-        isUserOn: false,
-      },
-      _id: '3',
-      createdAt: '2022.03.14 00:00',
-      author: '작성자3',
-      comment:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      isLastItem: true,
-    },
-  ],
-  _id: '1',
-  image: '/assets/Logo96.svg',
-  author: {
-    image:
-      'https://img.freepik.com/free-photo/world-smile-day-emojis-arrangement_23-2149024491.jpg?q=10&h=200',
-    isUserOn: true,
-    fullName: '사용자1',
-    _id: '1',
-  },
-  createdAt: '2022.03.14',
-  updatedAt: '2022.03.14 00:00',
-  title: 'This is Title',
-  contents: `We need DesignerIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.`,
-};

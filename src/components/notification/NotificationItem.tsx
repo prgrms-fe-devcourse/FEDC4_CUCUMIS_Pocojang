@@ -6,27 +6,27 @@ import styled from '@emotion/styled';
 import { theme } from '@/styles/theme';
 
 interface Props extends CardProps {
-  seen: boolean;
+  isSeen: boolean;
   children: React.ReactNode;
 }
 
-const NotificationItem = ({ seen, children, ...props }: Props) => {
+const NotificationItem = ({ isSeen, children, ...props }: Props) => {
   return (
-    <CardStyled seen={seen} raised={false} square={true} {...props}>
+    <CardStyled isSeen={isSeen} raised={false} square={true} {...props}>
       <CardContent component={Stack} direction="row" alignItems="center">
         <Typography noWrap={true} flexGrow={1} variant="body1">
           {children}
         </Typography>
-        {seen ? '' : <Circle color="primary" />}
+        {isSeen ? '' : <Circle color="primary" />}
       </CardContent>
     </CardStyled>
   );
 };
 
 const CardStyled = styled(Card, {
-  shouldForwardProp: (prop) => prop !== 'seen',
-})(({ seen }: { seen: boolean }) => ({
-  backgroundColor: seen ? '' : `${theme.palette.primary.main}10`,
+  shouldForwardProp: (prop) => prop !== 'isSeen',
+})(({ isSeen }: { isSeen: boolean }) => ({
+  backgroundColor: isSeen ? '' : `${theme.palette.primary.main}10`,
   boxShadow: 'none',
   '.MuiCardContent-root': {
     paddingTop: '24px',

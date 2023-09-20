@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
@@ -7,7 +7,7 @@ import AvatarWithChip from '@/components/shared/avatarWithChip';
 import useDevelopers from '@/components/developers/useDevelopers';
 
 const DevelopersPage = () => {
-  const { onlineDevelopers, developers } = useDevelopers();
+  const { onlineDevelopers, developers, target } = useDevelopers();
   return (
     <Stack spacing={1} mt={1}>
       <StackStyled direction="row" spacing={4}>
@@ -24,15 +24,16 @@ const DevelopersPage = () => {
         return (
           <DeveloperCardItem
             key={developer._id}
-            stacks={developer.stacks}
+            techStack={developer.techStack}
             AvatarProps={developer.AvatarProps}
             name={developer.name}
-            oneliner={developer.oneliner}
+            oneLiner={developer.oneLiner}
             description={developer.description}
             to={developer._id}
           />
         );
       })}
+      <Box ref={target}></Box>
     </Stack>
   );
 };

@@ -7,6 +7,7 @@ import {
   ListItemText,
   Typography,
   ListItemButton,
+  Skeleton,
 } from '@mui/material';
 import styled from '@emotion/styled';
 
@@ -23,16 +24,20 @@ const ItemWithAvatar = ({
   to,
   isLastItem = false,
   isComment = false,
+  ...props
 }: ItemWithAvatarProps) => {
   const renderUnReadCount = () => {
     if (unReadCount) {
-      return (
-        <Box maxWidth={60}>
-          <BasicChip label={unReadCount > 999 ? '999+' : String(unReadCount)} />
-        </Box>
-      );
+      if (unReadCount > 0) {
+        return (
+          <Box maxWidth={60}>
+            <BasicChip
+              label={unReadCount > 999 ? '999+' : String(unReadCount)}
+            />
+          </Box>
+        );
+      } else return <SkeletonStyled variant="rounded" width={32} height={32} />;
     }
-    return null;
   };
 
   const renderListItemText = () => (
@@ -50,7 +55,7 @@ const ItemWithAvatar = ({
 
   return (
     <>
-      <ListItem alignItems="center">
+      <ListItem alignItems="center" {...props}>
         <BasicAvatar size={40} alt={`${name}'s profile`} {...AvatarProps} />
         {to ? (
           <ListItemButton component={Link} to={to ? to : ''}>
@@ -69,6 +74,11 @@ const ItemWithAvatar = ({
 
 const BoxStyled = styled(Container)({
   padding: '8px 16px',
+});
+
+const SkeletonStyled = styled(Skeleton)({
+  minWidth: '30px',
+  borderRadius: '16px',
 });
 
 export default ItemWithAvatar;

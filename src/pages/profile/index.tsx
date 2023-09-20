@@ -1,7 +1,6 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Box, Stack } from '@mui/material';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 
 import Navbar from '@/components/navbar';

@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
@@ -9,7 +9,7 @@ import useDevelopers from '@/components/developers/useDevelopers';
 const DevelopersPage = () => {
   const { onlineDevelopers, developers, target } = useDevelopers();
   return (
-    <Stack ref={target} spacing={1} mt={1}>
+    <Stack spacing={1} mt={1}>
       <StackStyled direction="row" spacing={4}>
         {onlineDevelopers.map((developer) => (
           <LinkStyled key={developer._id} to={`/dm/${developer._id}`}>
@@ -33,6 +33,7 @@ const DevelopersPage = () => {
           />
         );
       })}
+      <Box ref={target}></Box>
     </Stack>
   );
 };

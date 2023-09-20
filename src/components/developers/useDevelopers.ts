@@ -20,22 +20,24 @@ const useDevelopers = () => {
   const developerList = useAppSelector(developerListSelector);
   const onlineUserList = useAppSelector(onlineUserListSelector);
   const headerSearchValue = useAppSelector(inputSelector);
-  const target = useRef<HTMLDivElement>(null);
-  const { page } = useInfiniteScroll({
-    target,
-    endPoint: 5,
+  const testList = useRef(developerList);
+  const { page, pageEnd } = useInfiniteScroll({
     options: { threshold: 0.2 },
   });
-
+  useEffect(() => {
+    testList.current = developerList;
+  }, [developerList]);
   useEffect(() => {
     getOnlineUsers()
       .then(parseOnlineUserList)
       .then((list) => dispatch(setOnlineUserList(list)));
+  }, [dispatch]);
 
-    getChannelPosts(CHANNEL_ID.DEVELOPER, { offset: 0, limit: page * 10 })
+  useEffect(() => {
+    getChannelPosts(CHANNEL_ID.DEVELOPER, { offset: page * 5, limit: 5 })
       .then(parseDeveloperPosts)
       .then((posts) => {
-        dispatch(setDeveloperList(posts));
+        dispatch(setDeveloperList([...testList.current, ...posts]));
       });
   }, [dispatch, page]);
 
@@ -46,7 +48,7 @@ const useDevelopers = () => {
   }, [headerSearchValue]);
 
   return {
-    target,
+    target: pageEnd,
     onlineDevelopers: onlineUserList,
     developers: developerList,
   };

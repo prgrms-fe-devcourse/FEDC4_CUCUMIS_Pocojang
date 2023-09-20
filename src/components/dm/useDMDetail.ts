@@ -1,17 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { getUser } from '@/api/user';
-import { getMessages, sendMessage } from '@/api/messages';
+import { getMessages, readMessages, sendMessage } from '@/api/messages';
 import { RequestSendMessagesType } from '@/types/api/messages';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
+import { inputSelector, setVisitingUser } from '@/stores/layout';
 import {
-  locationSelector,
-  inputSelector,
-  setVisitingUser,
-} from '@/stores/layout';
-import {
-  setDMUserId,
   setMessages,
   addMessage,
   dmUserIdSelector,
@@ -29,7 +24,6 @@ export const useDMDetail = ({
   onSendFail,
 }: DMDetailHookParameters) => {
   const dispatch = useAppDispatch();
-  const location = useAppSelector(locationSelector);
   const userId = useAppSelector(userIdSelector);
   const input = useAppSelector(inputSelector);
   const dmUserId = useAppSelector(dmUserIdSelector);
@@ -40,30 +34,14 @@ export const useDMDetail = ({
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    dispatch(setDMUserId(location.split('/')[2]));
-  }, [dispatch, location]);
-
   const fetchMessages = useCallback(
     async (dmUserId: string) => {
       try {
         const responseMessages = await getMessages({ userId: dmUserId });
-        if (responseMessages.length > messages.length) {
-          dispatch(setMessages(responseMessages));
-        }
-      } catch (error) {
-        // TODO: message 불러오기 실패
-        onGetFail(error);
-      }
-    },
-    [messages, dispatch, onGetFail],
-  );
-
-  const fetchVisitingUser = useCallback(
-    async (dmUserId: string) => {
-      try {
-        const visitingUser = await getUser(dmUserId);
-        dispatch(setVisitingUser(visitingUser));
+        const sortedMessages = responseMessages.sort(
+          (a, b) => +new Date(a.createdAt) - +new Date(b.createdAt),
+        );
+        dispatch(setMessages(sortedMessages));
       } catch (error) {
         // TODO: message 불러오기 실패
         onGetFail(error);
@@ -74,20 +52,52 @@ export const useDMDetail = ({
     [dispatch, onGetFail],
   );
 
+  const fetchVisitingUser = useCallback(
+    async (dmUserId: string) => {
+      try {
+        const visitingUser = await getUser(dmUserId);
+        dispatch(setVisitingUser(visitingUser));
+      } catch (error) {
+        // TODO: message 불러오기 실패
+        onGetFail(error);
+      }
+    },
+    [dispatch, onGetFail],
+  );
+
+  const updateMessagesSeen = useCallback(
+    async (dmUserId: string) => {
+      try {
+        await readMessages({ sender: dmUserId });
+      } catch (error) {
+        onGetFail(error);
+      }
+    },
+    [onGetFail],
+  );
+
   useEffect(() => {
     messageEndRef.current?.scrollIntoView();
   }, [messages]);
 
   useEffect(() => {
     if (dmUserId) {
-      fetchVisitingUser(dmUserId);
       fetchMessages(dmUserId);
+      fetchVisitingUser(dmUserId);
+      updateMessagesSeen(dmUserId);
     }
-  }, [fetchVisitingUser, fetchMessages, dmUserId, dispatch, onGetFail]);
+  }, [
+    dmUserId,
+    dispatch,
+    fetchMessages,
+    fetchVisitingUser,
+    updateMessagesSeen,
+  ]);
 
   useInterval(() => {
     if (dmUserId) {
       fetchMessages(dmUserId);
+      updateMessagesSeen(dmUserId);
     }
   }, 3000);
 

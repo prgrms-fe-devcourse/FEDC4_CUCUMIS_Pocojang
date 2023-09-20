@@ -1,14 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { MessageType } from '@/types';
+import { ConversationType, MessageType, UserType } from '@/types';
+
+export interface ConversationDataType extends ConversationType {
+  dmUser?: UserType;
+  unReadCount?: number;
+}
 
 export interface DMState {
-  dmUserId: string;
+  conversations: ConversationDataType[];
   messages: MessageType[];
 }
 
 const initialState: DMState = {
-  dmUserId: '',
+  conversations: [],
   messages: [],
 };
 
@@ -16,8 +21,8 @@ export const dmSlice = createSlice({
   name: 'dm',
   initialState,
   reducers: {
-    setDMUserId: (state, action) => {
-      state.dmUserId = action.payload;
+    setConversations: (state, action) => {
+      state.conversations = action.payload;
     },
     setMessages: (state, action) => {
       state.messages = action.payload;

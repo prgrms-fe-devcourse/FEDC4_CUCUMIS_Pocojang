@@ -127,7 +127,6 @@ const ProfilePage = () => {
                   />
                 ))
               ) : (
-                // 로딩 중일 때 스켈레톤 UI 표시
                 <SkeletonStyled />
               )}
             </StyledItemWithAvatarBox>
@@ -149,7 +148,6 @@ const ProfilePage = () => {
                   />
                 ))
               ) : (
-                // 로딩 중일 때 스켈레톤 UI 표시
                 <SkeletonStyled />
               )}
             </StyledItemWithAvatarBox>

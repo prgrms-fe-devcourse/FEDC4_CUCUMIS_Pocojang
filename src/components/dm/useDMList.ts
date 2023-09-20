@@ -47,7 +47,7 @@ export const useDMList = ({ onFail }: DMListHookParameters) => {
       );
       Promise.all(requests)
         .then((results) => {
-          const finishedConversations = results.map((result) => {
+          const unReadCountedConversations = results.map((result) => {
             const conversationUser = [result[0].receiver, result[0].sender];
             const dmUser = conversationUser.find((user) => user._id !== userId);
             const conversationIndex = conversations.findIndex(
@@ -60,7 +60,7 @@ export const useDMList = ({ onFail }: DMListHookParameters) => {
             return { ...conversations[conversationIndex], unReadCount };
           });
 
-          dispatch(setConversations(finishedConversations));
+          dispatch(setConversations(unReadCountedConversations));
         })
         .catch((error) => onFail(error));
     },

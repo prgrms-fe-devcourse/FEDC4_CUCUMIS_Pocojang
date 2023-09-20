@@ -16,13 +16,18 @@ export interface OnlineUserType {
   label: string;
   AvatarProps: BasicAvatarProps;
 }
+interface Developers {
+  DeveloperList: DeveloperType[];
+  onlineUserList: OnlineUserType[];
+}
+const initialState: Developers = {
+  DeveloperList: [],
+  onlineUserList: [],
+};
 
 export const developersSlice = createSlice({
   name: 'developers',
-  initialState: {
-    DeveloperList: [] as DeveloperType[],
-    onlineUserList: [] as OnlineUserType[],
-  },
+  initialState,
   reducers: {
     setDeveloperList: (state, { payload }) => {
       state.DeveloperList = payload;

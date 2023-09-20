@@ -7,7 +7,7 @@ import { useAppSelector, useAppDispatch } from '@/stores/hooks';
 import { projectsSelector } from '@/stores/projects/selector';
 import { isLoginSelector } from '@/stores/auth';
 import { PostType } from '@/types';
-import { getChannelPosts, getPost } from '@/api/posts';
+import { getChannelPosts } from '@/api/posts';
 import { inputSelector } from '@/stores/layout';
 import { searchAll } from '@/api/search';
 import CHANNEL_ID from '@/consts/channels';
@@ -18,7 +18,7 @@ export interface ProjectType {
   projectTitle: string;
 }
 
-// TODO JSON.parse 에러처리, 무한스크롤 최적화, 검색 후 무한 스크롤, 검색 속도가 너무 느리다 , 갯수재한 ?
+// TODO JSON.parse 에러처리, 무한스크롤 최적화, 검색 후 무한 스크롤, 채널 포스트를 초기에 가져와서 id 필터
 const useProjectList = () => {
   const navigate = useNavigate();
   const isLogin = useAppSelector(isLoginSelector);
@@ -42,7 +42,7 @@ const useProjectList = () => {
   useEffect(() => {
     const searchProjects = async (value: string) => {
       const searchResult = await searchAll(value).then((result: unknown) =>
-        parseSearchResult(result as Post[]),
+        parseSearchResult2(result as Post[]),
       );
       dispatch(setList(searchResult));
       setIsLoading(false);
@@ -51,8 +51,8 @@ const useProjectList = () => {
     const value = headerSearchValue.trim();
     if (value.length < 1) return;
     setIsLoading(true);
-    const encoded = encodeURIComponent(value);
     console.log(value);
+    const encoded = encodeURIComponent(value);
     searchProjects(encoded);
   }, [headerSearchValue, dispatch]);
 
@@ -95,12 +95,26 @@ const parseProjectList = (list: PostType[]) => {
   return list.map(parseProject);
 };
 
-const parseSearchResult = async (result: Post[]) => {
-  const filtered = result
-    .filter((item) => item.channel === CHANNEL_ID.PROJECT)
-    .map((item) => getPost(item._id));
-  const projectList = await Promise.all(filtered).then((res) =>
-    res.map(parseProject),
+// const parseSearchResult = async (result: Post[]) => {
+//   const filtered = result
+//     .filter((item) => item.channel === CHANNEL_ID.PROJECT)
+//     .map((item) => getPost(item._id));
+//   const projectList = await Promise.all(filtered).then((res) =>
+//     res.map(parseProject),
+//   );
+//   return projectList;
+// };
+
+const parseSearchResult2 = async (result: Post[]) => {
+  const filteredSet = new Set(
+    result
+      .filter((item) => item.channel === CHANNEL_ID.PROJECT)
+      .map((list) => list._id),
   );
-  return projectList;
+  const searchResult = await getChannelPosts(CHANNEL_ID.PROJECT, {})
+    .then((list: PostType[]) =>
+      list.filter((post) => filteredSet.has(post._id)),
+    )
+    .then((list) => list.map((post) => parseProject(post)));
+  return searchResult;
 };

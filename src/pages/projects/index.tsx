@@ -15,23 +15,22 @@ const ProjectPage = () => {
   const { handleFabClick, projects, target, isLogin } = useProjectList();
   return (
     <>
-      {isLogin ? (
+      {isLogin && (
         <MainFab onClick={handleFabClick}>
           <Add />
         </MainFab>
-      ) : (
-        ''
       )}
       <Stack spacing={1} ref={target}>
-        {projects.map((project) => (
-          <ProjectCardItem
-            key={project._id}
-            name={project.name}
-            imageUrl={project.image}
-            projectTitle={project.projectTitle}
-            to={project._id}
-          />
-        ))}
+        {projects &&
+          projects.map((project) => (
+            <ProjectCardItem
+              key={project._id}
+              name={project.name}
+              imageUrl={project.image}
+              projectTitle={project.projectTitle}
+              to={project._id}
+            />
+          ))}
       </Stack>
     </>
   );

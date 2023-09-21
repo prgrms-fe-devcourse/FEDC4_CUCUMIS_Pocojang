@@ -35,8 +35,8 @@ const CheckboxStyled = styled(Checkbox)({
 
 const TypographyStyled = styled(Typography)({
   textAlign: 'center',
-});
+}) as typeof Typography;
 
 const TitleStyled = styled(TypographyStyled)({
   fontSize: '24px',
-});
+}) as typeof TypographyStyled;

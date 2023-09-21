@@ -23,7 +23,7 @@ const useDeveloperDetail = () => {
   const dispatch = useAppDispatch();
 
   const userId = useAppSelector(userIdSelector);
-  const userFollowing = useAppSelector(userFollowingSelector);
+  const userFollowingList = useAppSelector(userFollowingSelector);
   const isLoggedIn = useAppSelector(isLoginSelector);
 
   const { developerId } = useParams();
@@ -61,7 +61,7 @@ const useDeveloperDetail = () => {
         const followerIDList = post.author.followers;
 
         if (followerIDList) {
-          const followId = userFollowing.find(({ _id }) =>
+          const followId = userFollowingList.find(({ _id }) =>
             followerIDList.includes(_id),
           );
 
@@ -93,7 +93,7 @@ const useDeveloperDetail = () => {
     post.author._id,
     dispatch,
     post.author.followers,
-    userFollowing,
+    userFollowingList,
     userId,
   ]);
 
@@ -120,15 +120,15 @@ const useDeveloperDetail = () => {
 
   useEffect(() => {
     if (post.author.followers) {
-      const followerIDList = post.author.followers;
+      const authorFollowerIDList = post.author.followers;
 
-      const isFollowedByUser = userFollowing.some(({ _id }) =>
-        followerIDList.includes(_id),
+      const isFollowedByUser = userFollowingList.some(({ _id }) =>
+        authorFollowerIDList.includes(_id),
       );
 
       setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
     }
-  }, [post, userFollowing, userId]);
+  }, [post, userFollowingList, userId]);
 
   return {
     developerId,

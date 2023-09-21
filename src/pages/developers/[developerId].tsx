@@ -8,7 +8,7 @@ import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
 import ChipGroup from '@/components/shared/chipGroup';
 
-const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
+const DEFAULT_IMAGE = '/assets/Logo96.svg';
 
 export default function DeveloperDetail() {
   const {

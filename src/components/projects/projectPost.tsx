@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, Box, Stack } from '@mui/material';
+import { Button, Box, Stack, LinearProgress } from '@mui/material';
 import styled from '@emotion/styled';
 
 import usePost from '@/components/projects/usePost';
@@ -70,7 +70,7 @@ export default function ProjectPost() {
   });
 
   return isLoading ? (
-    <Box>로딩중</Box>
+    <LinearProgress />
   ) : (
     <FormBox onSubmit={handleSubmit}>
       <Stack spacing={3}>

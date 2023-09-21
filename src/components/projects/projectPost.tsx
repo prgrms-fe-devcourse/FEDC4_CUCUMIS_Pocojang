@@ -8,10 +8,12 @@ import BasicButton from '@/components/shared/button';
 import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import { createPost, updatePost } from '@/api/posts';
 import CHANNEL_ID from '@/consts/channels';
+import { PROJECT_URL } from '@/consts/routes';
+import { PROJECT_FORMDATA_KEY } from '@/consts/formDataKey';
 
 export default function ProjectPost() {
   const navigate = useNavigate();
-
+  const { TITLE, PROJECT_CHANNEL_ID, IMAGE, POST_ID } = PROJECT_FORMDATA_KEY;
   const {
     projectId,
     prevTitle,
@@ -34,24 +36,24 @@ export default function ProjectPost() {
       });
 
       const formData = new FormData();
-      formData.append('title', formatedTitle);
-      formData.append('channelId', CHANNEL_ID.PROJECT);
+      formData.append(TITLE, formatedTitle);
+      formData.append(PROJECT_CHANNEL_ID, CHANNEL_ID.PROJECT);
 
-      selectedFile && formData.append('image', selectedFile);
+      selectedFile && formData.append(IMAGE, selectedFile);
 
       try {
         if (projectId) {
-          formData.append('postId', projectId);
+          formData.append(POST_ID, projectId);
 
           await updatePost(formData);
 
-          navigate('/projects/' + projectId);
+          navigate(PROJECT_URL + '/' + projectId);
         } else {
           const res = await createPost(formData);
 
           if (res !== null) {
             const { _id } = res;
-            navigate('/projects/' + _id);
+            navigate(PROJECT_URL + '/' + _id);
           }
         }
       } catch (error) {
@@ -60,7 +62,7 @@ export default function ProjectPost() {
     },
     validate: ({ title, requirements }: FormValues) => {
       const newErrors: FormErrors = {};
-      // 아래 validation은 mui required에서 제공하고 있어서 생략할 예정
+
       if (!prevTitle && !title) newErrors.title = '제목을 입력해주세요.';
       if (!prevRequirements && !requirements)
         newErrors.requirements = '요구사항을 입력해주세요.';

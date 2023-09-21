@@ -4,13 +4,9 @@ import { useDispatch } from 'react-redux';
 
 import { setPost } from '@/stores/projectDetail';
 import { useAppSelector } from '@/stores/hooks';
+import { userIdSelector } from '@/stores/auth';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type {
-  PostType,
-  UserType,
-  FormattedPost,
-  DeveloperContent,
-} from '@/types';
+import type { PostType, FormattedPost, DeveloperContent } from '@/types';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getPost, deletePost } from '@/api/posts';
@@ -23,20 +19,21 @@ import {
   PROFILE_URL,
   SETTINGS_URL,
 } from '@/consts/routes';
+import { userFollowingSelector } from '@/stores/auth/selector';
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const userId = useAppSelector(userIdSelector);
+  const userFollowing = useAppSelector(userFollowingSelector);
   const { developerId } = useParams();
   const { post } = useAppSelector(projectDetailSelector<DeveloperContent>);
-
   const [isLoading, setIsLoading] = useState(false);
   const [buttonState, setButtonState] = useState({
     isFollowing: false,
     isLoggedIn: false,
   });
-  const [userInfo, setUserInfo] = useState<UserType>();
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + developerId);
@@ -60,13 +57,13 @@ const useDeveloperDetail = () => {
     }
   };
 
-  const handleFollowClick = async () => {
+  const handleFollowClick = useCallback(async () => {
     try {
       if (buttonState.isFollowing) {
         const followerIDList = post.author.followers;
 
         if (followerIDList) {
-          const followId = userInfo?.following.find(({ _id }) =>
+          const followId = userFollowing.find(({ _id }) =>
             followerIDList.includes(_id),
           );
 
@@ -86,16 +83,21 @@ const useDeveloperDetail = () => {
         }
       }
 
-      if (userInfo?._id) {
-        const newUserInfo = await getUser(userInfo._id);
-        session.setItem(SESSION_STORAGE.USER, newUserInfo);
-      }
+      const newUserInfo = await getUser(userId);
+      session.setItem(SESSION_STORAGE.USER, newUserInfo);
     } catch (error) {
       console.log(error);
     }
 
     navigate(0);
-  };
+  }, [
+    buttonState,
+    navigate,
+    post.author._id,
+    post.author.followers,
+    userFollowing,
+    userId,
+  ]);
 
   const fetchPost = useCallback(
     async (postId: string) => {
@@ -123,22 +125,19 @@ const useDeveloperDetail = () => {
   }, [developerId, fetchPost, dispatch]);
 
   useEffect(() => {
-    const user = session.getItem<UserType>(SESSION_STORAGE.USER);
-
-    if (user && post.author.followers) {
-      setUserInfo(user);
-
+    if (post.author.followers) {
       const followerID = post.author.followers;
-      const isFollowedByUser = user.following?.some(({ _id }) =>
+      const isFollowedByUser = userFollowing.some(({ _id }) =>
         followerID.includes(_id),
       );
       setButtonState({ isLoggedIn: true, isFollowing: isFollowedByUser });
     }
 
-    if (!user) {
+    if (!userId) {
+      // 토큰으로 변경
       setButtonState((prev) => ({ ...prev, isLoggedIn: false }));
     }
-  }, [post]);
+  }, [post, userFollowing, userId]);
 
   return {
     developerId,
@@ -147,7 +146,7 @@ const useDeveloperDetail = () => {
     handleAvatarClick,
     handleDeleteClick,
     handleFollowClick,
-    isAuthor: post.author._id === userInfo?._id,
+    isAuthor: post.author._id === userId,
     isLoading,
     ...buttonState,
     ...post,

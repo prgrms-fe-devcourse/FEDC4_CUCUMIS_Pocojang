@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -25,7 +26,17 @@ export default function DeveloperDetail() {
     isLoading,
     isUserFollowing,
     isLoggedIn,
-  } = useDeveloperDetails();
+  } = useDeveloperDetails({
+    onFollowFail: useCallback((error: unknown) => {
+      console.error(error);
+    }, []),
+    onGetUserFail: useCallback((error: unknown) => {
+      console.error(error);
+    }, []),
+    onDeletePostFail: useCallback((error: unknown) => {
+      console.error(error);
+    }, []),
+  });
 
   return isLoading ? (
     <LinearProgress />

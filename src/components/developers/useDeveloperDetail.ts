@@ -18,7 +18,16 @@ import {
 } from '@/consts/routes';
 import { userFollowingSelector } from '@/stores/auth/selector';
 
-const useDeveloperDetail = () => {
+interface DeveloperDetailHookParameters {
+  onFollowFail: (error: unknown) => void;
+  onGetUserFail: (error: unknown) => void;
+  onDeletePostFail: (error: unknown) => void;
+}
+const useDeveloperDetail = ({
+  onGetUserFail,
+  onFollowFail,
+  onDeletePostFail,
+}: DeveloperDetailHookParameters) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -49,9 +58,13 @@ const useDeveloperDetail = () => {
     const isAbleToDelete = confirm('정말로 삭제하시겠습니까?');
 
     if (isAbleToDelete && developerId) {
-      const res = await deletePost({ id: developerId });
+      try {
+        const res = await deletePost({ id: developerId });
 
-      res && navigate(DEVELOPER_URL, { replace: true });
+        res && navigate(DEVELOPER_URL, { replace: true });
+      } catch (error) {
+        onDeletePostFail(error);
+      }
     }
   };
 
@@ -78,17 +91,23 @@ const useDeveloperDetail = () => {
           });
         }
       }
-
-      const newUserInfo = await getUser(userId);
-
-      dispatch(setUser(newUserInfo));
     } catch (error) {
-      console.log(error);
+      onFollowFail(error);
+    } finally {
+      try {
+        const newUserInfo = await getUser(userId);
+
+        dispatch(setUser(newUserInfo));
+      } catch (error) {
+        onGetUserFail(error);
+      }
     }
 
     navigate(0);
   }, [
     pageState.isUserFollowing,
+    onGetUserFail,
+    onFollowFail,
     navigate,
     post.author._id,
     dispatch,

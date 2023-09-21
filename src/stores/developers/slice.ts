@@ -34,10 +34,11 @@ export const developersSlice = createSlice({
   initialState,
   reducers: {
     setDeveloperList: (state, { payload }) => {
-      //TODO중복 되는 사항 제거 함수로 뺴기
-      const list = state.DeveloperList as DeveloperType[];
-      const filterd = filterExistingIds(list, payload);
-      state.DeveloperList = [...state.DeveloperList, ...filterd];
+      const existingIds = state.DeveloperList.map((item) => item._id);
+      const filtered = payload.filter(
+        (item: DeveloperType) => !existingIds.includes(item._id),
+      );
+      state.DeveloperList = [...state.DeveloperList, ...filtered];
     },
     setSearchList: (state, { payload }) => {
       state.DeveloperList = payload;
@@ -45,21 +46,17 @@ export const developersSlice = createSlice({
     setOnlineUserList: (state, { payload }) => {
       state.onlineUserList = payload;
     },
+    initDeveloperList: () => {
+      initDeveloperList();
+    },
   },
 });
-//TODO: 리스너 만들기
-//리스트 초기화
 
-getChannelPosts(CHANNEL_ID.DEVELOPER, { offset: 0, limit: 10 })
-  .then(parseDeveloperPosts)
-  .then((posts) =>
-    store.dispatch(developersSlice.actions.setDeveloperList(posts)),
-  );
-
-const filterExistingIds = (
-  list: DeveloperType[],
-  payloadList: DeveloperType[],
-) => {
-  const existIds = list.map((item) => item._id);
-  return payloadList.filter((item) => !existIds.includes(item._id));
+const initDeveloperList = () => {
+  getChannelPosts(CHANNEL_ID.DEVELOPER, { offset: 0, limit: 10 })
+    .then(parseDeveloperPosts)
+    .then((posts) =>
+      store.dispatch(developersSlice.actions.setDeveloperList(posts)),
+    );
 };
+initDeveloperList();

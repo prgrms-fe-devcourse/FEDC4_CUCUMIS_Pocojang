@@ -7,6 +7,7 @@ import {
   onlineUserListSelector,
 } from '@/stores/developers/selector';
 import {
+  initDeveloperList,
   setDeveloperList,
   setOnlineUserList,
   setSearchList,
@@ -18,8 +19,7 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import CHANNEL_ID from '@/consts/channels';
 import { searchAll } from '@/api/search';
 
-//TODOapi 에러 처리, 1글자 이하이면 경고창이 필요한가?스낵바?
-
+//TODOapi 에러 처리, 1글자 이하이면 경고창이 필요한가?스낵바?, 페치중 페치 막기 , 초기 렌더링을 실행 막기
 const useDevelopers = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
@@ -38,15 +38,12 @@ const useDevelopers = () => {
     getOnlineUsers()
       .then(parseOnlineUserList)
       .then((list) => dispatch(setOnlineUserList(list)));
-  }, [dispatch]);
 
-  useEffect(() => {
-    getChannelPosts(CHANNEL_ID.DEVELOPER, { offset: page * 5, limit: 5 })
-      .then(parseDeveloperPosts)
-      .then((posts) => {
-        dispatch(setDeveloperList(posts));
-      });
-  }, [dispatch, page]);
+    return () => {
+      setIsSearching(false);
+      dispatch(initDeveloperList());
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const searchProjects = async (value: string) => {
@@ -63,9 +60,24 @@ const useDevelopers = () => {
     setIsSearching(true);
     const encoded = encodeURIComponent(value);
     searchProjects(encoded);
-
-    //TODO 검색하기, api 동기적으로 만들고 로딩처리
   }, [dispatch, headerSearchValue]);
+
+  useEffect(() => {
+    const scrolling = async () => {
+      setIsLoading(true);
+      await getChannelPosts(CHANNEL_ID.DEVELOPER, {
+        offset: page * 5,
+        limit: 5,
+      })
+        .then(parseDeveloperPosts)
+        .then((posts) => {
+          dispatch(setDeveloperList(posts));
+        });
+      setIsLoading(false);
+    };
+
+    scrolling();
+  }, [dispatch, page]);
 
   return {
     isSearching,

@@ -38,7 +38,7 @@ const useProjectDetail = ({
 
   const handleDeleteClick = async () => {
     const ableToDelete = confirm('정말로 삭제하시겠습니까?');
-    // 모달로 변경 필요
+    // 모달로 변경 필요?
 
     if (ableToDelete && projectId) {
       try {
@@ -56,7 +56,7 @@ const useProjectDetail = ({
       try {
         const rs = await getPost(postId);
 
-        const formattedPost = handlePost(rs);
+        const formattedPost = handlePostFormat(rs);
 
         dispatch(setPost(formattedPost));
       } catch (error) {
@@ -85,7 +85,7 @@ const useProjectDetail = ({
   };
 };
 
-const handlePost = (rs: PostType) => {
+const handlePostFormat = (rs: PostType) => {
   const { author, comments, _id, image, createdAt } = rs;
   const { title, requirements } = JSON.parse(rs.title);
 

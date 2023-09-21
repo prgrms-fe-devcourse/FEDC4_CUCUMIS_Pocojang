@@ -1,44 +1,78 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Notification } from '@/stores/notification/slice';
 import { notificationSelector, setNotification } from '@/stores/notification';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { isLoginSelector } from '@/stores/auth';
-import { getNotifications } from '@/api/notifications';
+import { getNotifications, readNotifications } from '@/api/notifications';
 import CHANNEL_ID from '@/consts/channels';
 
-//TODO  api 호출에 대한 에러 처리, typ별 메시지 변경, 타입별 이동 처리
+//TODO  api 호출에 대한 에러 처리,형식에 맞지않은 필터 처리 , 타입별 이동 처리, 타입정리
 
 const useNotification = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const isLogin = useAppSelector(isLoginSelector);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLogin) {
-      navigate('/login');
-    }
-  }, [isLogin, navigate]);
-
-  useEffect(() => {
-    if (isLogin)
-      getNotifications().then((data) => dispatch(setNotification(data)));
-  }, [dispatch, isLogin]);
+    if (!isLogin) navigate('/login');
+    (async () => {
+      setIsLoading(true);
+      await getNotifications().then((data) => dispatch(setNotification(data)));
+      setIsLoading(false);
+    })();
+  }, [dispatch, isLogin, navigate]);
 
   const notifications: Notification[] = useAppSelector(notificationSelector);
-  const parsed = parseNotifications(notifications);
-  return { notifications: parsed };
+  const parsed = parseNotifications(filterNotifications(notifications));
+  return { notifications: parsed, isLoading, readNotifications };
 };
 
 export default useNotification;
+
+const filterNotifications = (list: Notification[]) => {
+  return list.filter((item) => {
+    if (
+      item.type === 'like' &&
+      (!item.notification.like || !item.notification.like.post)
+    )
+      return false;
+    else if (
+      item.type === 'comment' &&
+      (!item.notification.comment || !item.notification.comment.post)
+    )
+      return false;
+
+    return true;
+  });
+};
+
 const parseNotifications = (list: Notification[]) => {
   return list.map((item) => {
     const { _id, name, seen, notification, type } = item;
     const message = createNotificationMessage(type, name, notification);
-
-    return { _id, seen, message };
+    const toURL = createURL(type, notification);
+    return { _id, seen, message, toURL };
   });
+};
+
+const createURL = (type: string, notification: Notification) => {
+  if (type === 'follow') return `/profile/${notification.follow?.follower}`;
+  else if (type === 'comment') {
+    const channelId = notification.comment?.post.channel;
+    const id = notification.comment?.post._id;
+    return channelId === CHANNEL_ID.DEVELOPER
+      ? `/developers/${id}`
+      : `/projects/${id}`;
+  } else if (type === 'like') {
+    const channelId = notification.like?.post.channel;
+    const id = notification.like?.post._id;
+    return channelId === CHANNEL_ID.DEVELOPER
+      ? `/developers/${id}`
+      : `/projects/${id}`;
+  }
 };
 
 const createNotificationMessage = (

@@ -1,16 +1,20 @@
-import { Stack } from '@mui/material';
+import { Stack, LinearProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import NotificationItem from '@/components/notification/NotificationItem';
 import useNotification from '@/components/notification/useNotification';
-
 const NotificationPage = () => {
-  const { notifications } = useNotification();
-
-  return (
+  const { notifications, isLoading } = useNotification();
+  const navigate = useNavigate();
+  return isLoading ? (
+    <LinearProgress />
+  ) : (
     <Stack spacing={2}>
       {notifications.map((notification) => (
         <NotificationItem
-          onClick={() => {}}
+          onClick={() => {
+            navigate(`${notification.toURL}`);
+          }}
           key={notification._id}
           isSeen={notification.seen}
         >

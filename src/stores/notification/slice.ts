@@ -40,7 +40,11 @@ const checkNotificationType = (notification: NotificationType): string => {
   }
   return '';
 };
+interface follow {
+  follower: string;
+}
 interface post {
+  _id: string;
   title: string;
   channel: string;
 }
@@ -59,6 +63,7 @@ export interface Notification {
   type: string;
   like?: like;
   comment?: comment;
+  follow?: follow;
   notification: Notification;
 }
 

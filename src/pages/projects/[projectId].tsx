@@ -35,7 +35,7 @@ export default function ProjectDetailPage() {
     <LinearProgress />
   ) : (
     <Stack spacing={3}>
-      <ProjectImageStyled
+      <ProjectImageBox
         component="img"
         src={image}
         alt={contents.title + "'s project image"}
@@ -47,7 +47,7 @@ export default function ProjectDetailPage() {
         alignContent="center"
       >
         <BasicAvatar imgSrc={author.image} onClick={handleAvatarClick} />
-        <TitleBoxStyled>
+        <TitleBox>
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -74,7 +74,7 @@ export default function ProjectDetailPage() {
               </ChipGroup>
             )}
           </Stack>
-        </TitleBoxStyled>
+        </TitleBox>
       </Stack>
       <Typography variant="h4">{contents.title}</Typography>
       <Stack spacing={1}>
@@ -90,13 +90,13 @@ export default function ProjectDetailPage() {
   );
 }
 
-const ProjectImageStyled = styled(Box)({
+const ProjectImageBox = styled(Box)({
   width: '100%',
   height: '30vh',
   objectFit: 'cover',
 }) as typeof Box;
 
-const TitleBoxStyled = styled(Box)({
+const TitleBox = styled(Box)({
   minWidth: 0,
   marginRight: '16px',
   width: '100%',

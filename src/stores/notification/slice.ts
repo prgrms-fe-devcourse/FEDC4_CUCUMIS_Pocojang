@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { notificationCreateType } from '@/consts/notificationCreateType';
 import type { NotificationType } from '@/types';
 
 interface InitialState {
@@ -66,10 +67,3 @@ export interface Notification {
   follow?: follow;
   notification: Notification;
 }
-
-const notificationCreateType = {
-  follow: 'follow',
-  like: 'like',
-  message: 'message',
-  comment: 'comment',
-} as const;

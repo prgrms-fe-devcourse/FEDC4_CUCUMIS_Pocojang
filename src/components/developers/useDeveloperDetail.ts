@@ -59,14 +59,13 @@ const useDeveloperDetail = () => {
     try {
       if (pageState.isUserFollowing) {
         const followerIDList = post.author.followers;
+
         if (followerIDList) {
           const followId = userFollowing.find(({ _id }) =>
             followerIDList.includes(_id),
           );
 
-          if (followId) {
-            await unFollowUser({ id: followId._id });
-          }
+          followId && (await unFollowUser({ id: followId._id }));
         }
       } else {
         if (post.author._id) {
@@ -121,10 +120,12 @@ const useDeveloperDetail = () => {
 
   useEffect(() => {
     if (post.author.followers) {
-      const followerID = post.author.followers;
+      const followerIDList = post.author.followers;
+
       const isFollowedByUser = userFollowing.some(({ _id }) =>
-        followerID.includes(_id),
+        followerIDList.includes(_id),
       );
+
       setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
     }
   }, [post, userFollowing, userId]);

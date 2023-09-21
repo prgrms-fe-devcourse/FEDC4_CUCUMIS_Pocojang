@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -9,7 +9,6 @@ import type {
   PostType,
   UserType,
   FormattedPost,
-  CommentType,
   DeveloperContent,
 } from '@/types';
 import session from '@/utils/sessionStorage';
@@ -24,20 +23,6 @@ import {
   PROFILE_URL,
   SETTINGS_URL,
 } from '@/consts/routes';
-
-const formattedPost = (comments: CommentType[]) => {
-  const formattedComments = comments.map(({ _id, comment, author }) => ({
-    AvatarProps: {
-      imgSrc: author.image,
-    },
-    author: author.fullName,
-    comment,
-    userId: author._id,
-    commentId: _id,
-  }));
-
-  return formattedComments;
-};
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
@@ -56,9 +41,11 @@ const useDeveloperDetail = () => {
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + developerId);
   };
+
   const handleSettingClick = () => {
     navigate(SETTINGS_URL);
   };
+
   const handleDMClick = () => {
     navigate(DM_URL + developerId);
   };
@@ -77,6 +64,7 @@ const useDeveloperDetail = () => {
     try {
       if (buttonState.isFollowing) {
         const followerIDList = post.author.followers;
+
         if (followerIDList) {
           const followId = userInfo?.following.find(({ _id }) =>
             followerIDList.includes(_id),
@@ -109,46 +97,30 @@ const useDeveloperDetail = () => {
     navigate(0);
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-
-    const fetchPost = async (postId: string) => {
+  const fetchPost = useCallback(
+    async (postId: string) => {
       try {
         const rs = await getPost(postId);
 
-        handlePost(rs);
+        const formattedPost = handlePostFormat(rs);
+
+        dispatch(setPost(formattedPost));
       } catch (error) {
         console.log(error);
       } finally {
         setIsLoading(false);
       }
-    };
+    },
+    [dispatch],
+  );
 
-    const handlePost = (rs: PostType) => {
-      const { author, comments, _id, image, createdAt } = rs;
-      const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
-
-      const formatedPost: Partial<FormattedPost<DeveloperContent>> = {
-        postId: _id,
-        comments: formattedPost(comments),
-        image: image,
-        author,
-        createdAt,
-        contents: {
-          oneLiner,
-          techStack,
-          position,
-          details,
-        },
-      };
-
-      dispatch(setPost(formatedPost));
-    };
+  useEffect(() => {
+    setIsLoading(true);
 
     if (developerId) {
       fetchPost(developerId);
     }
-  }, [developerId, dispatch]);
+  }, [developerId, fetchPost, dispatch]);
 
   useEffect(() => {
     const user = session.getItem<UserType>(SESSION_STORAGE.USER);
@@ -180,6 +152,36 @@ const useDeveloperDetail = () => {
     ...buttonState,
     ...post,
   };
+};
+
+const handlePostFormat = (rs: PostType) => {
+  const { author, comments, _id, image, createdAt } = rs;
+  const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
+
+  const formattedComments = comments.map(({ _id, comment, author }) => ({
+    AvatarProps: {
+      imgSrc: author.image,
+    },
+    author: author.fullName,
+    comment,
+    userId: author._id,
+    commentId: _id,
+  }));
+
+  const formattedPost: Partial<FormattedPost<DeveloperContent>> = {
+    postId: _id,
+    comments: formattedComments,
+    image: image,
+    author,
+    createdAt,
+    contents: {
+      oneLiner,
+      techStack,
+      position,
+      details,
+    },
+  };
+  return formattedPost;
 };
 
 export default useDeveloperDetail;

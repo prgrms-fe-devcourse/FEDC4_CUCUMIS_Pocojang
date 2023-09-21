@@ -15,8 +15,6 @@ import useProfile from '@/components/profile/useProfile';
 
 const ProfilePage = () => {
   const {
-    followerList,
-    followingList,
     navigationData,
     value,
     navigationMoving,
@@ -27,8 +25,6 @@ const ProfilePage = () => {
     goNextPage,
     userId,
     handleFileChange,
-    isLoadingFollowers,
-    isLoadingFollowing,
   } = useProfile();
 
   return (
@@ -90,11 +86,10 @@ const ProfilePage = () => {
                 variant="outlined"
                 children={buttonState ? '팔로잉 취소' : '팔로잉'}
                 onClick={async () => {
-                  const data = await checkFollowingStatus(
+                  await checkFollowingStatus(
                     buttonState as boolean,
                     userId as string,
                   );
-                  console.log(data);
                 }}
               />
               <BasicButton
@@ -115,41 +110,33 @@ const ProfilePage = () => {
         <StyledContentsWrapper>
           {value === 0 ? (
             <StyledItemWithAvatarBox>
-              {isLoadingFollowing ? (
-                <SkeletonStyled variant="rectangular" />
-              ) : followingList ? (
-                followingList.map(({ _id, fullName, image }) => (
-                  <ItemWithAvatar
-                    key={_id}
-                    name={fullName + '유저'}
-                    AvatarProps={{ imgSrc: image }}
-                    to={`/profile/${_id}`}
-                  />
-                ))
-              ) : (
-                <SkeletonStyled />
-              )}
+              {userState &&
+                userState.following.map(({ user }) => {
+                  return (
+                    <ItemWithAvatar
+                      name={user}
+                      AvatarProps={{
+                        imgSrc: user,
+                      }}
+                      to={`/profile/${user}`}
+                    />
+                  );
+                })}
             </StyledItemWithAvatarBox>
           ) : value === 1 ? (
             <StyledItemWithAvatarBox>
-              {isLoadingFollowers ? (
-                <SkeletonStyled
-                  variant="rectangular"
-                  width={'100%'}
-                  height={'100%'}
-                />
-              ) : followerList ? (
-                followerList.map(({ _id, fullName, image }) => (
-                  <ItemWithAvatar
-                    key={_id}
-                    name={fullName + '유저'}
-                    AvatarProps={{ imgSrc: image }}
-                    to={`/profile/${_id}`}
-                  />
-                ))
-              ) : (
-                <SkeletonStyled />
-              )}
+              {userState &&
+                userState.followers.map(({ follower }) => {
+                  return (
+                    <ItemWithAvatar
+                      name={follower}
+                      AvatarProps={{
+                        imgSrc: follower,
+                      }}
+                      to={`/profile/${follower}`}
+                    />
+                  );
+                })}
             </StyledItemWithAvatarBox>
           ) : value === 2 ? (
             <>

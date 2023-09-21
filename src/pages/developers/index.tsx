@@ -9,9 +9,9 @@ import useDevelopers from '@/components/developers/useDevelopers';
 const DevelopersPage = () => {
   const { onlineDevelopers, developers, target, isSearching, isLoading } =
     useDevelopers();
-  console.log(developers);
   return (
     <Stack spacing={1} mt={1}>
+      {isLoading && '로딩중.....'}
       <StackStyled direction="row" spacing={4}>
         {onlineDevelopers.map((developer) => (
           <LinkStyled key={developer._id} to={`/dm/${developer._id}`}>

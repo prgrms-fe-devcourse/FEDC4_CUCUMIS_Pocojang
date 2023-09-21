@@ -22,7 +22,7 @@ export default function DeveloperDetail() {
     handleFollowClick,
     isAuthor,
     isLoading,
-    isFollowing,
+    isUserFollowing,
     isLoggedIn,
   } = useDeveloperDetails();
 
@@ -59,7 +59,7 @@ export default function DeveloperDetail() {
               </ChipGroup>
             ) : (
               <>
-                {isFollowing ? (
+                {isUserFollowing ? (
                   <BasicButton variant="outlined" onClick={handleFollowClick}>
                     언팔로우
                   </BasicButton>

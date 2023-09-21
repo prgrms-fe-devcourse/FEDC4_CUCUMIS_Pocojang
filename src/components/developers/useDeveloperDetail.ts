@@ -1,14 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { setPost } from '@/stores/projectDetail';
-import { useAppSelector } from '@/stores/hooks';
-import { userIdSelector } from '@/stores/auth';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { setUser, userIdSelector, isLoginSelector } from '@/stores/auth';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
 import type { PostType, FormattedPost, DeveloperContent } from '@/types';
-import session from '@/utils/sessionStorage';
-import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getPost, deletePost } from '@/api/posts';
 import { getUser } from '@/api/user';
 import { followUser, unFollowUser } from '@/api/follow';
@@ -23,16 +20,17 @@ import { userFollowingSelector } from '@/stores/auth/selector';
 
 const useDeveloperDetail = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const userId = useAppSelector(userIdSelector);
   const userFollowing = useAppSelector(userFollowingSelector);
+  const isLoggedIn = useAppSelector(isLoginSelector);
+
   const { developerId } = useParams();
   const { post } = useAppSelector(projectDetailSelector<DeveloperContent>);
-  const [isLoading, setIsLoading] = useState(false);
-  const [buttonState, setButtonState] = useState({
-    isFollowing: false,
-    isLoggedIn: false,
+  const [pageState, setPageState] = useState({
+    isUserFollowing: false,
+    isLoading: true,
   });
 
   const handleAvatarClick = () => {
@@ -53,15 +51,14 @@ const useDeveloperDetail = () => {
     if (isAbleToDelete && developerId) {
       const res = await deletePost({ id: developerId });
 
-      res && navigate(DEVELOPER_URL);
+      res && navigate(DEVELOPER_URL, { replace: true });
     }
   };
 
   const handleFollowClick = useCallback(async () => {
     try {
-      if (buttonState.isFollowing) {
+      if (pageState.isUserFollowing) {
         const followerIDList = post.author.followers;
-
         if (followerIDList) {
           const followId = userFollowing.find(({ _id }) =>
             followerIDList.includes(_id),
@@ -84,16 +81,18 @@ const useDeveloperDetail = () => {
       }
 
       const newUserInfo = await getUser(userId);
-      session.setItem(SESSION_STORAGE.USER, newUserInfo);
+
+      dispatch(setUser(newUserInfo));
     } catch (error) {
       console.log(error);
     }
 
     navigate(0);
   }, [
-    buttonState,
+    pageState.isUserFollowing,
     navigate,
     post.author._id,
+    dispatch,
     post.author.followers,
     userFollowing,
     userId,
@@ -110,19 +109,15 @@ const useDeveloperDetail = () => {
       } catch (error) {
         console.log(error);
       } finally {
-        setIsLoading(false);
+        setPageState((prev) => ({ ...prev, isLoading: false }));
       }
     },
     [dispatch],
   );
 
   useEffect(() => {
-    setIsLoading(true);
-
-    if (developerId) {
-      fetchPost(developerId);
-    }
-  }, [developerId, fetchPost, dispatch]);
+    developerId && fetchPost(developerId);
+  }, [developerId, fetchPost]);
 
   useEffect(() => {
     if (post.author.followers) {
@@ -130,12 +125,7 @@ const useDeveloperDetail = () => {
       const isFollowedByUser = userFollowing.some(({ _id }) =>
         followerID.includes(_id),
       );
-      setButtonState({ isLoggedIn: true, isFollowing: isFollowedByUser });
-    }
-
-    if (!userId) {
-      // 토큰으로 변경
-      setButtonState((prev) => ({ ...prev, isLoggedIn: false }));
+      setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
     }
   }, [post, userFollowing, userId]);
 
@@ -147,8 +137,8 @@ const useDeveloperDetail = () => {
     handleDeleteClick,
     handleFollowClick,
     isAuthor: post.author._id === userId,
-    isLoading,
-    ...buttonState,
+    ...pageState,
+    isLoggedIn,
     ...post,
   };
 };

@@ -4,20 +4,17 @@ import NotificationItem from '@/components/notification/NotificationItem';
 import useNotification from '@/components/notification/useNotification';
 
 const NotificationPage = () => {
-  const { notificationMessage, notifications, readNotification } =
-    useNotification();
+  const { notifications } = useNotification();
 
   return (
     <Stack spacing={2}>
-      {notifications.map(({ _id, type, isSeen, name }) => (
+      {notifications.map((notification) => (
         <NotificationItem
-          onClick={() => {
-            readNotification(_id);
-          }}
-          key={_id}
-          isSeen={isSeen}
+          onClick={() => {}}
+          key={notification._id}
+          isSeen={notification.seen}
         >
-          {name + notificationMessage[type]}
+          {notification.message}
         </NotificationItem>
       ))}
     </Stack>

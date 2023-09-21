@@ -2,16 +2,14 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Notification } from '@/stores/notification/slice';
-import {
-  notificationSelector,
-  setNotification,
-  handleClick,
-} from '@/stores/notification';
+import { notificationSelector, setNotification } from '@/stores/notification';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { isLoginSelector } from '@/stores/auth';
-import { getNotifications, readNotifications } from '@/api/notifications';
+import { getNotifications } from '@/api/notifications';
+import CHANNEL_ID from '@/consts/channels';
 
-//TODO  api 호출에 대한 에러 처리, 타입 위치 및 이름, user정보에 가져오고 인터벌 처리?
+//TODO  api 호출에 대한 에러 처리, typ별 메시지 변경, 타입별 이동 처리
+
 const useNotification = () => {
   const dispatch = useAppDispatch();
   const isLogin = useAppSelector(isLoginSelector);
@@ -20,10 +18,6 @@ const useNotification = () => {
   useEffect(() => {
     if (!isLogin) {
       navigate('/login');
-    } else {
-      return () => {
-        readNotifications();
-      };
     }
   }, [isLogin, navigate]);
 
@@ -32,19 +26,43 @@ const useNotification = () => {
       getNotifications().then((data) => dispatch(setNotification(data)));
   }, [dispatch, isLogin]);
 
-  const readNotification = (_id: string) => {
-    dispatch(handleClick(_id));
-  };
-
   const notifications: Notification[] = useAppSelector(notificationSelector);
-
-  return { notificationMessage, notifications, readNotification };
+  const parsed = parseNotifications(notifications);
+  return { notifications: parsed };
 };
 
 export default useNotification;
-const notificationMessage: { [key: string]: string } = {
-  comment: '님이 댓글을 추가했습니다.',
-  like: '님이 좋아요를 눌렀습니다.',
-  follow: '님이 팔로우했습니다.',
-  message: '님이 메세지를 보냈습니다.',
+const parseNotifications = (list: Notification[]) => {
+  return list.map((item) => {
+    const { _id, name, seen, notification, type } = item;
+    const message = createNotificationMessage(type, name, notification);
+
+    return { _id, seen, message };
+  });
+};
+
+const createNotificationMessage = (
+  type: string,
+  name: string,
+  notification: Notification,
+) => {
+  const { comment, like } = notification;
+  if (type === 'follow') return `${name}님이 나를 팔로우 했습니다.`;
+  else if (type === 'comment') {
+    if (!comment || !comment.post) return `${name}님이 댓글을 남겼습니다`;
+    const channelId = comment.post.channel;
+    const title = JSON.parse(comment.post.title).title;
+    return channelId === CHANNEL_ID.DEVELOPER
+      ? `${name}님이 프로필에 댓글을 남겼습니다`
+      : `${name}님이 '${title}'에 댓글을 남겼습니다.`;
+  } else if (type === 'like') {
+    if (!like || !like.post) return `${name}님이 좋아합니다`;
+    const channelId = like.post.channel;
+    const title = JSON.parse(like.post.title).title;
+    return channelId === CHANNEL_ID.DEVELOPER
+      ? `${name}님이 프로필을 좋아합니다.`
+      : `${name}님이 '${title}'을 좋아합니다.`;
+  } else {
+    return `${name}님이 메세지를 보냈습니다`;
+  }
 };

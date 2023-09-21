@@ -2,20 +2,19 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { NotificationType } from '@/types';
 
-export interface Notification {
-  isSeen: boolean;
-  _id: string;
-  name: string;
-  type: string;
+interface InitialState {
+  notifications: Notification[];
 }
-
+const initialState: InitialState = {
+  notifications: [],
+};
 export const notificationSlice = createSlice({
   name: 'notification',
-  initialState: { notifications: [] as Notification[] },
+  initialState,
   reducers: {
     handleClick: (state, { payload }) => {
       state.notifications = state.notifications.map((notification) => {
-        if (notification._id === payload && !notification.isSeen)
+        if (notification._id === payload && !notification.seen)
           return { ...notification, isSeen: true };
         return notification;
       });
@@ -29,7 +28,7 @@ export const notificationSlice = createSlice({
           author: { fullName },
         } = notification;
         const type = checkNotificationType(notification);
-        return { _id, isSeen: seen, name: fullName, type };
+        return { _id, seen, name: fullName, type, notification };
       });
     },
   },
@@ -41,6 +40,27 @@ const checkNotificationType = (notification: NotificationType): string => {
   }
   return '';
 };
+interface post {
+  title: string;
+  channel: string;
+}
+interface like {
+  post: post;
+}
+
+interface comment {
+  post: post;
+}
+
+export interface Notification {
+  seen: boolean;
+  _id: string;
+  name: string;
+  type: string;
+  like?: like;
+  comment?: comment;
+  notification: Notification;
+}
 
 const notificationCreateType = {
   follow: 'follow',

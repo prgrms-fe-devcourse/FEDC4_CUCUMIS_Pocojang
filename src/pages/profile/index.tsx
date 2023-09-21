@@ -144,10 +144,10 @@ const ProfilePage = () => {
                 userState.posts.map(({ _id, title, image }) => (
                   <StyledProjectCardItemBox key={_id}>
                     <ProjectCardItem
-                      name={title}
+                      name={JSON.parse(title).requirements}
                       imageUrl={image as string}
                       to={`${_id}`}
-                      projectTitle={title}
+                      projectTitle={JSON.parse(title).title}
                     />
                   </StyledProjectCardItemBox>
                 ))}

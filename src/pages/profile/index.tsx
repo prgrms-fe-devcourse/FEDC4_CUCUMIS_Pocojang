@@ -146,7 +146,7 @@ const ProfilePage = () => {
                     <ProjectCardItem
                       name={title}
                       imageUrl={image as string}
-                      to={`/projects/${_id}`}
+                      to={`${_id}`}
                       projectTitle={title}
                     />
                   </StyledProjectCardItemBox>
@@ -160,7 +160,7 @@ const ProfilePage = () => {
                     <ProjectCardItem
                       name={title}
                       imageUrl={image as string}
-                      to={`/projects/${_id}`}
+                      to={`${_id}`}
                       projectTitle={title}
                     />
                   </StyledProjectCardItemBox>

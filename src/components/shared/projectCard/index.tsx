@@ -12,7 +12,7 @@ interface Props {
 }
 const ProjectCardItem = ({
   name,
-  imageUrl = `/assets/Logo512.png`,
+  imageUrl = '/assets/Logo512.png',
   projectTitle,
   to,
 }: Props) => {

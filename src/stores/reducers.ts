@@ -5,6 +5,7 @@ import { signupReducer } from '@/stores/signup';
 import { dmReducer } from '@/stores/dm';
 import { notificationReducer } from '@/stores/notification';
 import { projectsReducer } from '@/stores/projects';
+import { developersReducer } from '@/stores/developers';
 
 export const reducers = {
   auth: authReducer,
@@ -14,4 +15,5 @@ export const reducers = {
   signup: signupReducer,
   dm: dmReducer,
   notifications: notificationReducer,
+  developers: developersReducer,
 };

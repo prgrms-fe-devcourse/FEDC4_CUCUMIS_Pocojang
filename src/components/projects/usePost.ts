@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { getPost } from '@/api/posts';
@@ -17,32 +17,6 @@ const usePost = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchPost = async (postId: string) => {
-      setIsLoading(true);
-
-      try {
-        const rs = await getPost(postId);
-
-        handlePost(rs);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (projectId) {
-      fetchPost(projectId);
-    }
-  }, [projectId]);
-
-  const handlePost = (rs: PostType) => {
-    const { title, requirements } = JSON.parse(rs.title);
-
-    setContents({ title, requirements });
-  };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0] || null;
@@ -58,6 +32,30 @@ const usePost = () => {
       }
     }
   };
+
+  const fetchPost = useCallback(async (postId: string) => {
+    setIsLoading(true);
+
+    try {
+      const rs = await getPost(postId);
+
+      handlePost(rs);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handlePost = (rs: PostType) => {
+    const { title, requirements } = JSON.parse(rs.title);
+
+    setContents({ title, requirements });
+  };
+
+  useEffect(() => {
+    projectId && fetchPost(projectId);
+  }, [projectId, fetchPost]);
 
   return {
     projectId,

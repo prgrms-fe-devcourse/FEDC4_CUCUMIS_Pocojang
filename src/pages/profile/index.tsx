@@ -26,7 +26,7 @@ const ProfilePage = () => {
     userId,
     handleFileChange,
   } = useProfile();
-  console.log(userState);
+
   return (
     <StyledWrapperBox>
       <StyledBox>

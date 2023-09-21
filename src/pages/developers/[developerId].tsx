@@ -31,15 +31,15 @@ export default function DeveloperDetail() {
   ) : (
     <Stack spacing={3}>
       <Box>
-        <ProjectImageStyled
+        <ProjectImageBox
           component="img"
           src={image}
           alt={contents.oneLiner + "'s project image"}
         />
-        <StackStyled direction="column" alignItems="center">
+        <StackContainer direction="column" alignItems="center">
           <BasicAvatar {...author} size={90} onClick={handleAvatarClick} />
           <Typography noWrap>{author.fullName}</Typography>
-        </StackStyled>
+        </StackContainer>
       </Box>
       <Stack direction="row" spacing={1} justifyContent="center">
         {isLoggedIn && (
@@ -79,17 +79,17 @@ export default function DeveloperDetail() {
       <Stack spacing={1}>
         <Typography variant="h4">
           {contents.oneLiner}
-          <ChipStyled
+          <ChipContainer
             label={contents.position as string}
             margin="0 8px"
             color="secondary"
           />
         </Typography>
-        <ChipsBoxStyled>
+        <ChipsBoxContainer>
           {contents.techStack?.map((skill: string, i: number) => (
-            <ChipStyled label={skill} margin="0 8px 4px 0" key={i} />
+            <ChipContainer label={skill} margin="0 8px 4px 0" key={i} />
           ))}
-        </ChipsBoxStyled>
+        </ChipsBoxContainer>
       </Stack>
       <Box>
         <Typography color="gray">자기소개</Typography>
@@ -104,21 +104,21 @@ export default function DeveloperDetail() {
   );
 }
 
-const ProjectImageStyled = styled(Box)({
+const ProjectImageBox = styled(Box)({
   width: '100%',
   height: '30vh',
   objectFit: 'cover',
 }) as typeof Box;
 
-const StackStyled = styled(Stack)({
+const StackContainer = styled(Stack)({
   marginTop: '-5vh',
 });
 
-const ChipsBoxStyled = styled(Box)({
+const ChipsBoxContainer = styled(Box)({
   display: 'flex',
   flexWrap: 'wrap',
 });
 
-const ChipStyled = styled(BasicChip)<{ margin: string }>(({ margin }) => ({
+const ChipContainer = styled(BasicChip)<{ margin: string }>(({ margin }) => ({
   margin: margin,
 }));

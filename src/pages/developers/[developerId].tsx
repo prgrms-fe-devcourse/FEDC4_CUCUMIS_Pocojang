@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box, Divider, Stack, Typography } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
@@ -27,7 +28,7 @@ export default function DeveloperDetail() {
   } = useDeveloperDetails();
 
   return isLoading ? (
-    <Box>로딩 중</Box>
+    <LinearProgress />
   ) : (
     <Stack spacing={3}>
       <Box>

@@ -14,8 +14,8 @@ export default function ProjectPost() {
 
   const {
     projectId,
-    title,
-    requirements,
+    prevTitle,
+    prevRequirements,
     isLoading,
     handleFileChange,
     selectedFile,
@@ -24,13 +24,13 @@ export default function ProjectPost() {
 
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
-      title,
-      requirements,
+      title: '',
+      requirements: '',
     },
-    onSubmit: async ({ title, requirements }: FormValues) => {
+    onSubmit: async ({ title, requirements }) => {
       const formatedTitle = JSON.stringify({
-        title,
-        requirements,
+        title: title || prevTitle,
+        requirements: requirements || prevRequirements,
       });
 
       const formData = new FormData();
@@ -60,9 +60,10 @@ export default function ProjectPost() {
     },
     validate: ({ title, requirements }: FormValues) => {
       const newErrors: FormErrors = {};
-
-      if (!title) newErrors.title = '제목을 입력해주세요.';
-      if (!requirements) newErrors.requirements = '요구사항을 입력해주세요.';
+      // 아래 validation은 mui required에서 제공하고 있어서 생략할 예정
+      if (!prevTitle && !title) newErrors.title = '제목을 입력해주세요.';
+      if (!prevRequirements && !requirements)
+        newErrors.requirements = '요구사항을 입력해주세요.';
 
       return newErrors;
     },
@@ -89,19 +90,19 @@ export default function ProjectPost() {
           </UploadStyledButton>
         )}
         <BasicInput
-          defaultValue={title}
+          defaultValue={prevTitle}
           label="title"
           type="multiline"
           onChange={handleChange}
-          placeholder={title ? '' : '제목을 입력해주세요'}
+          placeholder={prevTitle ? '' : '제목을 입력해주세요'}
           errorMessage={errors.title}
         />
         <BasicInput
-          defaultValue={requirements}
+          defaultValue={prevRequirements}
           label="requirements"
           type="multiline"
           onChange={handleChange}
-          placeholder={requirements ? '' : '요구사항을 입력해주세요'}
+          placeholder={prevRequirements ? '' : '요구사항을 입력해주세요'}
           errorMessage={errors.requirements}
         />
       </Stack>

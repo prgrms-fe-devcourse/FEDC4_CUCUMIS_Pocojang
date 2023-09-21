@@ -59,7 +59,8 @@ const usePost = () => {
 
   return {
     projectId,
-    ...contents,
+    prevTitle: contents.title,
+    prevRequirements: contents.requirements,
     isLoading,
     handleFileChange,
     selectedFile,

@@ -7,7 +7,8 @@ import AvatarWithChip from '@/components/shared/avatarWithChip';
 import useDevelopers from '@/components/developers/useDevelopers';
 
 const DevelopersPage = () => {
-  const { onlineDevelopers, developers, target } = useDevelopers();
+  const { onlineDevelopers, developers, target, isSearching } = useDevelopers();
+  console.log(developers);
   return (
     <Stack spacing={1} mt={1}>
       <StackStyled direction="row" spacing={4}>
@@ -33,7 +34,7 @@ const DevelopersPage = () => {
           />
         );
       })}
-      <Box ref={target}></Box>
+      {isSearching || <Box ref={target}></Box>}
     </Stack>
   );
 };

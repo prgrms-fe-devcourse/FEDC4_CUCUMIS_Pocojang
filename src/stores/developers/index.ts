@@ -1,4 +1,5 @@
 import { developersSlice } from '@/stores/developers/slice';
 
 export const developersReducer = developersSlice.reducer;
-export const { setDeveloperList, setOnlineUserList } = developersSlice.actions;
+export const { setSearchList, setDeveloperList, setOnlineUserList } =
+  developersSlice.actions;

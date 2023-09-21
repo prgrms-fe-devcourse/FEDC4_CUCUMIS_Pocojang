@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  const saveAuthData = useAuth();
+  const { saveAuthData } = useAuth();
 
   const {
     signupFormValues,

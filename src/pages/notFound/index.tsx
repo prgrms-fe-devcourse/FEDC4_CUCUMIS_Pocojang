@@ -12,7 +12,7 @@ export default function NotFoundPage() {
       <TitleStyled variant="h6" component="h2">
         404 Not Found
       </TitleStyled>
-      <TypographyStyled variant="body2" component="p">
+      <TypographyStyled variant="body2" component="p" color="gray">
         페이지를 찾을 수 없습니다
       </TypographyStyled>
     </BoxStyled>

@@ -9,12 +9,25 @@ import {
 import { DarkMode } from '@mui/icons-material';
 
 import MainFab from '@/components/shared/mainFab';
+import { useAuth } from '@/hooks/useAuth';
+import { logout } from '@/api/auth';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
+  const { removeAuthData } = useAuth();
 
   const toggleDark = () => {
     console.log('dark toggled!');
+  };
+
+  const fetchLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      removeAuthData();
+    }
   };
 
   const handleClickProfileSetting = () => {
@@ -24,7 +37,7 @@ export default function SettingsPage() {
     navigate('/settings/password');
   };
   const handleClickLogout = () => {
-    // TODO: logout API 함수 호출 및 세션 초기화
+    fetchLogout();
     navigate('/');
   };
 

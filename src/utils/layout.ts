@@ -69,8 +69,16 @@ export const getTitle = (
       }
     }
   }
-  if (path[0] === 'settings' && path.length === 1) {
-    return Title.SETTINGS;
+  if (path[0] === 'settings') {
+    if (path.length === 1) {
+      return Title.SETTINGS;
+    }
+    if (path[1] === 'profile') {
+      return Title.SETTINGS_PROFILE;
+    }
+    if (path[1] === 'password') {
+      return Title.SETTINGS_PASSWORD;
+    }
   }
   if (path[0] === 'login' && path.length === 1) {
     return Title.LOGIN;

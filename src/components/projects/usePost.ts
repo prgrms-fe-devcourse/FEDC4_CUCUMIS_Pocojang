@@ -4,13 +4,15 @@ import { useParams } from 'react-router-dom';
 import { getPost } from '@/api/posts';
 import type { PostType } from '@/types';
 
+interface PostHookParameters {
+  onGetFail: (error: unknown) => void;
+}
+
 export interface ProjectContent {
   title: string;
   requirements: string;
 }
-interface PostHookParameters {
-  onGetFail: (error: unknown) => void;
-}
+
 const usePost = ({ onGetFail }: PostHookParameters) => {
   const { projectId } = useParams();
 

@@ -13,6 +13,7 @@ import { PROJECT_FORMDATA_KEY } from '@/consts/formDataKey';
 
 export default function ProjectPost() {
   const navigate = useNavigate();
+
   const { TITLE, PROJECT_CHANNEL_ID, IMAGE, POST_ID } = PROJECT_FORMDATA_KEY;
   const {
     projectId,
@@ -29,7 +30,7 @@ export default function ProjectPost() {
       title: '',
       requirements: '',
     },
-    onSubmit: async ({ title, requirements }) => {
+    onSubmit: async ({ title, requirements }: FormValues) => {
       const formatedTitle = JSON.stringify({
         title: title || prevTitle,
         requirements: requirements || prevRequirements,

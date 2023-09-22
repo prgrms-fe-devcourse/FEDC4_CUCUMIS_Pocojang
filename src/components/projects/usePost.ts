@@ -8,8 +8,10 @@ export interface ProjectContent {
   title: string;
   requirements: string;
 }
-
-const usePost = () => {
+interface PostHookParameters {
+  onGetFail: (error: unknown) => void;
+}
+const usePost = ({ onGetFail }: PostHookParameters) => {
   const { projectId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -33,19 +35,22 @@ const usePost = () => {
     }
   };
 
-  const fetchPost = useCallback(async (postId: string) => {
-    setIsLoading(true);
+  const fetchPost = useCallback(
+    async (postId: string) => {
+      setIsLoading(true);
 
-    try {
-      const rs = await getPost(postId);
+      try {
+        const rs = await getPost(postId);
 
-      handlePost(rs);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        handlePost(rs);
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onGetFail],
+  );
 
   const handlePost = (rs: PostType) => {
     const { title, requirements } = JSON.parse(rs.title);

@@ -23,7 +23,11 @@ export default function ProjectPost() {
     handleFileChange,
     selectedFile,
     imageFile,
-  } = usePost();
+  } = usePost({
+    onGetFail: (error) => {
+      console.error(error);
+    },
+  });
 
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {

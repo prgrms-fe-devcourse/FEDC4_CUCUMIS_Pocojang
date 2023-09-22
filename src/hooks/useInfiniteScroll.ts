@@ -7,7 +7,7 @@ export interface InfiniteScrollProps {
 
 const useInfiniteScroll = ({ options }: InfiniteScrollProps) => {
   const pageEnd = useRef<HTMLDivElement | null>(null);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(2);
 
   const loadMore = () => {
     setPage((prev) => prev + 1);

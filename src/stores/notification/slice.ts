@@ -13,14 +13,6 @@ export const notificationSlice = createSlice({
   name: 'notification',
   initialState,
   reducers: {
-    handleClick: (state, { payload }) => {
-      state.notifications = state.notifications.map((notification) => {
-        if (notification._id === payload && !notification.seen)
-          return { ...notification, isSeen: true };
-        return notification;
-      });
-    },
-
     setNotification: (state, { payload }) => {
       state.notifications = payload.map((notification: NotificationType) => {
         const {
@@ -31,6 +23,12 @@ export const notificationSlice = createSlice({
         const type = checkNotificationType(notification);
         return { _id, seen, name: fullName, type, notification };
       });
+    },
+    readAllNotification: (state) => {
+      state.notifications = state.notifications.map((notification) => ({
+        ...notification,
+        seen: true,
+      }));
     },
   },
 });

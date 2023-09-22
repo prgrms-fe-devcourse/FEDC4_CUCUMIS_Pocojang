@@ -3,12 +3,21 @@ import { useNavigate } from 'react-router-dom';
 
 import { notificationCreateType } from '@/consts/notificationCreateType';
 import { Notification } from '@/stores/notification/slice';
-import { notificationSelector, setNotification } from '@/stores/notification';
+import {
+  notificationSelector,
+  setNotification,
+  readAllNotification,
+} from '@/stores/notification';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { isLoginSelector } from '@/stores/auth';
 import { getNotifications, readNotifications } from '@/api/notifications';
 import CHANNEL_ID from '@/consts/channels';
-import { DEVELOPER_URL, PROJECT_URL, PROFILE_URL } from '@/consts/routes';
+import {
+  DEVELOPER_URL,
+  PROJECT_URL,
+  PROFILE_URL,
+  LOGIN_URL,
+} from '@/consts/routes';
 
 interface useNotificationParameter {
   onGetFail: (error: unknown) => void;
@@ -22,8 +31,17 @@ const useNotification = ({ onGetFail }: useNotificationParameter) => {
   const notifications: Notification[] = useAppSelector(notificationSelector);
   const parsed = parseNotifications(filterNotifications(notifications));
 
+  const handleReadAllButton = () => {
+    dispatch(readAllNotification());
+    try {
+      readNotifications();
+    } catch (error) {
+      onGetFail(error);
+    }
+  };
+
   useEffect(() => {
-    if (!isLogin) navigate('/login');
+    if (!isLogin) navigate(LOGIN_URL);
     (async () => {
       setIsLoading(true);
       try {
@@ -38,7 +56,7 @@ const useNotification = ({ onGetFail }: useNotificationParameter) => {
     })();
   }, [dispatch, isLogin, navigate, onGetFail]);
 
-  return { notifications: parsed, isLoading, readNotifications };
+  return { notifications: parsed, isLoading, handleReadAllButton };
 };
 
 export default useNotification;
@@ -71,7 +89,7 @@ const parseNotifications = (list: Notification[]) => {
 
 const createURL = (type: string, notification: Notification) => {
   if (type === notificationCreateType.follow)
-    return `${PROFILE_URL}/${notification.follow?.follower}`;
+    return `${PROFILE_URL}${notification.follow?.follower}`;
   else if (type === notificationCreateType.comment) {
     const channelId = notification.comment?.post.channel;
     const id = notification.comment?.post._id;

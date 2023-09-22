@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { AxiosError } from 'axios';
 
 import { getPost, deletePost } from '@/api/posts';
 import { setPost } from '@/stores/projectDetail';
@@ -27,6 +28,7 @@ const useProjectDetail = ({
   const userId = useAppSelector(userIdSelector);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + post.author._id);
@@ -61,6 +63,7 @@ const useProjectDetail = ({
         dispatch(setPost(formattedPost));
       } catch (error) {
         onGetFail(error);
+        setError('존재하지 않는 포스트입니다');
       } finally {
         setIsLoading(false);
       }
@@ -73,6 +76,12 @@ const useProjectDetail = ({
       fetchPost(projectId);
     }
   }, [projectId, dispatch, fetchPost, onGetFail]);
+
+  useEffect(() => {
+    if (error) {
+      throw new AxiosError(error);
+    }
+  }, [error]);
 
   return {
     projectId,

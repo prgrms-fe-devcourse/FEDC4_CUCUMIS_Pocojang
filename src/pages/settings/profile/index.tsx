@@ -30,7 +30,7 @@ export default function ProfileSettingPage() {
         defaultValue={profileFormDefaultValues.name}
         onChange={handleProfileFormChange}
         errorMessage={profileFormErrors.name}
-        isRequired={false}
+        isRequired={true}
       />
       <BasicInput
         label="oneLiner"
@@ -38,7 +38,7 @@ export default function ProfileSettingPage() {
         defaultValue={profileFormDefaultValues.oneLiner}
         onChange={handleProfileFormChange}
         errorMessage={profileFormErrors.oneLiner}
-        isRequired={false}
+        isRequired={true}
       />
       <BasicInput
         label="techStack"

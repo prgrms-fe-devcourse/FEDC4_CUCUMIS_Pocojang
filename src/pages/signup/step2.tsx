@@ -31,7 +31,7 @@ export default function ExtraInformationPage() {
         placeholder="한 줄 포부를 작성해주세요"
         onChange={handleExtraInformationFormChange}
         errorMessage={extraInformationFormErrors.oneLiner}
-        isRequired={false}
+        isRequired={true}
       />
       <BasicInput
         label="techStack"

@@ -1,47 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { getPost } from '@/api/posts';
 import type { PostType } from '@/types';
+
+interface PostHookParameters {
+  onGetFail: (error: unknown) => void;
+}
 
 export interface ProjectContent {
   title: string;
   requirements: string;
 }
 
-const usePost = () => {
+const usePost = ({ onGetFail }: PostHookParameters) => {
   const { projectId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
   const [contents, setContents] = useState({ title: '', requirements: '' });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchPost = async (postId: string) => {
-      setIsLoading(true);
-
-      try {
-        const rs = await getPost(postId);
-
-        handlePost(rs);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (projectId) {
-      fetchPost(projectId);
-    }
-  }, [projectId]);
-
-  const handlePost = (rs: PostType) => {
-    const { title, requirements } = JSON.parse(rs.title);
-
-    setContents({ title, requirements });
-  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -59,9 +37,37 @@ const usePost = () => {
     }
   };
 
+  const fetchPost = useCallback(
+    async (postId: string) => {
+      setIsLoading(true);
+
+      try {
+        const rs = await getPost(postId);
+
+        handlePost(rs);
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onGetFail],
+  );
+
+  const handlePost = (rs: PostType) => {
+    const { title, requirements } = JSON.parse(rs.title);
+
+    setContents({ title, requirements });
+  };
+
+  useEffect(() => {
+    projectId && fetchPost(projectId);
+  }, [projectId, fetchPost]);
+
   return {
     projectId,
-    ...contents,
+    prevTitle: contents.title,
+    prevRequirements: contents.requirements,
     isLoading,
     handleFileChange,
     selectedFile,

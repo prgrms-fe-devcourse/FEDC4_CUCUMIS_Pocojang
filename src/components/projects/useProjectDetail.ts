@@ -11,15 +11,7 @@ import { projectDetailSelector } from '@/stores/projectDetail/selector';
 import type { PostType, FormattedPost, ProjectContent } from '@/types';
 import { PROFILE_URL, PROJECT_MODIFYL_URL, PROJECT_URL } from '@/consts/routes';
 
-interface ProjectDetailHookParameters {
-  onGetFail: (error: unknown) => void;
-  onSendFail: (error: unknown) => void;
-}
-
-const useProjectDetail = ({
-  onGetFail,
-  onSendFail,
-}: ProjectDetailHookParameters) => {
+const useProjectDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -48,7 +40,7 @@ const useProjectDetail = ({
 
         res && navigate(PROJECT_URL);
       } catch (error) {
-        onSendFail(error);
+        window.alert('포스트 삭제에 실패하였습니다');
       }
     }
   };
@@ -62,20 +54,19 @@ const useProjectDetail = ({
 
         dispatch(setPost(formattedPost));
       } catch (error) {
-        onGetFail(error);
         setError('존재하지 않는 포스트입니다');
       } finally {
         setIsLoading(false);
       }
     },
-    [dispatch, onGetFail],
+    [dispatch],
   );
 
   useEffect(() => {
     if (projectId) {
       fetchPost(projectId);
     }
-  }, [projectId, dispatch, fetchPost, onGetFail]);
+  }, [projectId, fetchPost]);
 
   useEffect(() => {
     if (error) {

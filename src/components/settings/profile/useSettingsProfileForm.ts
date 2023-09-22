@@ -12,10 +12,14 @@ import CHANNEL_ID from '@/consts/channels';
 import { userProfilePostIdSelector } from '@/stores/auth/selector';
 import { setUser, userFullNameSelector } from '@/stores/auth';
 import { PostType, UserType } from '@/types';
+import validation from '@/utils/validations';
 
-const validateProfileForm = ({ oneLiner, details }: FormValues) => {
+const validateProfileForm = ({ name, oneLiner, details }: FormValues) => {
   const newErrors: FormErrors = {};
 
+  const nameErrorMessage = validation.name(name);
+
+  if (nameErrorMessage) newErrors.name = nameErrorMessage;
   if (oneLiner.length > 30) newErrors.oneLiner = '30자 미만 입력 가능합니다.';
   if (details.length > 1000) newErrors.details = '1000자 미만 입력 가능합니다.';
 

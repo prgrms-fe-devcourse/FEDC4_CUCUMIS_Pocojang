@@ -1,4 +1,5 @@
-import { CardContent, Grid, Typography, styled } from '@mui/material';
+import { CardContent, Grid, Typography } from '@mui/material';
+import styled from '@emotion/styled';
 
 import type BasicAvatarProps from '@/types/components/BasicAvatarProps';
 import BasicAvatar from '@/components/shared/avatar';
@@ -8,20 +9,19 @@ import BasicCard from '@/components/shared/card';
 
 interface Props {
   AvatarProps: BasicAvatarProps;
-  oneliner: string;
+  oneLiner: string;
   name: string;
   description: string;
   to: string;
-  stacks: string[];
+  techStack: string[];
 }
 
-//TODO 스택은 반복문으로 변경하기,
 const DeveloperCardItem = ({
   AvatarProps,
-  oneliner,
+  oneLiner,
   name,
   description,
-  stacks,
+  techStack,
   to,
 }: Props) => {
   return (
@@ -33,15 +33,17 @@ const DeveloperCardItem = ({
           </Grid>
           <Grid item xs={9}>
             <Typography variant="body1" component="p" noWrap={true}>
-              {oneliner}
+              {oneLiner}
             </Typography>
             <Typography variant="body1" component="p">
               {name}
             </Typography>
             <ChipGroup>
-              {stacks.slice(0, 3).map((stack) => (
-                <ChipStyled key={stack} label={stack} />
-              ))}
+              {techStack &&
+                Array.isArray(techStack) &&
+                techStack.map((stack) => (
+                  <ChipStyled key={stack} label={stack} />
+                ))}
             </ChipGroup>
           </Grid>
         </Grid>

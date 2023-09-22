@@ -9,7 +9,11 @@ interface Props {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
 
-const SettingsInputContainer = ({ formId, children, onSubmit }: Props) => {
+const SettingsInputContainer = ({
+  formId = 'settingsForm',
+  children,
+  onSubmit,
+}: Props) => {
   return (
     <Stack
       alignItems="center"

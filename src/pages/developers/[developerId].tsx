@@ -98,9 +98,10 @@ export default function DeveloperDetail() {
           />
         </Typography>
         <ChipsBoxContainer>
-          {contents.techStack?.map((skill: string, i: number) => (
-            <ChipContainer label={skill} margin="0 8px 4px 0" key={i} />
-          ))}
+          {Array.isArray(contents.techStack) &&
+            contents.techStack?.map((skill: string, i: number) => (
+              <ChipContainer label={skill} margin="0 8px 4px 0" key={i} />
+            ))}
         </ChipsBoxContainer>
       </Stack>
       <Box>

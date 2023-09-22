@@ -9,6 +9,8 @@ import {
 import { PostType } from '@/types';
 import { createPost } from '@/api/posts';
 import CHANNEL_ID from '@/consts/channels';
+import { userFullNameSelector, setUser } from '@/stores/auth';
+import { updateUser } from '@/api/settings';
 
 const validateExtraInformationForm = ({
   oneLiner,
@@ -32,20 +34,27 @@ export const useExtraInformationForm = ({
   onFail,
 }: SignupFormHookParameters) => {
   const dispatch = useAppDispatch();
+  const name = useAppSelector(userFullNameSelector);
   const extraInputFormValues: FormValues = useAppSelector(
     extraInformationValuesSelector,
   );
 
   const onSubmitExtraInformationForm = async (formValues: FormValues) => {
     try {
-      const userData = JSON.stringify(formValues);
+      const profileData = JSON.stringify(formValues);
       const formData = new FormData();
-      formData.append('title', userData);
+      formData.append('title', profileData);
       formData.append('channelId', CHANNEL_ID.DEVELOPER);
 
-      const rs = await createPost(formData);
+      const profilePost = await createPost(formData);
+      const userData = await updateUser({
+        fullName: name,
+        username: profilePost._id,
+      });
 
-      onSuccess(rs);
+      dispatch(setUser(userData));
+
+      onSuccess(profilePost);
     } catch (error) {
       onFail(error);
     }

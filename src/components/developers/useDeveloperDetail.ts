@@ -1,11 +1,17 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
 import { setPost } from '@/stores/projectDetail';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setUser, userIdSelector, isLoginSelector } from '@/stores/auth';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type { PostType, FormattedPost, DeveloperContent } from '@/types';
+import type {
+  PostType,
+  FormattedPost,
+  DeveloperContent,
+  FollowType,
+} from '@/types';
 import { getPost, deletePost } from '@/api/posts';
 import { getUser } from '@/api/user';
 import { followUser, unFollowUser } from '@/api/follow';
@@ -17,30 +23,24 @@ import {
   SETTINGS_URL,
 } from '@/consts/routes';
 import { userFollowingSelector } from '@/stores/auth/selector';
+import handleAxiosError from '@/utils/axiosError';
 
-interface DeveloperDetailHookParameters {
-  onFollowFail: (error: unknown) => void;
-  onGetUserFail: (error: unknown) => void;
-  onDeletePostFail: (error: unknown) => void;
-}
-const useDeveloperDetail = ({
-  onGetUserFail,
-  onFollowFail,
-  onDeletePostFail,
-}: DeveloperDetailHookParameters) => {
+const useDeveloperDetail = () => {
+  const { developerId } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const userId = useAppSelector(userIdSelector);
   const userFollowingList = useAppSelector(userFollowingSelector);
   const isLoggedIn = useAppSelector(isLoginSelector);
-
-  const { developerId } = useParams();
   const { post } = useAppSelector(projectDetailSelector<DeveloperContent>);
+
   const [pageState, setPageState] = useState({
     isUserFollowing: false,
     isLoading: true,
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + developerId);
@@ -63,12 +63,14 @@ const useDeveloperDetail = ({
 
         res && navigate(DEVELOPER_URL, { replace: true });
       } catch (error) {
-        onDeletePostFail(error);
+        window.alert('포스트 삭제에 실패하였습니다');
       }
     }
   };
 
   const handleFollowClick = useCallback(async () => {
+    setPageState((prev) => ({ ...prev, isLoading: true }));
+
     try {
       if (pageState.isUserFollowing) {
         const followerIDList = post.author.followers;
@@ -92,25 +94,25 @@ const useDeveloperDetail = ({
         }
       }
     } catch (error) {
-      onFollowFail(error);
+      window.alert('팔로우 처리에 실패하였습니다');
+
+      setPageState((prev) => ({ ...prev, isLoading: false }));
     } finally {
       try {
         const newUserInfo = await getUser(userId);
 
         dispatch(setUser(newUserInfo));
       } catch (error) {
-        onGetUserFail(error);
+        setPageState((prev) => ({ ...prev, isLoading: false }));
+      } finally {
+        navigate(0);
       }
     }
-
-    navigate(0);
   }, [
     pageState.isUserFollowing,
-    onGetUserFail,
-    onFollowFail,
-    navigate,
     post.author._id,
     dispatch,
+    navigate,
     post.author.followers,
     userFollowingList,
     userId,
@@ -125,7 +127,9 @@ const useDeveloperDetail = ({
 
         dispatch(setPost(formattedPost));
       } catch (error) {
-        console.log(error);
+        const axiosErrorMessage = handleAxiosError(error as Error);
+
+        setErrorMessage(axiosErrorMessage);
       } finally {
         setPageState((prev) => ({ ...prev, isLoading: false }));
       }
@@ -138,16 +142,16 @@ const useDeveloperDetail = ({
   }, [developerId, fetchPost]);
 
   useEffect(() => {
-    if (post.author.followers) {
-      const authorFollowerIDList = post.author.followers;
+    const isFollowedByUser = getIsFollowedByUser(post, userFollowingList);
 
-      const isFollowedByUser = userFollowingList.some(({ _id }) =>
-        authorFollowerIDList.includes(_id),
-      );
-
-      setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
-    }
+    setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
   }, [post, userFollowingList, userId]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      throw new AxiosError(errorMessage);
+    }
+  }, [errorMessage]);
 
   return {
     developerId,
@@ -191,6 +195,21 @@ const handlePostFormat = (rs: PostType) => {
     },
   };
   return formattedPost;
+};
+
+const getIsFollowedByUser = (
+  post: FormattedPost<DeveloperContent>,
+  userFollowingList: FollowType[],
+) => {
+  if (post.author.followers) {
+    const authorFollowerIDList = post.author.followers;
+
+    const isFollowedByUser = userFollowingList.some(({ _id }) =>
+      authorFollowerIDList.includes(_id),
+    );
+    return isFollowedByUser;
+  }
+  return false;
 };
 
 export default useDeveloperDetail;

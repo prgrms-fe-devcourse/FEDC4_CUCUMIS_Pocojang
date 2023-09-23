@@ -43,9 +43,9 @@ export default function ProfileSettingPage() {
       <BasicInput
         label="techStack"
         placeholder="기술 스택을 추가해주세요"
-        value={profileFormDefaultValues.technicalTools}
+        value={profileFormDefaultValues.techStack}
         onChange={handleProfileFormChange}
-        errorMessage={profileFormErrors.technicalTools}
+        errorMessage={profileFormErrors.techStack}
         isRequired={false}
       />
       <BasicInput

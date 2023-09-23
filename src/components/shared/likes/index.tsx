@@ -4,13 +4,19 @@ import { useEffect, useState } from 'react';
 
 import { useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
-import { likesSelector, postIdSelector } from '@/stores/projectDetail/selector';
+import {
+  likesSelector,
+  postIdSelector,
+  authorIdSelector,
+} from '@/stores/projectDetail/selector';
 import { cancelLikePost, likePost } from '@/api/likes';
+import { sendNotification } from '@/api/notifications';
 
 const Likes = () => {
   const userId = useAppSelector(userIdSelector);
   const likes = useAppSelector(likesSelector);
   const postId = useAppSelector(postIdSelector);
+  const authorId = useAppSelector(authorIdSelector);
   console.log(userId, likes);
   const [isHeartClicked, setIsHeartClicked] = useState(false);
 
@@ -23,7 +29,13 @@ const Likes = () => {
     console.log('s', postId);
 
     const res = await likePost({ postId });
-    console.log(res);
+
+    await sendNotification({
+      notificationType: 'LIKE',
+      notificationTypeId: res._id,
+      userId: authorId,
+      postId,
+    });
   };
   const handleHeartCancel = async () => {
     console.log('click', postId);

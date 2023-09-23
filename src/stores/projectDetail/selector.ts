@@ -11,3 +11,6 @@ export const likesSelector = (state: RootState): LikeType[] =>
 
 export const postIdSelector = (state: RootState): string =>
   state.projectDetail.post.postId;
+
+export const authorIdSelector = (state: RootState): string =>
+  state.projectDetail.post.author._id as string;

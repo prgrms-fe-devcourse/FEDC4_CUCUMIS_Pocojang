@@ -1,7 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { setList } from '@/stores/projects';
+import {
+  cleanProjectList,
+  setProjectList,
+  setSearchList,
+  setIsFetching,
+  isFetchingSelector,
+} from '@/stores/projects';
 import useInfinityScroll from '@/hooks/useInfiniteScroll';
 import { useAppSelector, useAppDispatch } from '@/stores/hooks';
 import { projectsSelector } from '@/stores/projects/selector';
@@ -11,67 +17,103 @@ import { getChannelPosts } from '@/api/posts';
 import { inputSelector } from '@/stores/layout';
 import { searchAll } from '@/api/search';
 import CHANNEL_ID from '@/consts/channels';
+import { PROJECT_MODIFYL_URL } from '@/consts/routes';
 export interface ProjectType {
   _id: string;
   image?: string;
   name: string;
   projectTitle: string;
 }
+interface useProjectListProps {
+  onGetFail: (error: unknown) => void;
+}
 
-// TODO JSON.parse 에러처리, 무한스크롤 최적화, 검색 후 무한 스크롤, 채널 포스트를 초기에 가져와서 id 필터
-const useProjectList = () => {
+// TODO
+const useProjectList = ({ onGetFail }: useProjectListProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const isLogin = useAppSelector(isLoginSelector);
   const list = useAppSelector(projectsSelector);
-  const dispatch = useAppDispatch();
   const headerSearchValue = useAppSelector(inputSelector);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const { page, pageEnd } = useInfinityScroll({ options: { threshold: 1 } });
-
+  const isFetching = useAppSelector(isFetchingSelector);
+  const isLoading = useRef(false);
+  const [isEndOfList, setIsEndOfList] = useState<boolean>(false);
+  const setIsLoading = (state: boolean) => {
+    isLoading.current = state;
+  };
+  const { page, pageEnd } = useInfinityScroll({
+    isFetching,
+    options: { threshold: 1 },
+  });
   const handleFabClick = () => {
-    navigate('/projects/write');
+    navigate(PROJECT_MODIFYL_URL);
   };
 
   useEffect(() => {
+    setIsLoading(isFetching);
+  }, [isFetching]);
+
+  useEffect(() => {
     const searchProjects = async (value: string) => {
-      const searchResult = await searchAll(value).then((result: unknown) =>
-        parseSearchResult2(result as Post[]),
-      );
-      dispatch(setList(searchResult));
-      setIsLoading(false);
+      dispatch(setIsFetching(true));
+      try {
+        const searchResult = await searchAll(value).then((result: unknown) =>
+          parseSearchResult(result as Post[]),
+        );
+        dispatch(setSearchList(searchResult));
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        dispatch(setIsFetching(false));
+      }
     };
 
     const value = headerSearchValue.trim();
-    if (value.length < 1) return;
-    setIsLoading(true);
-    console.log(value);
-    const encoded = encodeURIComponent(value);
-    searchProjects(encoded);
-  }, [headerSearchValue, dispatch]);
+    if (value.length < 1 || isLoading.current) {
+      return;
+    }
 
-  const fetchProjects = useCallback(
-    async (page: number) => {
-      const res = await getChannelPosts(CHANNEL_ID.PROJECT, {
-        offset: page * 5,
-        limit: 5,
-      });
-      const data: ProjectType[] = parseProjectList(res);
-      dispatch(setList(data));
-    },
-    [dispatch],
-  );
+    const encoded = encodeURIComponent(value);
+
+    searchProjects(encoded);
+  }, [headerSearchValue, dispatch, onGetFail]);
 
   useEffect(() => {
-    fetchProjects(page);
-  }, [page, fetchProjects]);
+    if (isLoading.current) return;
+
+    const fetch = async () => {
+      dispatch(setIsFetching(true));
+      try {
+        const res = await getChannelPosts(CHANNEL_ID.PROJECT, {
+          offset: page * 5,
+          limit: 5,
+        });
+        if (res.length === 0) setIsEndOfList(true);
+        const data: ProjectType[] = parseProjectPosts(res);
+        dispatch(setProjectList(data));
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        dispatch(setIsFetching(false));
+      }
+    };
+
+    fetch();
+  }, [page, dispatch, onGetFail]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(cleanProjectList());
+    };
+  }, [dispatch]);
 
   return {
     handleFabClick,
     projects: list,
     isLogin,
     target: pageEnd,
-    isLoading,
+    isFetching,
+    isEndOfList,
   };
 };
 
@@ -81,32 +123,21 @@ interface Post {
   channel: string;
   _id: string;
 }
-const parseProject = (project: PostType) => {
-  const {
-    _id,
-    image,
-    author: { fullName },
-    title: content,
-  } = project;
-  const { title } = JSON.parse(content);
-  return { _id, name: fullName, projectTitle: title, image };
+
+export const parseProjectPosts = (posts: PostType[]) => {
+  return posts.map((post) => {
+    const {
+      _id,
+      image,
+      author: { fullName },
+      title: content,
+    } = post;
+    const { title } = JSON.parse(content);
+    return { _id, name: fullName, projectTitle: title, image };
+  });
 };
 
-const parseProjectList = (list: PostType[]) => {
-  return list.map(parseProject);
-};
-
-// const parseSearchResult = async (result: Post[]) => {
-//   const filtered = result
-//     .filter((item) => item.channel === CHANNEL_ID.PROJECT)
-//     .map((item) => getPost(item._id));
-//   const projectList = await Promise.all(filtered).then((res) =>
-//     res.map(parseProject),
-//   );
-//   return projectList;
-// };
-
-const parseSearchResult2 = async (result: Post[]) => {
+const parseSearchResult = async (result: Post[]) => {
   const filteredSet = new Set(
     result
       .filter((item) => item.channel === CHANNEL_ID.PROJECT)
@@ -116,6 +147,6 @@ const parseSearchResult2 = async (result: Post[]) => {
     .then((list: PostType[]) =>
       list.filter((post) => filteredSet.has(post._id)),
     )
-    .then((list) => list.map((post) => parseProject(post)));
+    .then((list) => parseProjectPosts(list));
   return searchResult;
 };

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { getPost } from '@/api/posts';
 import type { PostType } from '@/types';
+import { useAppSelector } from '@/stores/hooks';
+import { userIdSelector, isLoginSelector } from '@/stores/auth';
 
 interface PostHookParameters {
   onGetFail: (error: unknown) => void;
@@ -15,8 +17,12 @@ export interface ProjectContent {
 
 const usePost = ({ onGetFail }: PostHookParameters) => {
   const { projectId } = useParams();
+  const userId = useAppSelector(userIdSelector);
+  const isLogin = useAppSelector(isLoginSelector);
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [authorId, setAuthorId] = useState('');
   const [contents, setContents] = useState({ title: '', requirements: '' });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<string | null>(null);
@@ -56,9 +62,18 @@ const usePost = ({ onGetFail }: PostHookParameters) => {
 
   const handlePost = (rs: PostType) => {
     const { title, requirements } = JSON.parse(rs.title);
-
     setContents({ title, requirements });
+
+    setAuthorId(rs.author._id);
   };
+
+  useEffect(() => {
+    if (!isLogin) {
+      navigate('/login');
+    } else if (authorId && userId !== authorId) {
+      navigate(-1);
+    }
+  }, [isLogin, navigate, userId, authorId]);
 
   useEffect(() => {
     projectId && fetchPost(projectId);

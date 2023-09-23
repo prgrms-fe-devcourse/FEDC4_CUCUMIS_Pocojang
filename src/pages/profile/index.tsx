@@ -26,7 +26,6 @@ const ProfilePage = () => {
     userId,
     handleFileChange,
   } = useProfile();
-
   return (
     <StyledWrapperBox>
       <StyledBox>
@@ -114,6 +113,7 @@ const ProfilePage = () => {
                 userState.following.map(({ user }) => {
                   return (
                     <ItemWithAvatar
+                      key={user}
                       name={user}
                       AvatarProps={{
                         imgSrc: user,
@@ -129,6 +129,7 @@ const ProfilePage = () => {
                 userState.followers.map(({ follower }) => {
                   return (
                     <ItemWithAvatar
+                      key={follower}
                       name={follower}
                       AvatarProps={{
                         imgSrc: follower,

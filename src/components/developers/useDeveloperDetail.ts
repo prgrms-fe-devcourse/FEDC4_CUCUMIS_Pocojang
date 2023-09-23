@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
 import { setPost } from '@/stores/projectDetail';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
@@ -22,6 +23,7 @@ import {
   SETTINGS_URL,
 } from '@/consts/routes';
 import { userFollowingSelector } from '@/stores/auth/selector';
+import handleAxiosError from '@/utils/axiosError';
 
 const useDeveloperDetail = () => {
   const { developerId } = useParams();
@@ -38,6 +40,7 @@ const useDeveloperDetail = () => {
     isUserFollowing: false,
     isLoading: true,
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + developerId);
@@ -124,7 +127,9 @@ const useDeveloperDetail = () => {
 
         dispatch(setPost(formattedPost));
       } catch (error) {
-        console.log(error);
+        const axiosErrorMessage = handleAxiosError(error as Error);
+
+        setErrorMessage(axiosErrorMessage);
       } finally {
         setPageState((prev) => ({ ...prev, isLoading: false }));
       }
@@ -141,6 +146,12 @@ const useDeveloperDetail = () => {
 
     setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
   }, [post, userFollowingList, userId]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      throw new AxiosError(errorMessage);
+    }
+  }, [errorMessage]);
 
   return {
     developerId,

@@ -31,10 +31,22 @@ const ProfilePage = () => {
       <StyledBox>
         {loading && <LinearProgress />}
         {isMe(userId as string) && (
-          <ProfileChangeButton
-            onChange={handleFileChange}
-            id={'background-photo'}
-          />
+          <>
+            <ProfileChangeButton
+              left="0"
+              top="0"
+              transform="0"
+              onChange={handleFileChange}
+              id={'background-photo'}
+            />
+            <ProfileChangeButton
+              left="50%"
+              top="50%"
+              transform="translateX(-50%)"
+              onChange={handleFileChange}
+              id={'profile-photo'}
+            />
+          </>
         )}
         <BgProfile
           variant="square"
@@ -48,12 +60,6 @@ const ProfilePage = () => {
             size={90}
             isUserOn={true}
           />
-          {isMe(userId as string) && (
-            <ProfileChangeButton
-              onChange={handleFileChange}
-              id={'profile-photo'}
-            />
-          )}
         </StyledProfileWrapper>
         <Stack
           flexDirection={'row'}
@@ -112,7 +118,6 @@ const ProfilePage = () => {
             userState={userState}
             value={String(value)}
           />{' '}
-          {/* UserProfileContent 컴포넌트 사용 */}
         </StyledContentsWrapper>
       </StyledNavigationBox>
       <Navbar />

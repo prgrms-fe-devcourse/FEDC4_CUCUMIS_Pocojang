@@ -28,15 +28,16 @@ const useDeveloperDetail = ({
   onFollowFail,
   onDeletePostFail,
 }: DeveloperDetailHookParameters) => {
+  const { developerId } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const userId = useAppSelector(userIdSelector);
   const userFollowingList = useAppSelector(userFollowingSelector);
   const isLoggedIn = useAppSelector(isLoginSelector);
-
-  const { developerId } = useParams();
   const { post } = useAppSelector(projectDetailSelector<DeveloperContent>);
+
   const [pageState, setPageState] = useState({
     isUserFollowing: false,
     isLoading: true,

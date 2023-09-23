@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { PostType, UserType } from '@/types';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
@@ -7,7 +7,7 @@ import {
   onlineUserListSelector,
 } from '@/stores/developers/selector';
 import {
-  initDeveloperList,
+  cleanDeveloperList,
   setDeveloperList,
   setOnlineUserList,
   setSearchList,
@@ -19,31 +19,22 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import CHANNEL_ID from '@/consts/channels';
 import { searchAll } from '@/api/search';
 
-//TODOapi 에러 처리, 1글자 이하이면 경고창이 필요한가?스낵바?, 페치중 페치 막기 , 초기 렌더링을 실행 막기
+//TODO 게시물 사진과 아바타는 author에서 가져와서 넣는다 , 상태는 projects와 유사하다. 공유가 가능한가 ?
 const useDevelopers = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
-
   const dispatch = useAppDispatch();
 
   const developerList = useAppSelector(developerListSelector);
   const onlineUserList = useAppSelector(onlineUserListSelector);
   const headerSearchValue = useAppSelector(inputSelector);
-
+  const [isEndOfList, setIsEndOfList] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const isLoading = useRef(false);
+  const setIsLoading = (state: boolean) => {
+    isLoading.current = state;
+  };
   const { page, pageEnd } = useInfiniteScroll({
-    options: { threshold: 0.2 },
+    options: {},
   });
-
-  useEffect(() => {
-    getOnlineUsers()
-      .then(parseOnlineUserList)
-      .then((list) => dispatch(setOnlineUserList(list)));
-
-    return () => {
-      setIsSearching(false);
-      dispatch(initDeveloperList());
-    };
-  }, [dispatch]);
 
   useEffect(() => {
     const searchProjects = async (value: string) => {
@@ -57,12 +48,12 @@ const useDevelopers = () => {
     const value = headerSearchValue.trim();
     if (value.length < 1) return;
     setIsLoading(true);
-    setIsSearching(true);
     const encoded = encodeURIComponent(value);
     searchProjects(encoded);
   }, [dispatch, headerSearchValue]);
 
   useEffect(() => {
+    // 마지막 페이지 block 처리
     const scrolling = async () => {
       setIsLoading(true);
       await getChannelPosts(CHANNEL_ID.DEVELOPER, {
@@ -79,12 +70,25 @@ const useDevelopers = () => {
     scrolling();
   }, [dispatch, page]);
 
+  useEffect(() => {
+    getOnlineUsers()
+      .then(parseOnlineUserList)
+      .then((list) => dispatch(setOnlineUserList(list)));
+
+    return () => {
+      dispatch(cleanDeveloperList());
+
+      setIsEndOfList(false);
+      setIsFetching(false);
+    };
+  }, [dispatch]);
+
   return {
-    isSearching,
-    isLoading,
+    isFetching,
     target: pageEnd,
     onlineDevelopers: onlineUserList,
     developers: developerList,
+    isEndOfList,
   };
 };
 

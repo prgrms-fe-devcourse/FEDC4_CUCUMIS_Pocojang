@@ -23,7 +23,7 @@ const useComment = () => {
     try {
       await deleteComment({ id });
     } catch (error) {
-      console.log(error);
+      window.alert('댓글 삭제에 실패하였습니다');
     }
     navigate(0);
   };
@@ -67,7 +67,7 @@ const useComment = () => {
 
         navigate(0);
       } catch (error) {
-        console.log(error);
+        window.alert('댓글 달기에 실패하였습니다');
       }
     };
 

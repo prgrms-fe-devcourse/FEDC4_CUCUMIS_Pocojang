@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -26,17 +25,7 @@ export default function DeveloperDetail() {
     isLoading,
     isUserFollowing,
     isLoggedIn,
-  } = useDeveloperDetails({
-    onFollowFail: useCallback((error: unknown) => {
-      console.error(error);
-    }, []),
-    onGetUserFail: useCallback((error: unknown) => {
-      console.error(error);
-    }, []),
-    onDeletePostFail: useCallback((error: unknown) => {
-      console.error(error);
-    }, []),
-  });
+  } = useDeveloperDetails();
 
   return isLoading ? (
     <LinearProgress />
@@ -91,11 +80,13 @@ export default function DeveloperDetail() {
       <Stack spacing={1}>
         <Typography variant="h4">
           {contents.oneLiner}
-          <ChipContainer
-            label={contents.position as string}
-            margin="0 8px"
-            color="secondary"
-          />
+          {contents.position && (
+            <ChipContainer
+              label={contents.position}
+              margin="0 8px"
+              color="secondary"
+            />
+          )}
         </Typography>
         <ChipsBoxContainer>
           {Array.isArray(contents.techStack) &&
@@ -104,10 +95,12 @@ export default function DeveloperDetail() {
             ))}
         </ChipsBoxContainer>
       </Stack>
-      <Box>
-        <Typography color="gray">자기소개</Typography>
-        <Typography>{contents.details}</Typography>
-      </Box>
+      {contents.details && (
+        <Box>
+          <Typography color="gray">자기소개</Typography>
+          <Typography>{contents.details}</Typography>
+        </Box>
+      )}
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>

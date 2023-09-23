@@ -32,13 +32,12 @@ const useProjectDetail = () => {
 
   const handleDeleteClick = async () => {
     const ableToDelete = confirm('정말로 삭제하시겠습니까?');
-    // 모달로 변경 필요?
 
     if (ableToDelete && projectId) {
       try {
         const res = await deletePost({ id: projectId });
 
-        res && navigate(PROJECT_URL);
+        res && navigate(PROJECT_URL, { replace: true });
       } catch (error) {
         window.alert('포스트 삭제에 실패하였습니다');
       }

@@ -15,7 +15,6 @@ const ProjectPage = () => {
       }, []),
     });
 
-  console.log(projects, isFetching);
   return (
     <>
       {isFetching && (

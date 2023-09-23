@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Box, Stack, Skeleton } from '@mui/material';
+import { Box, Stack, Skeleton, LinearProgress } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import styled from '@emotion/styled';
 
@@ -15,6 +15,8 @@ import ProfileChangeButton from '@/components/profile/profileChangeButton';
 
 const ProfilePage = () => {
   const {
+    loading,
+    navigate,
     navigationData,
     value,
     navigationMoving,
@@ -22,13 +24,13 @@ const ProfilePage = () => {
     buttonState,
     checkFollowingStatus,
     isMe,
-    goNextPage,
     userId,
     handleFileChange,
   } = useProfile();
   return (
     <StyledWrapperBox>
       <StyledBox>
+        {loading && <LinearProgress />}
         {isMe(userId as string) && (
           <ProfileChangeButton
             onChange={handleFileChange}
@@ -94,7 +96,7 @@ const ProfilePage = () => {
               <BasicButton
                 variant="outlined"
                 children="DM"
-                onClick={() => goNextPage(`/dm/${userId}`)}
+                onClick={() => navigate(`/dm/${userId}`)}
               />
             </StyledBasicButtonStack>
           )}

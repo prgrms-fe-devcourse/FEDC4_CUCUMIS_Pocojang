@@ -1,14 +1,26 @@
 import { ChangeCircle } from '@mui/icons-material';
 import { Box, IconButton, styled } from '@mui/material';
 
+interface Props {
+  left?: string;
+  top?: string;
+  transform?: string;
+}
 interface Type {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   id: string;
+  left?: string;
+  top?: string;
+  transform?: string;
 }
 
-const ProfileChangeButton = ({ onChange, id }: Type) => {
+const ProfileChangeButton = ({ onChange, id, left, top, transform }: Type) => {
   return (
-    <InputBoxStyled>
+    <InputBoxStyled
+      left={left as string}
+      top={top as string}
+      transform={transform}
+    >
       <input
         accept="image/*"
         id={id}
@@ -29,11 +41,12 @@ const ProfileChangeButton = ({ onChange, id }: Type) => {
   );
 };
 
-const InputBoxStyled = styled(Box)({
+const InputBoxStyled = styled(Box)(({ left, top, transform }: Props) => ({
   position: 'absolute',
-  left: '0',
-  top: '0',
+  left: left || '0',
+  top: top || '0',
   zIndex: '1000',
-});
+  transform: transform || 'translateX(-50%)',
+}));
 
 export default ProfileChangeButton;

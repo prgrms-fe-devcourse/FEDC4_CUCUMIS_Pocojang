@@ -80,11 +80,13 @@ export default function DeveloperDetail() {
       <Stack spacing={1}>
         <Typography variant="h4">
           {contents.oneLiner}
-          <ChipContainer
-            label={contents.position as string}
-            margin="0 8px"
-            color="secondary"
-          />
+          {contents.position && (
+            <ChipContainer
+              label={contents.position}
+              margin="0 8px"
+              color="secondary"
+            />
+          )}
         </Typography>
         <ChipsBoxContainer>
           {Array.isArray(contents.techStack) &&
@@ -93,10 +95,12 @@ export default function DeveloperDetail() {
             ))}
         </ChipsBoxContainer>
       </Stack>
-      <Box>
-        <Typography color="gray">자기소개</Typography>
-        <Typography>{contents.details}</Typography>
-      </Box>
+      {contents.details && (
+        <Box>
+          <Typography color="gray">자기소개</Typography>
+          <Typography>{contents.details}</Typography>
+        </Box>
+      )}
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>

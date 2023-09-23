@@ -5,7 +5,12 @@ import { setPost } from '@/stores/projectDetail';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setUser, userIdSelector, isLoginSelector } from '@/stores/auth';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type { PostType, FormattedPost, DeveloperContent } from '@/types';
+import type {
+  PostType,
+  FormattedPost,
+  DeveloperContent,
+  FollowType,
+} from '@/types';
 import { getPost, deletePost } from '@/api/posts';
 import { getUser } from '@/api/user';
 import { followUser, unFollowUser } from '@/api/follow';
@@ -132,15 +137,9 @@ const useDeveloperDetail = () => {
   }, [developerId, fetchPost]);
 
   useEffect(() => {
-    if (post.author.followers) {
-      const authorFollowerIDList = post.author.followers;
+    const isFollowedByUser = getIsFollowedByUser(post, userFollowingList);
 
-      const isFollowedByUser = userFollowingList.some(({ _id }) =>
-        authorFollowerIDList.includes(_id),
-      );
-
-      setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
-    }
+    setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
   }, [post, userFollowingList, userId]);
 
   return {
@@ -185,6 +184,21 @@ const handlePostFormat = (rs: PostType) => {
     },
   };
   return formattedPost;
+};
+
+const getIsFollowedByUser = (
+  post: FormattedPost<DeveloperContent>,
+  userFollowingList: FollowType[],
+) => {
+  if (post.author.followers) {
+    const authorFollowerIDList = post.author.followers;
+
+    const isFollowedByUser = userFollowingList.some(({ _id }) =>
+      authorFollowerIDList.includes(_id),
+    );
+    return isFollowedByUser;
+  }
+  return false;
 };
 
 export default useDeveloperDetail;

@@ -16,7 +16,7 @@ const NotificationPage = () => {
   return isLoading ? (
     <LinearProgress />
   ) : (
-    <Stack spacing={2} overflow="scroll">
+    <Stack spacing={2}>
       <BasicButton onClick={handleReadAllButton}>모두 읽음 처리</BasicButton>
       {notifications.map((notification) => (
         <NotificationItem

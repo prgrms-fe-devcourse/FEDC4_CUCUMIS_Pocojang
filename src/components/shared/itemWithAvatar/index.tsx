@@ -14,6 +14,7 @@ import styled from '@emotion/styled';
 import BasicChip from '@/components/shared/chip';
 import BasicAvatar from '@/components/shared/avatar';
 import ItemWithAvatarProps from '@/types/components/ItemWithAvatarProps';
+import FullLineTyphography from '@/components/shared/fullLineTyphograhy';
 
 const ItemWithAvatar = ({
   children,
@@ -44,11 +45,16 @@ const ItemWithAvatar = ({
     <ListItemText
       primary={<Typography color="text.primary">{name}</Typography>}
       secondary={
-        message && (
+        message &&
+        (isComment ? (
+          <FullLineTyphography variant="body2" color="text.primary">
+            {message}
+          </FullLineTyphography>
+        ) : (
           <Typography variant="body2" color="text.primary" noWrap={!isComment}>
             {message}
           </Typography>
-        )
+        ))
       }
     />
   );
@@ -74,6 +80,8 @@ const ItemWithAvatar = ({
 
 const BoxStyled = styled(Container)({
   padding: '8px 16px',
+  width: '100%',
+  overflow: 'hidden',
 });
 
 const SkeletonStyled = styled(Skeleton)({

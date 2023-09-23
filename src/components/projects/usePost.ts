@@ -84,6 +84,7 @@ const usePost = ({ onGetFail }: PostHookParameters) => {
     prevTitle: contents.title,
     prevRequirements: contents.requirements,
     isLoading,
+    setIsLoading,
     handleFileChange,
     selectedFile,
     imageFile,

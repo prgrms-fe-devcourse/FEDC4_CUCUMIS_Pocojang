@@ -134,7 +134,7 @@ export default function useProfile() {
   useEffect(() => {
     const resetMyAccount = async () => {
       try {
-        if (myAccount) {
+        if (myAccount?._id) {
           const newAccount = await getUser(myAccount._id);
           setMyAccount(newAccount);
         }
@@ -143,8 +143,7 @@ export default function useProfile() {
       }
     };
     resetMyAccount();
-  }, [myAccount]);
-
+  }, [myAccount?._id]);
   return {
     navigationData,
     value,

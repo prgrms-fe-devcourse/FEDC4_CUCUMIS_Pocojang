@@ -53,13 +53,13 @@ export default function ProjectPost() {
 
           await updatePost(formData);
 
-          navigate(PROJECT_URL + '/' + projectId);
+          navigate(PROJECT_URL + '/' + projectId, { replace: true });
         } else {
           const res = await createPost(formData);
 
           if (res !== null) {
             const { _id } = res;
-            navigate(PROJECT_URL + '/' + _id);
+            navigate(PROJECT_URL + '/' + _id, { replace: true });
           }
         }
       } catch (error) {

@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { useCallback } from 'react';
 import { Button, Box, Stack, LinearProgress } from '@mui/material';
 import styled from '@emotion/styled';
 
@@ -21,14 +20,11 @@ export default function ProjectPost() {
     prevTitle,
     prevRequirements,
     isLoading,
+    setIsLoading,
     handleFileChange,
     selectedFile,
     imageFile,
-  } = usePost({
-    onGetFail: useCallback((error: unknown) => {
-      console.error(error);
-    }, []),
-  });
+  } = usePost();
 
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
@@ -48,30 +44,36 @@ export default function ProjectPost() {
       selectedFile && formData.append(IMAGE, selectedFile);
 
       try {
+        setIsLoading(true);
         if (projectId) {
           formData.append(POST_ID, projectId);
 
           await updatePost(formData);
 
-          navigate(PROJECT_URL + '/' + projectId);
+          navigate(PROJECT_URL + '/' + projectId, { replace: true });
         } else {
           const res = await createPost(formData);
 
           if (res !== null) {
             const { _id } = res;
-            navigate(PROJECT_URL + '/' + _id);
+            navigate(PROJECT_URL + '/' + _id, { replace: true });
           }
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     },
     validate: ({ title, requirements }: FormValues) => {
       const newErrors: FormErrors = {};
 
-      if (!prevTitle && !title) newErrors.title = '제목을 입력해주세요.';
-      if (!prevRequirements && !requirements)
-        newErrors.requirements = '요구사항을 입력해주세요.';
+      if (title && title.length > 50) {
+        newErrors.title = '제목은 50자 이하로 입력해주세요.';
+      }
+      if (requirements && requirements.length > 1000) {
+        newErrors.requirements = '요구사항은 1000자 이하로 입력해주세요.';
+      }
 
       return newErrors;
     },
@@ -104,6 +106,7 @@ export default function ProjectPost() {
           onChange={handleChange}
           placeholder={prevTitle ? '' : '제목을 입력해주세요'}
           errorMessage={errors.title}
+          inputProps={{ maxLength: '50' }}
         />
         <BasicInput
           defaultValue={prevRequirements}
@@ -112,6 +115,7 @@ export default function ProjectPost() {
           onChange={handleChange}
           placeholder={prevRequirements ? '' : '요구사항을 입력해주세요'}
           errorMessage={errors.requirements}
+          inputProps={{ maxLength: '1000' }}
         />
       </Stack>
       <BasicButtonStyled type="submit">제출하기</BasicButtonStyled>

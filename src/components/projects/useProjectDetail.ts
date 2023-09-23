@@ -31,7 +31,7 @@ const useProjectDetail = () => {
   };
 
   const handleDeleteClick = async () => {
-    const ableToDelete = confirm('정말로 삭제하시겠습니까?');
+    const ableToDelete = window.confirm('정말로 삭제하시겠습니까?');
 
     if (ableToDelete && projectId) {
       try {
@@ -52,8 +52,16 @@ const useProjectDetail = () => {
         const formattedPost = handlePostFormat(rs);
 
         dispatch(setPost(formattedPost));
-      } catch (error) {
-        setError('존재하지 않는 포스트입니다');
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 502) {
+            setError('존재하지 않는 포스트입니다');
+          } else {
+            setError('새로고침 해주세요');
+          }
+        } else {
+          setError('알 수 없는 오류 발생! 다시 접속해주세요');
+        }
       } finally {
         setIsLoading(false);
       }

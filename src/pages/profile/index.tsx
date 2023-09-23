@@ -114,11 +114,14 @@ const ProfilePage = () => {
           onChange={navigationMoving}
         />
         <StyledContentsWrapper>
-          {!userState && <SkeletonStyled animation="wave" />}
-          <NavigationProfileContent
-            userState={userState}
-            value={String(value)}
-          />
+          {!userState ? (
+            <SkeletonStyled animation="wave" />
+          ) : (
+            <NavigationProfileContent
+              userState={userState}
+              value={String(value)}
+            />
+          )}
         </StyledContentsWrapper>
       </StyledNavigationBox>
       <Navbar />

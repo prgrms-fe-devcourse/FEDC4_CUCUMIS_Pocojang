@@ -10,6 +10,7 @@ import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
 import type { PostType, FormattedPost, ProjectContent } from '@/types';
 import { PROFILE_URL, PROJECT_MODIFYL_URL, PROJECT_URL } from '@/consts/routes';
+import handleAxiosError from '@/utils/axiosError';
 
 const useProjectDetail = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const useProjectDetail = () => {
   const userId = useAppSelector(userIdSelector);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + post.author._id);
@@ -53,15 +54,9 @@ const useProjectDetail = () => {
 
         dispatch(setPost(formattedPost));
       } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          if (error.response?.status === 502) {
-            setError('존재하지 않는 포스트입니다');
-          } else {
-            setError('새로고침 해주세요');
-          }
-        } else {
-          setError('알 수 없는 오류 발생! 다시 접속해주세요');
-        }
+        const axiosErrorMessage = handleAxiosError(error as Error);
+
+        setErrorMessage(axiosErrorMessage);
       } finally {
         setIsLoading(false);
       }
@@ -76,10 +71,10 @@ const useProjectDetail = () => {
   }, [projectId, fetchPost]);
 
   useEffect(() => {
-    if (error) {
-      throw new AxiosError(error);
+    if (errorMessage) {
+      throw new AxiosError(errorMessage);
     }
-  }, [error]);
+  }, [errorMessage]);
 
   return {
     projectId,

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { AxiosError } from 'axios';
 
 import { getPost, deletePost } from '@/api/posts';
 import { setPost } from '@/stores/projectDetail';
@@ -9,16 +10,9 @@ import { useAppSelector } from '@/stores/hooks';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
 import type { PostType, FormattedPost, ProjectContent } from '@/types';
 import { PROFILE_URL, PROJECT_MODIFYL_URL, PROJECT_URL } from '@/consts/routes';
+import handleAxiosError from '@/utils/axiosError';
 
-interface ProjectDetailHookParameters {
-  onGetFail: (error: unknown) => void;
-  onSendFail: (error: unknown) => void;
-}
-
-const useProjectDetail = ({
-  onGetFail,
-  onSendFail,
-}: ProjectDetailHookParameters) => {
+const useProjectDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,6 +21,7 @@ const useProjectDetail = ({
   const userId = useAppSelector(userIdSelector);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + post.author._id);
@@ -37,16 +32,15 @@ const useProjectDetail = ({
   };
 
   const handleDeleteClick = async () => {
-    const ableToDelete = confirm('정말로 삭제하시겠습니까?');
-    // 모달로 변경 필요?
+    const ableToDelete = window.confirm('정말로 삭제하시겠습니까?');
 
     if (ableToDelete && projectId) {
       try {
         const res = await deletePost({ id: projectId });
 
-        res && navigate(PROJECT_URL);
+        res && navigate(PROJECT_URL, { replace: true });
       } catch (error) {
-        onSendFail(error);
+        window.alert('포스트 삭제에 실패하였습니다');
       }
     }
   };
@@ -59,20 +53,28 @@ const useProjectDetail = ({
         const formattedPost = handlePostFormat(rs);
 
         dispatch(setPost(formattedPost));
-      } catch (error) {
-        onGetFail(error);
+      } catch (error: unknown) {
+        const axiosErrorMessage = handleAxiosError(error as Error);
+
+        setErrorMessage(axiosErrorMessage);
       } finally {
         setIsLoading(false);
       }
     },
-    [dispatch, onGetFail],
+    [dispatch],
   );
 
   useEffect(() => {
     if (projectId) {
       fetchPost(projectId);
     }
-  }, [projectId, dispatch, fetchPost, onGetFail]);
+  }, [projectId, fetchPost]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      throw new AxiosError(errorMessage);
+    }
+  }, [errorMessage]);
 
   return {
     projectId,

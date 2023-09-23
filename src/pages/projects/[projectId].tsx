@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Box, Divider, LinearProgress, Stack, Typography } from '@mui/material';
 
@@ -21,15 +20,7 @@ export default function ProjectDetailPage() {
     handleDeleteClick,
     isAuthor,
     isLoading,
-  } = useProjectDetail({
-    onGetFail: useCallback((error: unknown) => {
-      console.error(error);
-      // 잘못된 접근 모달 팝업 또는  navigate('/project');
-    }, []),
-    onSendFail: useCallback((error: unknown) => {
-      console.error(error);
-    }, []),
-  });
+  } = useProjectDetail();
 
   return isLoading ? (
     <LinearProgress />

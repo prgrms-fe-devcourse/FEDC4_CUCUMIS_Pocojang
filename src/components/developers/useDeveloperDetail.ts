@@ -18,16 +18,7 @@ import {
 } from '@/consts/routes';
 import { userFollowingSelector } from '@/stores/auth/selector';
 
-interface DeveloperDetailHookParameters {
-  onFollowFail: (error: unknown) => void;
-  onGetUserFail: (error: unknown) => void;
-  onDeletePostFail: (error: unknown) => void;
-}
-const useDeveloperDetail = ({
-  onGetUserFail,
-  onFollowFail,
-  onDeletePostFail,
-}: DeveloperDetailHookParameters) => {
+const useDeveloperDetail = () => {
   const { developerId } = useParams();
 
   const navigate = useNavigate();
@@ -64,7 +55,7 @@ const useDeveloperDetail = ({
 
         res && navigate(DEVELOPER_URL, { replace: true });
       } catch (error) {
-        onDeletePostFail(error);
+        window.alert('포스트 삭제에 실패하였습니다');
       }
     }
   };
@@ -93,22 +84,20 @@ const useDeveloperDetail = ({
         }
       }
     } catch (error) {
-      onFollowFail(error);
+      // onFollowFail(error);
     } finally {
       try {
         const newUserInfo = await getUser(userId);
 
         dispatch(setUser(newUserInfo));
       } catch (error) {
-        onGetUserFail(error);
+        // onGetUserFail(error);
       }
     }
 
     navigate(0);
   }, [
     pageState.isUserFollowing,
-    onGetUserFail,
-    onFollowFail,
     navigate,
     post.author._id,
     dispatch,

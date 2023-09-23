@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { useCallback } from 'react';
 import { Button, Box, Stack, LinearProgress } from '@mui/material';
 import styled from '@emotion/styled';
 
@@ -25,11 +24,7 @@ export default function ProjectPost() {
     handleFileChange,
     selectedFile,
     imageFile,
-  } = usePost({
-    onGetFail: useCallback((error: unknown) => {
-      console.error(error);
-    }, []),
-  });
+  } = usePost();
 
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {

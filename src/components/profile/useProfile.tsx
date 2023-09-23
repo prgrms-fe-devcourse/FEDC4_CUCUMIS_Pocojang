@@ -15,6 +15,7 @@ export default function useProfile() {
   const [buttonState, setButtonState] = useState<boolean>();
   const [value, setValue] = useState<number | string>(0);
   const [selectedFile, setSelectedFile] = useState<File | null>();
+  const [loading, setLoading] = useState(false);
   const [fileName, setFileName] = useState<string>('파일을 선택하세요.');
 
   const { userId } = useParams();
@@ -32,6 +33,7 @@ export default function useProfile() {
 
   const checkFollowingStatus = async (buttonState: boolean, userId: string) => {
     try {
+      setLoading(true);
       if (!buttonState) {
         await followUser({ userId });
       } else {
@@ -43,7 +45,9 @@ export default function useProfile() {
       setMyAccount(updatedAccount);
       setButtonState((prev) => !prev);
     } catch (error) {
-      console.error('Follow toggle ERROR >> ', error);
+      console.error('팔로우 토글 에러 >> ', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,16 +58,12 @@ export default function useProfile() {
         setButtonState(isFollowing);
         return isFollowing;
       } catch (error) {
-        console.error('following List check ERRRO >> ', error);
+        console.error('팔로잉 리스트 체크 에러 >> ', error);
         return false;
       }
     },
     [myAccount],
   );
-
-  const goNextPage = (url: string) => {
-    navigate(url);
-  };
 
   const navigationMoving = (
     _: React.SyntheticEvent<Element, Event>,
@@ -83,13 +83,14 @@ export default function useProfile() {
         setMyAccount(newObj as UserType);
       }
     } catch (error) {
-      console.error('프로필 변경 ERROR >> ', error);
+      console.error('프로필 변경 에러 >> ', error);
     }
   };
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    setLoading(true);
     try {
       const file = event.target.files?.[0];
       if (file) {
@@ -100,7 +101,9 @@ export default function useProfile() {
         setFileName('파일을 선택하세요.');
       }
     } catch (error) {
-      console.error('파일 업로드 ERROR >> ', error);
+      console.error('프로필 업로드 에러 >> ', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,18 +117,21 @@ export default function useProfile() {
       changeProfile(upload, id === 'profile-photo' ? false : true);
       console.log(selectedFile, fileName);
     } catch (error) {
-      console.error('파일 업로드 에러:', error);
+      console.error('프로필 업로드 에러 >> ', error);
     }
   };
 
   useEffect(() => {
     async function fetchData() {
       try {
+        setLoading(true);
         const user = await getUser(userId as string);
         setUserState(user);
         await isInMyFollowingList(userId as string);
       } catch (error) {
-        console.error('get data ERROR >> ', error);
+        console.error('데이터 fetch 에러 >> ', error);
+      } finally {
+        setLoading(false);
       }
     }
     fetchData();
@@ -133,18 +139,23 @@ export default function useProfile() {
 
   useEffect(() => {
     const resetMyAccount = async () => {
+      setLoading(true);
       try {
         if (myAccount?._id) {
           const newAccount = await getUser(myAccount._id);
           setMyAccount(newAccount);
         }
       } catch (error) {
-        console.error('myAccount update ERROR >> ', error);
+        console.error('내 계정 업데이트 에러 >>', error);
+      } finally {
+        setLoading(false);
       }
     };
     resetMyAccount();
   }, [myAccount?._id]);
   return {
+    navigate,
+    loading,
     navigationData,
     value,
     navigationMoving,
@@ -154,7 +165,6 @@ export default function useProfile() {
     isMe,
     checkFollowingStatus,
     isInMyFollowingList,
-    goNextPage,
     handleFileChange,
   };
 }

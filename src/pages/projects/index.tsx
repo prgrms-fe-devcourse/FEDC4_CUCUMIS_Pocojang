@@ -6,7 +6,6 @@ import { useCallback } from 'react';
 import ProjectCardItem from '@/components/shared/projectCard';
 import MainFab from '@/components/shared/mainFab';
 import useProjectList from '@/components/ProjectList/useProjectList';
-//TODO
 
 const ProjectPage = () => {
   const { handleFabClick, projects, target, isLogin, isFetching, isEndOfList } =

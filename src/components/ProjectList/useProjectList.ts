@@ -56,6 +56,7 @@ const useProjectList = ({ onGetFail }: useProjectListProps) => {
   useEffect(() => {
     const searchProjects = async (value: string) => {
       dispatch(setIsFetching(true));
+      setIsEndOfList(true);
       try {
         const searchResult = await searchAll(value).then((result: unknown) =>
           parseSearchResult(result as Post[]),

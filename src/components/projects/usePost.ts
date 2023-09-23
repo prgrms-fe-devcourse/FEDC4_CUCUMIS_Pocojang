@@ -7,6 +7,7 @@ import type { PostType } from '@/types';
 import { useAppSelector } from '@/stores/hooks';
 import { userIdSelector, isLoginSelector } from '@/stores/auth';
 import handleAxiosError from '@/utils/axiosError';
+import { LOGIN_URL } from '@/consts/routes';
 
 export interface ProjectContent {
   title: string;
@@ -67,7 +68,7 @@ const usePost = () => {
 
   useEffect(() => {
     if (!isLogin) {
-      navigate('/login');
+      navigate(LOGIN_URL);
     } else if (authorId && userId !== authorId) {
       throw new Error('잘못된 접근입니다');
     }

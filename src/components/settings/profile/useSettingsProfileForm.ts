@@ -79,7 +79,7 @@ const useSettingsProfileForm = ({
 
     try {
       if (profilePostId) {
-        formData.append('postId', title);
+        formData.append('postId', profilePostId);
         await updateProfile(profilePostId, name, formData);
       } else {
         const userData = await createProfile(name, formData);

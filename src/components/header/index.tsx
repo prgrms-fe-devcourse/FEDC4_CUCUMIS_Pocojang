@@ -16,6 +16,8 @@ import BasicChip from '@/components/shared/chip';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
 
+import Likes from '../shared/likes';
+
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -102,6 +104,9 @@ const Header = () => {
             >
               {title}
             </TypographyStyled>
+            {(title === Title.DEVELOPER || title === Title.PROJECT) && (
+              <Likes />
+            )}
             {title === Title.SETTINGS && isLogin && (
               <BasicChip
                 label="로그아웃"

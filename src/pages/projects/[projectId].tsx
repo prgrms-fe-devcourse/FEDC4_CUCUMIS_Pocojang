@@ -7,7 +7,6 @@ import Comments from '@/components/comments';
 import useProjectDetail from '@/components/projects/useProjectDetail';
 import ChipGroup from '@/components/shared/chipGroup';
 import FullLineTyphography from '@/components/shared/fullLineTyphograhy';
-import Likes from '@/components/shared/likes';
 
 const DEFAULT_IMAGE = '/assets/Logo96.svg';
 
@@ -28,7 +27,6 @@ export default function ProjectDetailPage() {
     <LinearProgress />
   ) : (
     <Stack spacing={3}>
-      <Likes />
       <ProjectImageBox
         component="img"
         src={image}

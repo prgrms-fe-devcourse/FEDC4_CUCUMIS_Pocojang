@@ -9,7 +9,6 @@ import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
 import ChipGroup from '@/components/shared/chipGroup';
 import FullLineTyphography from '@/components/shared/fullLineTyphograhy';
-import Likes from '@/components/shared/likes';
 
 const DEFAULT_IMAGE = '/assets/Logo96.svg';
 
@@ -34,7 +33,6 @@ export default function DeveloperDetail() {
   ) : (
     <Stack spacing={3}>
       <Box>
-        <Likes />
         <ProjectImageBox
           component="img"
           src={image}

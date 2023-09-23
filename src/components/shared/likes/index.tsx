@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { useEffect, useState } from 'react';
+import { Stack, Typography } from '@mui/material';
 
 import { useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
@@ -20,12 +21,8 @@ const Likes = () => {
   console.log(userId, likes);
   const [isHeartClicked, setIsHeartClicked] = useState(false);
 
-  useEffect(() => {
-    const userLike = likes.some((like) => like.user === userId);
-    setIsHeartClicked(userLike);
-  }, [userId, likes]);
-
   const handleHeartSend = async () => {
+    if (!userId) return;
     console.log('s', postId);
 
     const res = await likePost({ postId });
@@ -37,19 +34,31 @@ const Likes = () => {
       postId,
     });
   };
+
   const handleHeartCancel = async () => {
+    if (!userId) return;
     console.log('click', postId);
-    const userLike = likes.find((like) => like.user === userId);
-    if (userLike) {
-      const res = await cancelLikePost({ id: userLike._id });
+    const userLikeInfo = likes.find((like) => like.user === userId);
+    if (userLikeInfo) {
+      const res = await cancelLikePost({ id: userLikeInfo._id });
       console.log(res);
     }
   };
 
-  return isHeartClicked ? (
-    <FavoriteIcon onClick={handleHeartCancel} />
-  ) : (
-    <FavoriteBorderIcon onClick={handleHeartSend} />
+  useEffect(() => {
+    const isUserLike = likes.some((like) => like.user === userId);
+    setIsHeartClicked(isUserLike);
+  }, [userId, likes]);
+
+  return (
+    <Stack direction="row" alignItems="center" spacing={0.5}>
+      {isHeartClicked ? (
+        <FavoriteIcon onClick={handleHeartCancel} color="primary" />
+      ) : (
+        <FavoriteBorderIcon onClick={handleHeartSend} color="primary" />
+      )}
+      <Typography color="primary">{likes.length}</Typography>
+    </Stack>
   );
 };
 

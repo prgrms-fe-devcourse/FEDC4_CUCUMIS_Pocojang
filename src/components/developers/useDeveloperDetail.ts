@@ -61,6 +61,8 @@ const useDeveloperDetail = () => {
   };
 
   const handleFollowClick = useCallback(async () => {
+    setPageState((prev) => ({ ...prev, isLoading: true }));
+
     try {
       if (pageState.isUserFollowing) {
         const followerIDList = post.author.followers;
@@ -84,23 +86,25 @@ const useDeveloperDetail = () => {
         }
       }
     } catch (error) {
-      // onFollowFail(error);
+      window.alert('팔로우 처리에 실패하였습니다');
+
+      setPageState((prev) => ({ ...prev, isLoading: false }));
     } finally {
       try {
         const newUserInfo = await getUser(userId);
 
         dispatch(setUser(newUserInfo));
       } catch (error) {
-        // onGetUserFail(error);
+        setPageState((prev) => ({ ...prev, isLoading: false }));
+      } finally {
+        navigate(0);
       }
     }
-
-    navigate(0);
   }, [
     pageState.isUserFollowing,
-    navigate,
     post.author._id,
     dispatch,
+    navigate,
     post.author.followers,
     userFollowingList,
     userId,

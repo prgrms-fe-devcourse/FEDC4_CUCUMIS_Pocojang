@@ -88,7 +88,7 @@ const useProjectDetail = () => {
 };
 
 const handlePostFormat = (rs: PostType) => {
-  const { author, comments, _id, image, createdAt } = rs;
+  const { author, comments, _id, image, createdAt, likes } = rs;
   const { title, requirements } = JSON.parse(rs.title);
 
   const formattedComments = comments.map(({ _id, comment, author }) => ({
@@ -102,6 +102,7 @@ const handlePostFormat = (rs: PostType) => {
   }));
 
   const formattedPost: Partial<FormattedPost<ProjectContent>> = {
+    likes,
     postId: _id,
     comments: formattedComments,
     image: image,

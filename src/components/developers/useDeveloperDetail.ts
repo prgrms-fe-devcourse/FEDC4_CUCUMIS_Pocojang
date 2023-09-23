@@ -168,7 +168,7 @@ const useDeveloperDetail = () => {
 };
 
 const handlePostFormat = (rs: PostType) => {
-  const { author, comments, _id, image, createdAt } = rs;
+  const { author, comments, _id, image, createdAt, likes } = rs;
   const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
 
   const formattedComments = comments.map(({ _id, comment, author }) => ({
@@ -182,6 +182,7 @@ const handlePostFormat = (rs: PostType) => {
   }));
 
   const formattedPost: Partial<FormattedPost<DeveloperContent>> = {
+    likes,
     postId: _id,
     comments: formattedComments,
     image: image,

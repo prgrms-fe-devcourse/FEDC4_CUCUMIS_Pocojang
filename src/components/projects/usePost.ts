@@ -71,7 +71,7 @@ const usePost = ({ onGetFail }: PostHookParameters) => {
     if (!isLogin) {
       navigate('/login');
     } else if (authorId && userId !== authorId) {
-      navigate(-1);
+      throw new Error('잘못된 접근입니다');
     }
   }, [isLogin, navigate, userId, authorId]);
 

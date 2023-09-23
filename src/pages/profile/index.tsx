@@ -114,10 +114,11 @@ const ProfilePage = () => {
           onChange={navigationMoving}
         />
         <StyledContentsWrapper>
+          {!userState && <SkeletonStyled animation="wave" />}
           <NavigationProfileContent
             userState={userState}
             value={String(value)}
-          />{' '}
+          />
         </StyledContentsWrapper>
       </StyledNavigationBox>
       <Navbar />
@@ -130,11 +131,13 @@ const StyledBasicAvatar = styled(BasicAvatar)({
   left: '50%',
   transform: 'translateX(-50%)',
 });
+
 const StyledBox = styled(Box)({
   position: 'relative',
   width: '100%',
   textAlign: 'center',
 });
+
 const StyledProfileWrapper = styled(Box)({
   width: 'fit-content',
   height: 'fit-content',
@@ -147,6 +150,7 @@ const StyledProfileWrapper = styled(Box)({
 const StyledBasicButtonStack = styled(Stack)({
   width: '100%',
 });
+
 const StyledWrapperBox = styled(Box)({
   height: '750px',
   display: 'flex',
@@ -168,4 +172,5 @@ const SkeletonStyled = styled(Skeleton)({
   width: '100%',
   height: '100%',
 });
+
 export default ProfilePage;

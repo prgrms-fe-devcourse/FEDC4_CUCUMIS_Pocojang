@@ -1,22 +1,26 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, Box, Stack } from '@mui/material';
+import { Button, Box, Stack, LinearProgress } from '@mui/material';
 import styled from '@emotion/styled';
 
-import usePost from '@/components/projects/usePost';
 import BasicInput from '@/components/shared/input';
+import usePost from '@/components/projects/usePost';
 import BasicButton from '@/components/shared/button';
 import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import { createPost, updatePost } from '@/api/posts';
 import CHANNEL_ID from '@/consts/channels';
+import { PROJECT_URL } from '@/consts/routes';
+import { PROJECT_FORMDATA_KEY } from '@/consts/formDataKey';
 
 export default function ProjectPost() {
   const navigate = useNavigate();
 
+  const { TITLE, PROJECT_CHANNEL_ID, IMAGE, POST_ID } = PROJECT_FORMDATA_KEY;
   const {
     projectId,
-    title,
-    requirements,
+    prevTitle,
+    prevRequirements,
     isLoading,
+    setIsLoading,
     handleFileChange,
     selectedFile,
     imageFile,
@@ -24,52 +28,59 @@ export default function ProjectPost() {
 
   const { errors, handleChange, handleSubmit } = useForm({
     initialValues: {
-      title,
-      requirements,
+      title: '',
+      requirements: '',
     },
     onSubmit: async ({ title, requirements }: FormValues) => {
       const formatedTitle = JSON.stringify({
-        title,
-        requirements,
+        title: title || prevTitle,
+        requirements: requirements || prevRequirements,
       });
 
       const formData = new FormData();
-      formData.append('title', formatedTitle);
-      formData.append('channelId', CHANNEL_ID.PROJECT);
+      formData.append(TITLE, formatedTitle);
+      formData.append(PROJECT_CHANNEL_ID, CHANNEL_ID.PROJECT);
 
-      selectedFile && formData.append('image', selectedFile);
+      selectedFile && formData.append(IMAGE, selectedFile);
 
       try {
+        setIsLoading(true);
         if (projectId) {
-          formData.append('postId', projectId);
+          formData.append(POST_ID, projectId);
 
           await updatePost(formData);
 
-          navigate('/projects/' + projectId);
+          navigate(PROJECT_URL + '/' + projectId, { replace: true });
         } else {
           const res = await createPost(formData);
 
           if (res !== null) {
             const { _id } = res;
-            navigate('/projects/' + _id);
+            navigate(PROJECT_URL + '/' + _id, { replace: true });
           }
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     },
     validate: ({ title, requirements }: FormValues) => {
       const newErrors: FormErrors = {};
 
-      if (!title) newErrors.title = '제목을 입력해주세요.';
-      if (!requirements) newErrors.requirements = '요구사항을 입력해주세요.';
+      if (title && title.length > 50) {
+        newErrors.title = '제목은 50자 이하로 입력해주세요.';
+      }
+      if (requirements && requirements.length > 1000) {
+        newErrors.requirements = '요구사항은 1000자 이하로 입력해주세요.';
+      }
 
       return newErrors;
     },
   });
 
   return isLoading ? (
-    <Box>로딩중</Box>
+    <LinearProgress />
   ) : (
     <FormBox onSubmit={handleSubmit}>
       <Stack spacing={3}>
@@ -89,20 +100,22 @@ export default function ProjectPost() {
           </UploadStyledButton>
         )}
         <BasicInput
-          defaultValue={title}
+          defaultValue={prevTitle}
           label="title"
           type="multiline"
           onChange={handleChange}
-          placeholder={title ? '' : '제목을 입력해주세요'}
+          placeholder={prevTitle ? '' : '제목을 입력해주세요'}
           errorMessage={errors.title}
+          inputProps={{ maxLength: '50' }}
         />
         <BasicInput
-          defaultValue={requirements}
+          defaultValue={prevRequirements}
           label="requirements"
           type="multiline"
           onChange={handleChange}
-          placeholder={requirements ? '' : '요구사항을 입력해주세요'}
+          placeholder={prevRequirements ? '' : '요구사항을 입력해주세요'}
           errorMessage={errors.requirements}
+          inputProps={{ maxLength: '1000' }}
         />
       </Stack>
       <BasicButtonStyled type="submit">제출하기</BasicButtonStyled>

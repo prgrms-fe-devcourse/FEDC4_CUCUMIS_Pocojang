@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box, Divider, Stack, Typography } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
@@ -8,7 +9,7 @@ import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
 import ChipGroup from '@/components/shared/chipGroup';
 
-const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
+const DEFAULT_IMAGE = '/assets/Logo96.svg';
 
 export default function DeveloperDetail() {
   const {
@@ -22,24 +23,24 @@ export default function DeveloperDetail() {
     handleFollowClick,
     isAuthor,
     isLoading,
-    isFollowing,
+    isUserFollowing,
     isLoggedIn,
   } = useDeveloperDetails();
 
   return isLoading ? (
-    <Box>로딩 중</Box>
+    <LinearProgress />
   ) : (
     <Stack spacing={3}>
       <Box>
-        <ProjectImageStyled
+        <ProjectImageBox
           component="img"
           src={image}
           alt={contents.oneLiner + "'s project image"}
         />
-        <StackStyled direction="column" alignItems="center">
+        <StackContainer direction="column" alignItems="center">
           <BasicAvatar {...author} size={90} onClick={handleAvatarClick} />
           <Typography noWrap>{author.fullName}</Typography>
-        </StackStyled>
+        </StackContainer>
       </Box>
       <Stack direction="row" spacing={1} justifyContent="center">
         {isLoggedIn && (
@@ -59,7 +60,7 @@ export default function DeveloperDetail() {
               </ChipGroup>
             ) : (
               <>
-                {isFollowing ? (
+                {isUserFollowing ? (
                   <BasicButton variant="outlined" onClick={handleFollowClick}>
                     언팔로우
                   </BasicButton>
@@ -79,22 +80,27 @@ export default function DeveloperDetail() {
       <Stack spacing={1}>
         <Typography variant="h4">
           {contents.oneLiner}
-          <ChipStyled
-            label={contents.position as string}
-            margin="0 8px"
-            color="secondary"
-          />
+          {contents.position && (
+            <ChipContainer
+              label={contents.position}
+              margin="0 8px"
+              color="secondary"
+            />
+          )}
         </Typography>
-        <ChipsBoxStyled>
-          {contents.techStack?.map((skill: string, i: number) => (
-            <ChipStyled label={skill} margin="0 8px 4px 0" key={i} />
-          ))}
-        </ChipsBoxStyled>
+        <ChipsBoxContainer>
+          {Array.isArray(contents.techStack) &&
+            contents.techStack?.map((skill: string, i: number) => (
+              <ChipContainer label={skill} margin="0 8px 4px 0" key={i} />
+            ))}
+        </ChipsBoxContainer>
       </Stack>
-      <Box>
-        <Typography color="gray">자기소개</Typography>
-        <Typography>{contents.details}</Typography>
-      </Box>
+      {contents.details && (
+        <Box>
+          <Typography color="gray">자기소개</Typography>
+          <Typography>{contents.details}</Typography>
+        </Box>
+      )}
       <Divider variant="middle" />
       <Box>
         <Typography color="gray">댓글</Typography>
@@ -104,21 +110,21 @@ export default function DeveloperDetail() {
   );
 }
 
-const ProjectImageStyled = styled(Box)({
+const ProjectImageBox = styled(Box)({
   width: '100%',
   height: '30vh',
   objectFit: 'cover',
 }) as typeof Box;
 
-const StackStyled = styled(Stack)({
+const StackContainer = styled(Stack)({
   marginTop: '-5vh',
 });
 
-const ChipsBoxStyled = styled(Box)({
+const ChipsBoxContainer = styled(Box)({
   display: 'flex',
   flexWrap: 'wrap',
 });
 
-const ChipStyled = styled(BasicChip)<{ margin: string }>(({ margin }) => ({
+const ChipContainer = styled(BasicChip)<{ margin: string }>(({ margin }) => ({
   margin: margin,
 }));

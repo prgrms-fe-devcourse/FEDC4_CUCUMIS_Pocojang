@@ -4,14 +4,13 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import styled from '@emotion/styled';
 
 import Navbar from '@/components/navbar';
-import ItemWithAvatar from '@/components/shared/itemWithAvatar';
-import ProjectCardItem from '@/components/shared/projectCard';
 import BasicAvatar from '@/components/shared/avatar';
 import BasicButton from '@/components/shared/button';
 import BgProfile from '@/components/profile/bgProfile';
 import ProfileNav from '@/components/profile/profileNav';
 import useProfile from '@/components/profile/useProfile';
 import ProfileChangeButton from '@/components/profile/profileChangeButton';
+import NavigationProfileContent from '@/components/profile/navigationProfileContent';
 
 const ProfilePage = () => {
   const {
@@ -102,76 +101,20 @@ const ProfilePage = () => {
           )}
         </Stack>
       </StyledBox>
-      <StyledMavigationBox>
+      <StyledNavigationBox>
         <ProfileNav
           value={value}
           navigationData={navigationData}
           onChange={navigationMoving}
         />
         <StyledContentsWrapper>
-          {value === 0 ? (
-            <StyledItemWithAvatarBox>
-              {userState &&
-                userState.following.map(({ user }) => {
-                  return (
-                    <ItemWithAvatar
-                      key={user}
-                      name={user}
-                      AvatarProps={{
-                        imgSrc: user,
-                      }}
-                      to={`/profile/${user}`}
-                    />
-                  );
-                })}
-            </StyledItemWithAvatarBox>
-          ) : value === 1 ? (
-            <StyledItemWithAvatarBox>
-              {userState &&
-                userState.followers.map(({ follower }) => {
-                  return (
-                    <ItemWithAvatar
-                      key={follower}
-                      name={follower}
-                      AvatarProps={{
-                        imgSrc: follower,
-                      }}
-                      to={`/profile/${follower}`}
-                    />
-                  );
-                })}
-            </StyledItemWithAvatarBox>
-          ) : value === 2 ? (
-            <>
-              {userState &&
-                userState.posts.map(({ _id, title, image }) => (
-                  <StyledProjectCardItemBox key={_id}>
-                    <ProjectCardItem
-                      name={JSON.parse(title).requirements}
-                      imageUrl={image as string}
-                      to={`${_id}`}
-                      projectTitle={JSON.parse(title).title}
-                    />
-                  </StyledProjectCardItemBox>
-                ))}
-            </>
-          ) : (
-            <>
-              {userState &&
-                userState.posts.map(({ _id, title, image }) => (
-                  <StyledProjectCardItemBox key={_id}>
-                    <ProjectCardItem
-                      name={JSON.parse(title).requirements}
-                      imageUrl={image as string}
-                      to={`${_id}`}
-                      projectTitle={JSON.parse(title).title}
-                    />
-                  </StyledProjectCardItemBox>
-                ))}
-            </>
-          )}
+          <NavigationProfileContent
+            userState={userState}
+            value={String(value)}
+          />{' '}
+          {/* UserProfileContent 컴포넌트 사용 */}
         </StyledContentsWrapper>
-      </StyledMavigationBox>
+      </StyledNavigationBox>
       <Navbar />
     </StyledWrapperBox>
   );
@@ -205,7 +148,7 @@ const StyledWrapperBox = styled(Box)({
   flexDirection: 'column',
 });
 
-const StyledMavigationBox = styled(Box)({
+const StyledNavigationBox = styled(Box)({
   margin: '30px 0',
 });
 
@@ -214,16 +157,6 @@ const StyledContentsWrapper = styled(Box)({
   overflowY: 'scroll',
   padding: '10px',
   height: '300px',
-});
-
-const StyledItemWithAvatarBox = styled(Box)({
-  borderRadius: '5px',
-  height: '100%',
-});
-
-const StyledProjectCardItemBox = styled(Box)({
-  width: '90%',
-  margin: '10px auto',
 });
 
 const SkeletonStyled = styled(Skeleton)({

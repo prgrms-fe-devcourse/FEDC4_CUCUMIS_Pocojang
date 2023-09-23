@@ -4,3 +4,4 @@ export const SETTINGS_URL = '/settings';
 export const DM_URL = '/dm/';
 export const DEVELOPER_URL = '/developers';
 export const PROJECT_URL = '/projects';
+export const LOGIN_URL = '/login';

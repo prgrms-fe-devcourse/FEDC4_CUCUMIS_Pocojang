@@ -9,11 +9,13 @@ import type { UserType } from '@/types';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 import { sendNotification } from '@/api/notifications';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import { PROFILE_URL } from '@/consts/routes';
+import { LOGIN_URL, PROFILE_URL } from '@/consts/routes';
+import { tokenSelector } from '@/stores/auth/selector';
 
 const useComment = () => {
   const { post } = useAppSelector(projectDetailSelector);
   const { input } = useAppSelector(layoutSelector);
+  const token = useAppSelector(tokenSelector);
   const [userId, setUserId] = useState('');
   const navigate = useNavigate();
 
@@ -42,6 +44,14 @@ const useComment = () => {
 
   useEffect(() => {
     const submitComment = async () => {
+      if (!token) {
+        window.alert('로그인이 필요합니다');
+
+        navigate(LOGIN_URL);
+
+        return;
+      }
+
       try {
         const res = await createComment({
           comment: input,
@@ -62,7 +72,7 @@ const useComment = () => {
     };
 
     input && submitComment();
-  }, [input, userId, navigate, post.author._id, post.postId]);
+  }, [token, input, userId, navigate, post.author._id, post.postId]);
 
   return {
     comments: post.comments,

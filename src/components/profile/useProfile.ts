@@ -1,22 +1,36 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import SESSION_STORAGE from '@/consts/sessionStorage';
-import session from '@/utils/sessionStorage';
 import { UserType } from '@/types';
 import { getUser, uploadUserPhoto } from '@/api/user';
 import { followUser, unFollowUser } from '@/api/follow';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import {
+  changeNavigationTab,
+  navigationTabSelector,
+  buttonStateSelector,
+  toggleButton,
+  myAccountSelector,
+  updateMyAccount,
+  userSelector,
+  updateUserAccount,
+  loadingSelector,
+  toggleLoading,
+  selectedFileSelector,
+  updateImage,
+  updateFileName,
+} from '@/stores/profile';
+import { fileNameSelector } from '@/stores/profile/selector';
 
 export default function useProfile() {
-  const [myAccount, setMyAccount] = useState<UserType | null>(
-    session.getItem(SESSION_STORAGE.USER),
-  );
-  const [userState, setUserState] = useState<UserType>();
-  const [buttonState, setButtonState] = useState<boolean>();
-  const [value, setValue] = useState<number | string>(0);
-  const [selectedFile, setSelectedFile] = useState<File | null>();
-  const [loading, setLoading] = useState(false);
-  const [fileName, setFileName] = useState<string>('파일을 선택하세요.');
+  const dispatch = useAppDispatch();
+  const currentNavTab = useAppSelector(navigationTabSelector);
+  const buttonState = useAppSelector(buttonStateSelector);
+  const myAccount = useAppSelector(myAccountSelector);
+  const userState = useAppSelector(userSelector);
+  const loading = useAppSelector(loadingSelector);
+  const selectedFile = useAppSelector(selectedFileSelector);
+  const fileName = useAppSelector(fileNameSelector);
 
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -27,13 +41,11 @@ export default function useProfile() {
     { label: userState?.likes.length || 0, title: '스크랩' },
   ];
 
-  const isMe = (userId: string) => {
-    return myAccount?._id === userId;
-  };
+  const isMe = (userId: string) => myAccount?._id === userId;
 
   const checkFollowingStatus = async (buttonState: boolean, userId: string) => {
     try {
-      setLoading(true);
+      dispatch(toggleLoading(true));
       if (!buttonState) {
         await followUser({ userId });
       } else {
@@ -42,12 +54,12 @@ export default function useProfile() {
         await unFollowUser({ id: followingObj?._id as string });
       }
       const updatedAccount = await getUser(myAccount?._id as string);
-      setMyAccount(updatedAccount);
-      setButtonState((prev) => !prev);
+      dispatch(updateMyAccount(updatedAccount));
+      dispatch(toggleButton(!buttonState));
     } catch (error) {
       console.error('팔로우 토글 에러 >> ', error);
     } finally {
-      setLoading(false);
+      dispatch(toggleLoading(false));
     }
   };
 
@@ -55,21 +67,21 @@ export default function useProfile() {
     async (userId: string) => {
       try {
         const isFollowing = myAccount?.following.some((e) => e.user === userId);
-        setButtonState(isFollowing);
+        dispatch(toggleButton(isFollowing));
         return isFollowing;
       } catch (error) {
         console.error('팔로잉 리스트 체크 에러 >> ', error);
         return false;
       }
     },
-    [myAccount],
+    [myAccount, dispatch],
   );
 
   const navigationMoving = (
     _: React.SyntheticEvent<Element, Event>,
     newValue: string,
   ) => {
-    setValue(newValue);
+    dispatch(changeNavigationTab(newValue));
   };
 
   const changeProfile = (user: UserType, value: boolean) => {
@@ -77,11 +89,10 @@ export default function useProfile() {
       const newObj = { ...userState };
       if (value) {
         newObj.coverImage = user.coverImage as string;
-        setMyAccount(newObj as UserType);
       } else {
         newObj.image = user.image as string;
-        setMyAccount(newObj as UserType);
       }
+      dispatch(updateMyAccount(newObj as UserType));
     } catch (error) {
       console.error('프로필 변경 에러 >> ', error);
     }
@@ -90,20 +101,20 @@ export default function useProfile() {
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setLoading(true);
+    dispatch(toggleLoading(true));
     try {
       const file = event.target.files?.[0];
       if (file) {
-        setFileName(file.name);
-        setSelectedFile(file);
+        dispatch(updateFileName(file.name));
+        dispatch(updateImage(file));
         await handleFileUpload(file, event.target.id);
       } else {
-        setFileName('파일을 선택하세요.');
+        dispatch(updateFileName('파일을 선택하세요.'));
       }
     } catch (error) {
       console.error('프로필 업로드 에러 >> ', error);
     } finally {
-      setLoading(false);
+      dispatch(toggleLoading(false));
     }
   };
 
@@ -124,40 +135,41 @@ export default function useProfile() {
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true);
+        dispatch(toggleLoading(true));
         const user = await getUser(userId as string);
-        setUserState(user);
+        dispatch(updateUserAccount(user));
         await isInMyFollowingList(userId as string);
       } catch (error) {
         console.error('데이터 fetch 에러 >> ', error);
       } finally {
-        setLoading(false);
+        dispatch(toggleLoading(false));
       }
     }
     fetchData();
-  }, [userId, isInMyFollowingList]);
+  }, [userId, isInMyFollowingList, dispatch]);
 
   useEffect(() => {
     const resetMyAccount = async () => {
-      setLoading(true);
+      dispatch(toggleLoading(true));
       try {
         if (myAccount?._id) {
           const newAccount = await getUser(myAccount._id);
-          setMyAccount(newAccount);
+          dispatch(updateMyAccount(newAccount));
         }
       } catch (error) {
         console.error('내 계정 업데이트 에러 >>', error);
       } finally {
-        setLoading(false);
+        dispatch(toggleLoading(false));
       }
     };
     resetMyAccount();
-  }, [myAccount?._id]);
+  }, [myAccount?._id, dispatch]);
+
   return {
     navigate,
     loading,
     navigationData,
-    value,
+    currentNavTab,
     navigationMoving,
     userId,
     userState,

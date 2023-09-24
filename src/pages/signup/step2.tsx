@@ -31,13 +31,13 @@ export default function ExtraInformationPage() {
         placeholder="한 줄 포부를 작성해주세요"
         onChange={handleExtraInformationFormChange}
         errorMessage={extraInformationFormErrors.oneLiner}
-        isRequired={false}
+        isRequired={true}
       />
       <BasicInput
         label="techStack"
         placeholder="기술 스택을 추가해주세요"
         onChange={handleExtraInformationFormChange}
-        errorMessage={extraInformationFormErrors.technicalTools}
+        errorMessage={extraInformationFormErrors.techStack}
         isRequired={false}
       />
       <BasicInput

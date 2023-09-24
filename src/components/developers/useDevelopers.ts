@@ -18,9 +18,10 @@ import { inputSelector } from '@/stores/layout/selector';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import CHANNEL_ID from '@/consts/channels';
 import { searchAll } from '@/api/search';
-
-//TODO 게시물 사진과 아바타는 author에서 가져와서 넣는다 , 상태는 projects와 유사하다. 공유가 가능한가 ?
-const useDevelopers = () => {
+interface useDevelopersProps {
+  onGetFail: (error: unknown) => void;
+}
+const useDevelopers = ({ onGetFail }: useDevelopersProps) => {
   const dispatch = useAppDispatch();
 
   const developerList = useAppSelector(developerListSelector);
@@ -42,47 +43,61 @@ const useDevelopers = () => {
     const searchDevelopers = async (value: string) => {
       setIsFetching(true);
       setIsEndOfList(true);
-      const searchResult = await searchAll(value).then((result: unknown) =>
-        parseSearchResult(result as Post[]),
-      );
-      dispatch(setSearchList(searchResult));
-      setIsFetching(false);
+      try {
+        const searchResult = await searchAll(value).then((result: unknown) =>
+          parseSearchResult(result as Post[]),
+        );
+        dispatch(setSearchList(searchResult));
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        setIsFetching(false);
+      }
     };
 
     const value = headerSearchValue.trim();
     if (value.length < 1) return;
     const encoded = encodeURIComponent(value);
     searchDevelopers(encoded);
-  }, [dispatch, headerSearchValue]);
+  }, [dispatch, headerSearchValue, onGetFail]);
 
   useEffect(() => {
     if (isLoading.current) return;
     const fetch = async () => {
       setIsFetching(true);
-      const result = await getChannelPosts(CHANNEL_ID.DEVELOPER, {
-        offset: page * 7,
-        limit: 7,
-      });
-      if (result.length === 0) {
-        setIsEndOfList(true);
+      try {
+        const result = await getChannelPosts(CHANNEL_ID.DEVELOPER, {
+          offset: page * 7,
+          limit: 7,
+        });
+        if (result.length === 0) {
+          setIsEndOfList(true);
+        }
+        const parsed = parseDeveloperPosts(result);
+        dispatch(setDeveloperList(parsed));
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        setIsFetching(false);
       }
-      const parsed = parseDeveloperPosts(result);
-      dispatch(setDeveloperList(parsed));
-      setIsFetching(false);
     };
 
     fetch();
-  }, [dispatch, page]);
+  }, [dispatch, page, onGetFail]);
 
   useEffect(() => {
-    getOnlineUsers()
-      .then(parseOnlineUserList)
-      .then((list) => dispatch(setOnlineUserList(list)));
+    try {
+      getOnlineUsers()
+        .then(parseOnlineUserList)
+        .then((list) => dispatch(setOnlineUserList(list)));
+    } catch (error) {
+      onGetFail(error);
+    }
 
     return () => {
       dispatch(cleanDeveloperList());
     };
-  }, [dispatch]);
+  }, [dispatch, onGetFail]);
 
   return {
     isFetching,

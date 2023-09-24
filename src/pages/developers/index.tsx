@@ -1,6 +1,7 @@
 import { Stack, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { useCallback } from 'react';
 
 import FixedProgress from '@/components/shared/fixedPorgress';
 import DeveloperCardItem from '@/components/shared/developerCard';
@@ -9,7 +10,11 @@ import useDevelopers from '@/components/developers/useDevelopers';
 
 const DevelopersPage = () => {
   const { onlineDevelopers, developers, target, isFetching, isEndOfList } =
-    useDevelopers();
+    useDevelopers({
+      onGetFail: useCallback((error: unknown) => {
+        console.log(error);
+      }, []),
+    });
   console.log(developers);
   return (
     <>

@@ -1,25 +1,29 @@
 import { Stack, Box } from '@mui/material';
 import { Add } from '@mui/icons-material';
+import { useCallback } from 'react';
 
+import FixedProgress from '@/components/shared/fixedPorgress';
 import ProjectCardItem from '@/components/shared/projectCard';
 import MainFab from '@/components/shared/mainFab';
 import useProjectList from '@/components/ProjectList/useProjectList';
 
-//TODO전체 페이지 길이 초과시 api요청막기,
-/*
-형태 변환은 project의 title에 JSON을 parse해서 
-title이 projectTitle, 검색 후 요청 넣기 
-
-*/
 const ProjectPage = () => {
-  const { handleFabClick, projects, target, isLogin } = useProjectList();
+  const { handleFabClick, projects, target, isLogin, isFetching, isEndOfList } =
+    useProjectList({
+      onGetFail: useCallback((error: unknown) => {
+        console.log(error);
+      }, []),
+    });
+
   return (
     <>
+      {isFetching && <FixedProgress />}
       {isLogin && (
         <MainFab onClick={handleFabClick}>
           <Add />
         </MainFab>
       )}
+
       <Stack spacing={1}>
         {projects &&
           projects.map((project) => (
@@ -31,8 +35,8 @@ const ProjectPage = () => {
               to={project._id}
             />
           ))}
-        <Box ref={target}></Box>
       </Stack>
+      {!isEndOfList && <Box ref={target}></Box>}
     </>
   );
 };

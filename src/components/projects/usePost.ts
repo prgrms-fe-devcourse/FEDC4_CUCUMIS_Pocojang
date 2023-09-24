@@ -4,10 +4,12 @@ import { AxiosError } from 'axios';
 
 import { getPost } from '@/api/posts';
 import type { PostType } from '@/types';
-import { useAppSelector } from '@/stores/hooks';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { userIdSelector, isLoginSelector } from '@/stores/auth';
 import handleAxiosError from '@/utils/axiosError';
 import { LOGIN_URL } from '@/consts/routes';
+import { isLoadingSelector } from '@/stores/projectDetail/selector';
+import { setIsLoading } from '@/stores/projectDetail';
 
 export interface ProjectContent {
   title: string;
@@ -15,12 +17,14 @@ export interface ProjectContent {
 }
 
 const usePost = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const { projectId } = useParams();
   const userId = useAppSelector(userIdSelector);
   const isLogin = useAppSelector(isLoginSelector);
-  const navigate = useNavigate();
+  const isLoading = useAppSelector(isLoadingSelector);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [authorId, setAuthorId] = useState('');
   const [contents, setContents] = useState({ title: '', requirements: '' });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -43,27 +47,34 @@ const usePost = () => {
     }
   };
 
-  const fetchPost = useCallback(async (postId: string) => {
-    setIsLoading(true);
+  const fetchPost = useCallback(
+    async (postId: string) => {
+      dispatch(setIsLoading(true));
 
-    try {
-      const rs = await getPost(postId);
+      try {
+        const rs = await getPost(postId);
 
-      handlePost(rs);
-    } catch (error: unknown) {
-      const axiosErrorMessage = handleAxiosError(error as Error);
+        handlePost(rs);
+      } catch (error: unknown) {
+        const axiosErrorMessage = handleAxiosError(error as Error);
 
-      setErrorMessage(axiosErrorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        setErrorMessage(axiosErrorMessage);
+      } finally {
+        dispatch(setIsLoading(false));
+      }
+    },
+    [dispatch],
+  );
 
   const handlePost = (rs: PostType) => {
     const { title, requirements } = JSON.parse(rs.title);
     setContents({ title, requirements });
 
     setAuthorId(rs.author._id);
+  };
+
+  const setLoadingState = (isLoading: boolean) => {
+    dispatch(setIsLoading(isLoading));
   };
 
   useEffect(() => {
@@ -89,8 +100,8 @@ const usePost = () => {
     prevTitle: contents.title,
     prevRequirements: contents.requirements,
     isLoading,
-    setIsLoading,
     handleFileChange,
+    setLoadingState,
     selectedFile,
     imageFile,
   };

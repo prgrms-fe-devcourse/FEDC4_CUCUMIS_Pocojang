@@ -4,10 +4,13 @@ import { useDispatch } from 'react-redux';
 import { AxiosError } from 'axios';
 
 import { getPost, deletePost } from '@/api/posts';
-import { setPost } from '@/stores/projectDetail';
+import { setIsLoading, setPost } from '@/stores/projectDetail';
 import { userIdSelector } from '@/stores/auth';
 import { useAppSelector } from '@/stores/hooks';
-import { projectDetailSelector } from '@/stores/projectDetail/selector';
+import {
+  isLoadingSelector,
+  projectDetailSelector,
+} from '@/stores/projectDetail/selector';
 import type { PostType, FormattedPost, ProjectContent } from '@/types';
 import { PROFILE_URL, PROJECT_MODIFYL_URL, PROJECT_URL } from '@/consts/routes';
 import handleAxiosError from '@/utils/axiosError';
@@ -19,8 +22,8 @@ const useProjectDetail = () => {
   const { projectId } = useParams();
   const { post } = useAppSelector(projectDetailSelector<ProjectContent>);
   const userId = useAppSelector(userIdSelector);
+  const isLoading = useAppSelector(isLoadingSelector);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleAvatarClick = () => {
@@ -47,6 +50,8 @@ const useProjectDetail = () => {
 
   const fetchPost = useCallback(
     async (postId: string) => {
+      dispatch(setIsLoading(true));
+
       try {
         const rs = await getPost(postId);
 
@@ -58,7 +63,7 @@ const useProjectDetail = () => {
 
         setErrorMessage(axiosErrorMessage);
       } finally {
-        setIsLoading(false);
+        dispatch(setIsLoading(false));
       }
     },
     [dispatch],

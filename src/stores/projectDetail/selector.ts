@@ -14,3 +14,6 @@ export const postIdSelector = (state: RootState): string =>
 
 export const authorIdSelector = (state: RootState): string =>
   state.projectDetail.post.author._id as string;
+
+export const isLoadingSelector = (state: RootState): boolean =>
+  state.projectDetail.isLoading;

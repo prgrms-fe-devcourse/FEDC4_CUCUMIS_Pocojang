@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Stack, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 
-import { useAppSelector } from '@/stores/hooks';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
 import {
   likesSelector,
@@ -13,8 +14,12 @@ import {
 } from '@/stores/projectDetail/selector';
 import { cancelLikePost, likePost } from '@/api/likes';
 import { sendNotification } from '@/api/notifications';
+import { setIsLoading } from '@/stores/projectDetail';
 
 const Likes = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const userId = useAppSelector(userIdSelector);
   const likes = useAppSelector(likesSelector);
   const postId = useAppSelector(postIdSelector);
@@ -27,6 +32,8 @@ const Likes = () => {
       return;
     }
 
+    dispatch(setIsLoading(true));
+
     try {
       const res = await likePost({ postId });
 
@@ -38,6 +45,10 @@ const Likes = () => {
       });
     } catch (error) {
       window.alert('좋아요 처리에 실패하였습니다');
+    } finally {
+      dispatch(setIsLoading(false));
+
+      navigate(0);
     }
   };
 
@@ -49,10 +60,16 @@ const Likes = () => {
     const userLikeInfo = likes.find((like) => like.user === userId);
 
     if (userLikeInfo) {
+      dispatch(setIsLoading(true));
+
       try {
         await cancelLikePost({ id: userLikeInfo._id });
       } catch (error) {
         window.alert('좋아요 처리에 실패하였습니다');
+      } finally {
+        dispatch(setIsLoading(false));
+
+        navigate(0);
       }
     }
   };

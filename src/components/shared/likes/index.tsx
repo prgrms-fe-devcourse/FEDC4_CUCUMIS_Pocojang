@@ -19,35 +19,47 @@ const Likes = () => {
   const likes = useAppSelector(likesSelector);
   const postId = useAppSelector(postIdSelector);
   const authorId = useAppSelector(authorIdSelector);
-  console.log(userId, likes);
+
   const [isHeartClicked, setIsHeartClicked] = useState(false);
 
-  const handleHeartSend = async () => {
-    if (!userId) return;
-    console.log('s', postId);
+  const handleSendHeart = async () => {
+    if (!userId || isHeartClicked) {
+      return;
+    }
 
-    const res = await likePost({ postId });
+    try {
+      const res = await likePost({ postId });
 
-    await sendNotification({
-      notificationType: 'LIKE',
-      notificationTypeId: res._id,
-      userId: authorId,
-      postId,
-    });
+      await sendNotification({
+        notificationType: 'LIKE',
+        notificationTypeId: res._id,
+        userId: authorId,
+        postId,
+      });
+    } catch (error) {
+      window.alert('좋아요 처리에 실패하였습니다');
+    }
   };
 
-  const handleHeartCancel = async () => {
-    if (!userId) return;
-    console.log('click', postId);
+  const handleCancelHeart = async () => {
+    if (!userId || !isHeartClicked) {
+      return;
+    }
+
     const userLikeInfo = likes.find((like) => like.user === userId);
+
     if (userLikeInfo) {
-      const res = await cancelLikePost({ id: userLikeInfo._id });
-      console.log(res);
+      try {
+        await cancelLikePost({ id: userLikeInfo._id });
+      } catch (error) {
+        window.alert('좋아요 처리에 실패하였습니다');
+      }
     }
   };
 
   useEffect(() => {
     const isUserLike = likes.some((like) => like.user === userId);
+
     setIsHeartClicked(isUserLike);
   }, [userId, likes]);
 
@@ -59,9 +71,9 @@ const Likes = () => {
       isUser={!!userId}
     >
       {isHeartClicked ? (
-        <FavoriteIcon onClick={handleHeartCancel} color="primary" />
+        <FavoriteIcon onClick={handleCancelHeart} color="primary" />
       ) : (
-        <FavoriteBorderIcon onClick={handleHeartSend} color="primary" />
+        <FavoriteBorderIcon onClick={handleSendHeart} color="primary" />
       )}
       <Typography color="primary">{likes.length}</Typography>
     </IconContainer>

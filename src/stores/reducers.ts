@@ -6,6 +6,8 @@ import { dmReducer } from '@/stores/dm';
 import { notificationReducer } from '@/stores/notification';
 import { developersReducer } from '@/stores/developers';
 
+import { profileReducer } from './profile';
+
 export const reducers = {
   auth: authReducer,
   layout: layoutReducer,
@@ -14,4 +16,5 @@ export const reducers = {
   dm: dmReducer,
   notifications: notificationReducer,
   developers: developersReducer,
+  profile: profileReducer,
 };

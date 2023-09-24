@@ -36,7 +36,6 @@ const useHome = ({ onGetFail }: useHomeProps) => {
 
   useEffect(() => {
     setIsLoading(isFetching);
-    onGetFail('hi');
   }, [isFetching, onGetFail]);
 
   useEffect(() => {
@@ -44,23 +43,30 @@ const useHome = ({ onGetFail }: useHomeProps) => {
 
     const fetch = async () => {
       setIsFetching(true);
-      const result = await Promise.all([
-        getChannelPosts(CHANNEL_ID.PROJECT, {
-          offset: page * 3,
-          limit: 3,
-        }),
-        getChannelPosts(CHANNEL_ID.DEVELOPER, {
-          offset: page * 4,
-          limit: 4,
-        }),
-      ]).then((lists) => parseHomeList(...lists));
-      if (result.length === 0) setIsEndOfList(true);
-      setHomeList((state) => [...state, ...result]);
+      try {
+        const result = await Promise.all([
+          getChannelPosts(CHANNEL_ID.PROJECT, {
+            offset: page * 3,
+            limit: 3,
+          }),
+          getChannelPosts(CHANNEL_ID.DEVELOPER, {
+            offset: page * 4,
+            limit: 4,
+          }),
+        ]).then((lists) => parseHomeList(...lists));
+        if (result.length === 0) setIsEndOfList(true);
+        setHomeList((state) => [...state, ...result]);
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        setIsFetching(false);
+      }
+
       setIsFetching(false);
     };
 
     fetch();
-  }, [page]);
+  }, [page, onGetFail]);
 
   return { homeList, target: pageEnd, isFetching, isEndOfList };
 };

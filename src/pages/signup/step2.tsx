@@ -37,7 +37,7 @@ export default function ExtraInformationPage() {
         label="techStack"
         placeholder="기술 스택을 추가해주세요"
         onChange={handleExtraInformationFormChange}
-        errorMessage={extraInformationFormErrors.technicalTools}
+        errorMessage={extraInformationFormErrors.techStack}
         isRequired={false}
       />
       <BasicInput

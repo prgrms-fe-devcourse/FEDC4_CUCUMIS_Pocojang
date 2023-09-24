@@ -16,9 +16,10 @@ export interface ProjectContent {
 
 const usePost = () => {
   const { projectId } = useParams();
+  const navigate = useNavigate();
+
   const userId = useAppSelector(userIdSelector);
   const isLogin = useAppSelector(isLoginSelector);
-  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [contents, setContents] = useState({
@@ -29,9 +30,11 @@ const usePost = () => {
   const [fileData, setFileData] = useState<{
     selectedFile: File | null;
     imageFile: string | null;
+    fileName: string;
   }>({
     selectedFile: null,
     imageFile: null,
+    fileName: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -46,6 +49,7 @@ const usePost = () => {
           setFileData({
             selectedFile: file,
             imageFile: reader.result as string,
+            fileName: file.name,
           });
         };
       }
@@ -71,7 +75,19 @@ const usePost = () => {
   const handlePost = (rs: PostType) => {
     const { title, requirements } = JSON.parse(rs.title);
 
+    setFileData((prev) => ({
+      ...prev,
+      imageFile: rs.image ?? null,
+      fileName: rs.image
+        ? 'image : ' + rs.createdAt.replace('T', ' ').slice(0, -5)
+        : '',
+    }));
+
     setContents({ title, requirements, authorId: rs.author._id });
+  };
+
+  const handleDeleteFileData = () => {
+    setFileData({ selectedFile: null, imageFile: null, fileName: '' });
   };
 
   useEffect(() => {
@@ -99,6 +115,7 @@ const usePost = () => {
     isLoading,
     setIsLoading,
     handleFileChange,
+    handleDeleteFileData,
     ...fileData,
   };
 };

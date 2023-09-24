@@ -77,13 +77,18 @@ const useSettingsProfileForm = ({
     const { name, oneLiner, techStack, position, details } =
       settingsProfileFormValues;
 
-    const title = JSON.stringify({ oneLiner, techStack, position, details });
+    const title = JSON.stringify({
+      oneLiner: oneLiner ?? defaultValues.oneLiner,
+      techStack: techStack ?? defaultValues.techStack,
+      position: position ?? defaultValues.position,
+      details: details ?? defaultValues.details,
+    });
     formData.append('title', title);
     formData.append('channelId', CHANNEL_ID.DEVELOPER);
 
     try {
       if (profilePostId) {
-        formData.append('postId', title);
+        formData.append('postId', profilePostId);
         await updateProfile(profilePostId, name, formData);
       } else {
         const userData = await createProfile(name, formData);
@@ -117,7 +122,6 @@ const useSettingsProfileForm = ({
         };
 
         setDefaultValues(profileFormValues);
-        dispatch(setProfileFormValues(profileFormValues));
       } catch (error) {
         console.error(error);
       } finally {

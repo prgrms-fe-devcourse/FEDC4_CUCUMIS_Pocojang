@@ -27,7 +27,6 @@ export default function PasswordSettingPage() {
         value={passwordFormValues.password}
         onChange={handlePasswordFormChange}
         errorMessage={passwordFormErrors.password}
-        isRequired
       />
       <BasicInput
         type="password"
@@ -36,7 +35,6 @@ export default function PasswordSettingPage() {
         value={passwordFormValues.passwordConfirm}
         onChange={handlePasswordFormChange}
         errorMessage={passwordFormErrors.passwordConfirm}
-        isRequired
       />
     </SettingsInputContainer>
   );

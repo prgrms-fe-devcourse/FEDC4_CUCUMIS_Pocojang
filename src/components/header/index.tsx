@@ -44,10 +44,6 @@ const Header = () => {
     navigate('/login');
   };
 
-  const logout = () => {
-    // TODO: 로그아웃
-  };
-
   return (
     <AppBarStyled position="fixed" elevation={0}>
       <ToolbarStyled>
@@ -103,18 +99,10 @@ const Header = () => {
               paddingRight={title === Title.SETTINGS && isLogin ? 0 : 40}
             >
               {title}
-            </TypographyStyled>
+            </TypographyStyled> 
             {(title === Title.DEVELOPER || title === Title.PROJECT) && (
               <Likes />
-            )}
-            {title === Title.SETTINGS && isLogin && (
-              <BasicChip
-                label="로그아웃"
-                variant="outlined"
-                color="primary"
-                onClick={logout}
-              />
-            )}
+            )} 
           </>
         )}
       </ToolbarStyled>

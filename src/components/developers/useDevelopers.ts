@@ -32,42 +32,46 @@ const useDevelopers = () => {
   const setIsLoading = (state: boolean) => {
     isLoading.current = state;
   };
-  const { page, pageEnd } = useInfiniteScroll({
-    options: {},
-  });
+  const { page, pageEnd } = useInfiniteScroll({ isFetching, options: {} });
 
   useEffect(() => {
-    const searchProjects = async (value: string) => {
+    setIsLoading(isFetching);
+  }, [isFetching]);
+
+  useEffect(() => {
+    const searchDevelopers = async (value: string) => {
+      setIsFetching(true);
+      setIsEndOfList(true);
       const searchResult = await searchAll(value).then((result: unknown) =>
         parseSearchResult(result as Post[]),
       );
       dispatch(setSearchList(searchResult));
-      setIsLoading(false);
+      setIsFetching(false);
     };
 
     const value = headerSearchValue.trim();
     if (value.length < 1) return;
-    setIsLoading(true);
     const encoded = encodeURIComponent(value);
-    searchProjects(encoded);
+    searchDevelopers(encoded);
   }, [dispatch, headerSearchValue]);
 
   useEffect(() => {
-    // 마지막 페이지 block 처리
-    const scrolling = async () => {
-      setIsLoading(true);
-      await getChannelPosts(CHANNEL_ID.DEVELOPER, {
-        offset: page * 5,
-        limit: 5,
-      })
-        .then(parseDeveloperPosts)
-        .then((posts) => {
-          dispatch(setDeveloperList(posts));
-        });
-      setIsLoading(false);
+    if (isLoading.current) return;
+    const fetch = async () => {
+      setIsFetching(true);
+      const result = await getChannelPosts(CHANNEL_ID.DEVELOPER, {
+        offset: page * 7,
+        limit: 7,
+      });
+      if (result.length === 0) {
+        setIsEndOfList(true);
+      }
+      const parsed = parseDeveloperPosts(result);
+      dispatch(setDeveloperList(parsed));
+      setIsFetching(false);
     };
 
-    scrolling();
+    fetch();
   }, [dispatch, page]);
 
   useEffect(() => {
@@ -77,9 +81,6 @@ const useDevelopers = () => {
 
     return () => {
       dispatch(cleanDeveloperList());
-
-      setIsEndOfList(false);
-      setIsFetching(false);
     };
   }, [dispatch]);
 

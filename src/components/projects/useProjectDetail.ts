@@ -106,13 +106,15 @@ const handlePostFormat = (rs: PostType) => {
     commentId: _id,
   }));
 
+  const fomattedDate = createdAt.replace('T', ' ').slice(0, -5);
+
   const formattedPost: Partial<FormattedPost<ProjectContent>> = {
     likes,
     postId: _id,
     comments: formattedComments,
     image: image,
     author,
-    createdAt,
+    createdAt: fomattedDate,
     contents: {
       title,
       requirements,

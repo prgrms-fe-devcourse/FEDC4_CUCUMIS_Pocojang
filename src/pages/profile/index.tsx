@@ -17,7 +17,7 @@ const ProfilePage = () => {
     loading,
     navigate,
     navigationData,
-    value,
+    currentNavTab,
     navigationMoving,
     userState,
     buttonState,
@@ -26,6 +26,7 @@ const ProfilePage = () => {
     userId,
     handleFileChange,
   } = useProfile();
+
   return (
     <StyledWrapperBox>
       <StyledBox>
@@ -109,7 +110,7 @@ const ProfilePage = () => {
       </StyledBox>
       <StyledNavigationBox>
         <ProfileNav
-          value={value}
+          value={currentNavTab}
           navigationData={navigationData}
           onChange={navigationMoving}
         />
@@ -119,7 +120,7 @@ const ProfilePage = () => {
           ) : (
             <NavigationProfileContent
               userState={userState}
-              value={String(value)}
+              value={String(currentNavTab)}
             />
           )}
         </StyledContentsWrapper>

@@ -1,4 +1,4 @@
-import { setAuth, setUser } from '@/stores/auth';
+import { removeAuth, removeUser, setAuth, setUser } from '@/stores/auth';
 import { useAppDispatch } from '@/stores/hooks';
 import { UserType } from '@/types';
 
@@ -10,5 +10,10 @@ export const useAuth = () => {
     dispatch(setUser(user));
   };
 
-  return saveAuthData;
+  const removeAuthData = () => {
+    dispatch(removeAuth());
+    dispatch(removeUser());
+  };
+
+  return { saveAuthData, removeAuthData };
 };

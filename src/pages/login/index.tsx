@@ -8,7 +8,7 @@ import { ResponseLoginType } from '@/types/api/auth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const saveAuthData = useAuth();
+  const { saveAuthData } = useAuth();
 
   const { handleLoginFormChange, handleLoginFormSubmit } = useLoginForm({
     onSuccess: ({ token, user }: ResponseLoginType) => {

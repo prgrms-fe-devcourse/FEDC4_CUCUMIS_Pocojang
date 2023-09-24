@@ -13,6 +13,8 @@ export const Title = {
   DM: 'DM',
   PROFILE: '프로필',
   SETTINGS: '설정',
+  SETTINGS_PROFILE: '프로필 수정',
+  SETTINGS_PASSWORD: '비밀번호 수정',
   NOTIFICATION: '알림',
   LOGIN: '로그인',
   SIGNUP: '회원가입',

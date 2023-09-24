@@ -18,9 +18,18 @@ const getItem = <T>(key: string): T | null => {
   }
 };
 
+const removeItem = (key: string) => {
+  try {
+    sessionStorage.removeItem(key);
+  } catch (error) {
+    throw new Error(String(error));
+  }
+};
+
 const session = {
   setItem,
   getItem,
+  removeItem,
 };
 
 export default session;

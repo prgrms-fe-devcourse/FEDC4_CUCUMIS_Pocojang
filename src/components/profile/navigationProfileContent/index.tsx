@@ -14,18 +14,22 @@ const NavigationProfileContent = ({ userState, value }: Type) => {
     <Box>
       {userState && (
         <Box>
-          {['0', '1'].includes(value) &&
-            userState[value === '0' ? 'following' : 'followers'].map(
-              ({ user, follower }) => (
-                <ItemWithAvatar
-                  key={user || follower}
-                  name={user || follower}
-                  AvatarProps={{ imgSrc: user || follower }}
-                  to={`/profile/${user || follower}`}
-                />
-              ),
-            )}
-
+          {value === '0' &&
+            userState.following.map(({ user }) => (
+              <ItemWithAvatar
+                name={user}
+                AvatarProps={{ imgSrc: user }}
+                to={`/profile/${user}`}
+              />
+            ))}
+          {value === '1' &&
+            userState.followers.map(({ follower }) => (
+              <ItemWithAvatar
+                name={follower}
+                AvatarProps={{ imgSrc: follower }}
+                to={`/profile/${follower}`}
+              />
+            ))}
           {['2', '3'].includes(value) &&
             userState.posts.map(({ _id, title, image }) => (
               <Box key={_id}>

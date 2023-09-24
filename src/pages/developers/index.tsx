@@ -15,7 +15,7 @@ const DevelopersPage = () => {
         console.log(error);
       }, []),
     });
-  console.log(developers);
+
   return (
     <>
       {isFetching && <FixedProgress />}

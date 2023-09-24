@@ -18,12 +18,13 @@ import { inputSelector } from '@/stores/layout/selector';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import CHANNEL_ID from '@/consts/channels';
 import { searchAll } from '@/api/search';
+
 interface useDevelopersProps {
   onGetFail: (error: unknown) => void;
 }
+
 const useDevelopers = ({ onGetFail }: useDevelopersProps) => {
   const dispatch = useAppDispatch();
-
   const developerList = useAppSelector(developerListSelector);
   const onlineUserList = useAppSelector(onlineUserListSelector);
   const headerSearchValue = useAppSelector(inputSelector);
@@ -81,7 +82,6 @@ const useDevelopers = ({ onGetFail }: useDevelopersProps) => {
         setIsFetching(false);
       }
     };
-
     fetch();
   }, [dispatch, page, onGetFail]);
 
@@ -93,7 +93,6 @@ const useDevelopers = ({ onGetFail }: useDevelopersProps) => {
     } catch (error) {
       onGetFail(error);
     }
-
     return () => {
       dispatch(cleanDeveloperList());
     };

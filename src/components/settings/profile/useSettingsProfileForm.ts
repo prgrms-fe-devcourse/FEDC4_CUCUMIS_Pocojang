@@ -73,7 +73,12 @@ const useSettingsProfileForm = ({
     const { name, oneLiner, techStack, position, details } =
       settingsProfileFormValues;
 
-    const title = JSON.stringify({ oneLiner, techStack, position, details });
+    const title = JSON.stringify({
+      oneLiner: oneLiner ?? defaultValues.oneLiner,
+      techStack: techStack ?? defaultValues.techStack,
+      position: position ?? defaultValues.position,
+      details: details ?? defaultValues.details,
+    });
     formData.append('title', title);
     formData.append('channelId', CHANNEL_ID.DEVELOPER);
 
@@ -113,7 +118,6 @@ const useSettingsProfileForm = ({
         };
 
         setDefaultValues(profileFormValues);
-        dispatch(setProfileFormValues(profileFormValues));
       } catch (error) {
         console.error(error);
       } finally {

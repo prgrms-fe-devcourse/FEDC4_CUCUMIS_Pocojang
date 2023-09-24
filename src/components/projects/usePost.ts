@@ -21,10 +21,18 @@ const usePost = () => {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [authorId, setAuthorId] = useState('');
-  const [contents, setContents] = useState({ title: '', requirements: '' });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imageFile, setImageFile] = useState<string | null>(null);
+  const [contents, setContents] = useState({
+    title: '',
+    requirements: '',
+    authorId: '',
+  });
+  const [fileData, setFileData] = useState<{
+    selectedFile: File | null;
+    imageFile: string | null;
+  }>({
+    selectedFile: null,
+    imageFile: null,
+  });
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,12 +40,13 @@ const usePost = () => {
       const file = event.target.files[0] || null;
 
       if (file) {
-        setSelectedFile(file);
-
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-          setImageFile(reader.result as string);
+          setFileData({
+            selectedFile: file,
+            imageFile: reader.result as string,
+          });
         };
       }
     }
@@ -61,18 +70,17 @@ const usePost = () => {
 
   const handlePost = (rs: PostType) => {
     const { title, requirements } = JSON.parse(rs.title);
-    setContents({ title, requirements });
 
-    setAuthorId(rs.author._id);
+    setContents({ title, requirements, authorId: rs.author._id });
   };
 
   useEffect(() => {
     if (!isLogin) {
       navigate(LOGIN_URL);
-    } else if (authorId && userId !== authorId) {
+    } else if (contents.authorId && userId !== contents.authorId) {
       throw new Error('잘못된 접근입니다');
     }
-  }, [isLogin, navigate, userId, authorId]);
+  }, [isLogin, navigate, userId, contents.authorId]);
 
   useEffect(() => {
     projectId && fetchPost(projectId);
@@ -91,8 +99,7 @@ const usePost = () => {
     isLoading,
     setIsLoading,
     handleFileChange,
-    selectedFile,
-    imageFile,
+    ...fileData,
   };
 };
 

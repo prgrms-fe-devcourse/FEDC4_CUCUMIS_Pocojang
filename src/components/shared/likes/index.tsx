@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Stack, Typography } from '@mui/material';
+import styled from '@emotion/styled';
 
 import { useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
@@ -51,15 +52,26 @@ const Likes = () => {
   }, [userId, likes]);
 
   return (
-    <Stack direction="row" alignItems="center" spacing={0.5}>
+    <IconContainer
+      direction="row"
+      alignItems="center"
+      spacing={0.5}
+      isUser={!!userId}
+    >
       {isHeartClicked ? (
         <FavoriteIcon onClick={handleHeartCancel} color="primary" />
       ) : (
         <FavoriteBorderIcon onClick={handleHeartSend} color="primary" />
       )}
       <Typography color="primary">{likes.length}</Typography>
-    </Stack>
+    </IconContainer>
   );
 };
+
+const IconContainer = styled(Stack, {
+  shouldForwardProp: (prop) => prop !== 'isUser',
+})(({ isUser }: { isUser: boolean }) => ({
+  cursor: isUser ? 'pointer' : 'not-allowed',
+}));
 
 export default Likes;

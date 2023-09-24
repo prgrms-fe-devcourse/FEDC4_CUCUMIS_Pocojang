@@ -11,6 +11,8 @@ export const userIdSelector = (state: RootState): string =>
   state.auth.user?._id ?? '';
 export const userFullNameSelector = (state: RootState): string =>
   state.auth.user?.fullName ?? '';
+export const userProfilePostIdSelector = (state: RootState): string =>
+  state.auth.user?.username ?? '';
 export const userFollowingSelector = (state: RootState): FollowType[] =>
   state.auth.user?.following ?? [];
 

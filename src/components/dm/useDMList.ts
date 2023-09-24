@@ -1,62 +1,80 @@
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const useDMList = () => {
+import { getConversations, getMessages } from '@/api/messages';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { setConversations, conversationsSelector } from '@/stores/dm';
+import { userIdSelector } from '@/stores/auth';
+import { setVisitingUser } from '@/stores/layout';
+import { ConversationDataType } from '@/stores/dm/slice';
+import { UserType } from '@/types';
+
+interface DMListHookParameters {
+  onFail: (error: unknown) => void;
+}
+
+export const useDMList = ({ onFail }: DMListHookParameters) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const userId = useAppSelector(userIdSelector);
+  const conversations = useAppSelector(conversationsSelector);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const conversations = [
-    {
-      _id: '1',
-      AvatarProps: {
-        onClick: () => navigate('/profile/user1'),
-        isUserOn: true,
-      },
-      name: 'user1',
-      message: 'Hello, World! 🤗',
-      to: 'user1',
-      unReadCount: 1000,
-    },
-    {
-      _id: '2',
-      AvatarProps: {
-        onClick: () => navigate('/profile/user2'),
-      },
-      name: 'user2',
-      message: 'Hi!',
-      to: 'user2',
-      unReadCount: 1001,
-    },
-    {
-      _id: '3',
-      AvatarProps: {
-        onClick: () => navigate('/profile/user3'),
-        isUserOn: true,
-      },
-      name: 'user3',
-      message: '같이 프로젝트 진행하고 싶습니다!',
-      to: 'user3',
-      unReadCount: 0,
-    },
-    {
-      _id: '4',
-      AvatarProps: {
-        onClick: () => navigate('/profile/user4'),
-      },
-      name: 'user4',
-      message: '감사합니다!',
-      to: 'user4',
-      unReadCount: 0,
-    },
-    {
-      _id: '5',
-      AvatarProps: {
-        onClick: () => navigate('/profile/user5'),
-      },
-      name: 'user5',
-      message: '안녕하세요 :)',
-      to: 'user5',
-      unReadCount: 1,
-    },
-  ];
+  const fetchConversations = useCallback(async () => {
+    try {
+      const responseConversations = await getConversations();
+      const filteredConversations = responseConversations
+        .filter((conversation) => conversation._id.some((id) => id !== userId))
+        .map((conversation) => {
+          const conversationUser = [conversation.receiver, conversation.sender];
+          const dmUser = conversationUser.find((user) => user._id !== userId);
+          return { ...conversation, dmUser, unReadCount: -1 };
+        });
 
-  return { conversations };
+      dispatch(setConversations(filteredConversations));
+      return filteredConversations;
+    } catch (error) {
+      onFail(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch, userId, onFail]);
+
+  const fetchUnReadCounts = useCallback(
+    async (conversations: ConversationDataType[]) => {
+      const requests = conversations.map((conversation) =>
+        getMessages({ userId: conversation.dmUser?._id ?? '' }),
+      );
+      Promise.all(requests)
+        .then((results) => {
+          const unReadCountedConversations = results.map((result) => {
+            const conversationUser = [result[0].receiver, result[0].sender];
+            const dmUser = conversationUser.find((user) => user._id !== userId);
+            const conversationIndex = conversations.findIndex(
+              (conversation) => conversation.dmUser?._id === dmUser?._id,
+            );
+            const unReadCount = result.filter(
+              (message) => message.receiver._id === userId && !message.seen,
+            ).length;
+
+            return { ...conversations[conversationIndex], unReadCount };
+          });
+
+          dispatch(setConversations(unReadCountedConversations));
+        })
+        .catch((error) => onFail(error));
+    },
+    [dispatch, userId, onFail],
+  );
+
+  useEffect(() => {
+    fetchConversations().then((result) => result && fetchUnReadCounts(result));
+  }, [dispatch, fetchConversations, fetchUnReadCounts]);
+
+  const handleConversationClick = (dmUser: UserType) => {
+    navigate(`/dm/${dmUser._id}`);
+    dispatch(setVisitingUser(dmUser));
+  };
+
+  return { conversations, isLoading, handleConversationClick };
 };

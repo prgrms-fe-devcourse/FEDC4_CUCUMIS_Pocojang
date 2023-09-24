@@ -1,102 +1,63 @@
-import styled from '@emotion/styled';
-import { Box, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import {
+  Divider,
+  List,
+  ListItemButton,
+  ListItemText,
+  Stack,
+} from '@mui/material';
 import { DarkMode } from '@mui/icons-material';
 
-import BasicAvatar from '@/components/shared/avatar';
-import BasicInput from '@/components/shared/input';
-import BasicButton from '@/components/shared/button';
-import BasicFab from '@/components/shared/fab';
-import BgProfile from '@/components/profile/bgProfile';
+import MainFab from '@/components/shared/mainFab';
+import { useAuth } from '@/hooks/useAuth';
+import { logout } from '@/api/auth';
 
 export default function SettingsPage() {
-  const settingData = [
-    { data: '이름' },
-    { data: 'password' },
-    { data: 'password confirm' },
-    { data: 'One Liner' },
-    { data: 'Technical Tools(option)' },
-    { data: 'Position(option)' },
-    { data: 'Details(option)' },
-  ];
+  const navigate = useNavigate();
+  const { removeAuthData } = useAuth();
 
   const toggleDark = () => {
-    alert('dark toggled!');
+    console.log('dark toggled!');
   };
+
+  const fetchLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      removeAuthData();
+    }
+  };
+
+  const handleClickProfileSetting = () => {
+    navigate('/settings/profile');
+  };
+  const handleClickPasswordSetting = () => {
+    navigate('/settings/password');
+  };
+  const handleClickLogout = () => {
+    fetchLogout();
+    navigate('/');
+  };
+
   return (
-    <StyledWrapper>
-      <StyledBox>
-        <BgProfile
-          variant="square"
-          sx={{ width: '100%', height: '141px' }}
-          src={
-            'https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg'
-          }
-        />
-        <StyledProfileWrapper>
-          <StyledBasicAvatar
-            imgSrc="https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg"
-            alt="프로필사진"
-            size={90}
-            isUserOn={true}
-          />
-        </StyledProfileWrapper>
-      </StyledBox>
-      <Stack
-        direction={'column'}
-        alignItems={'center'}
-        justifyContent={'center'}
-      >
-        <Box>
-          <Stack
-            direction={'row'}
-            alignItems={'center'}
-            justifyContent={'center'}
-          >
-            <p>이름</p>
-          </Stack>
-        </Box>
-      </Stack>
-      {settingData.map(({ data }) => (
-        <StyledBasicInputBox>
-          <BasicInput placeholder={data} label={data} />
-        </StyledBasicInputBox>
-      ))}
-      <StyledBasicFab onClick={toggleDark} children={<DarkMode />} />
-      <BasicButton children="수정하기" />
-    </StyledWrapper>
+    <Stack>
+      <List component="div">
+        <ListItemButton onClick={handleClickProfileSetting}>
+          <ListItemText primary="프로필 수정" />
+        </ListItemButton>
+        <ListItemButton onClick={handleClickPasswordSetting}>
+          <ListItemText primary="비밀번호 수정" />
+        </ListItemButton>
+        <Divider />
+        <ListItemButton onClick={handleClickLogout}>
+          <ListItemText primary="로그아웃" />
+        </ListItemButton>
+      </List>
+      <MainFab bottom={20} onClick={toggleDark}>
+        <DarkMode />
+      </MainFab>
+    </Stack>
   );
 }
-
-const StyledBasicAvatar = styled(BasicAvatar)({
-  position: 'absolute',
-  left: '50%',
-  transform: 'translateX(-50%)',
-});
-const StyledBox = styled(Box)({
-  position: 'relative',
-  width: '100%',
-  height: '200px',
-  textAlign: 'center',
-});
-const StyledProfileWrapper = styled(Box)({
-  width: 'fit-content',
-  height: 'fit-content',
-  position: 'relative',
-  bottom: '50px',
-  left: '50%',
-  transform: 'translateX(-50%)',
-});
-
-const StyledBasicInputBox = styled(Box)({
-  margin: '10px 0',
-});
-
-const StyledWrapper = styled(Box)({
-  position: 'relative',
-});
-
-const StyledBasicFab = styled(BasicFab)({
-  position: 'absolute',
-  bottom: '10px',
-  right: 0,
-});

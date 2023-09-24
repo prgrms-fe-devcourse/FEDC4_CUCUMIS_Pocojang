@@ -20,11 +20,19 @@ export const authSlice = createSlice({
   reducers: {
     setAuth: (state, action) => {
       const token = action.payload;
+      if (!token) return;
       state.token = token;
     },
     setUser: (state, action) => {
       const user = action.payload;
+      if (!user) return;
       state.user = user;
+    },
+    removeAuth: (state) => {
+      state.token = undefined;
+    },
+    removeUser: (state) => {
+      state.user = undefined;
     },
   },
 });

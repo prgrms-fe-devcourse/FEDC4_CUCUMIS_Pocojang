@@ -42,10 +42,6 @@ const Header = () => {
     navigate('/login');
   };
 
-  const logout = () => {
-    // TODO: 로그아웃
-  };
-
   return (
     <AppBarStyled position="fixed" elevation={0}>
       <ToolbarStyled>
@@ -102,14 +98,6 @@ const Header = () => {
             >
               {title}
             </TypographyStyled>
-            {title === Title.SETTINGS && isLogin && (
-              <BasicChip
-                label="로그아웃"
-                variant="outlined"
-                color="primary"
-                onClick={logout}
-              />
-            )}
           </>
         )}
       </ToolbarStyled>

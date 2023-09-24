@@ -1,133 +1,78 @@
+import { useEffect, useState } from 'react';
+
+import BasicAvatarProps from '@/types/components/BasicAvatarProps';
+import { PostType } from '@/types';
+import { getChannelPosts } from '@/api/posts';
+import CHANNEL_ID from '@/consts/channels';
+import useInfiniteScroll from '@/hooks/useInfiniteScroll';
+
+interface DeveloperType {
+  _id: string;
+  label: string;
+  AvatarProps: BasicAvatarProps;
+}
+
+interface HomeType {
+  _id: string;
+  imageUrl?: string;
+  name: string;
+  projectTitle: string;
+  developers?: DeveloperType[];
+}
+// TODO최대길이 예외처리, api 예외처리
 const useHome = () => {
-  const projects = [
-    {
-      _id: '1',
-      projectTitle:
-        '동해물과백두산이 마르고 닳도록 하느님이보우하사우리나라만세무궁화삼천리 화려강산 대한사람대한으로 길이보전하세',
-      imageUrl: 'https://source.unsplash.com/random',
-      name: '저쩌구씨',
-    },
-    {
-      _id: '2',
-      projectTitle: '어쩌구저쩌구',
-      imageUrl: 'https://source.unsplash.com/random',
-      name: '저쩌구씨',
-    },
-    {
-      _id: '3',
-      projectTitle: '어쩌구저쩌구',
-      imageUrl: 'https://source.unsplash.com/random',
-      name: '저쩌구씨',
-    },
-    {
-      _id: '4',
-      projectTitle: '어쩌구저쩌구',
-      imageUrl: 'https://source.unsplash.com/random',
-      name: '저쩌구씨',
-    },
-    {
-      _id: '5',
-      projectTitle: '어쩌구저쩌구',
-      imageUrl: 'https://source.unsplash.com/random',
-      name: '저쩌구씨',
-    },
-    {
-      _id: '6',
-      projectTitle: '어쩌구저쩌구',
-      imageUrl: 'https://source.unsplash.com/random',
-      name: '저쩌구씨',
-    },
-    {
-      _id: '7',
-      projectTitle: '어쩌구저쩌구',
-      imageUrl: 'https://source.unsplash.com/random',
-      name: '저쩌구씨',
-    },
-  ];
+  const [homeList, setHomeList] = useState<HomeType[]>([]);
+  const { page, pageEnd } = useInfiniteScroll({ options: {} });
 
-  const onlineDevelopers = [
-    {
-      _id: '1',
+  useEffect(() => {
+    Promise.all([
+      getChannelPosts(CHANNEL_ID.PROJECT, {
+        offset: page * 3,
+        limit: 3,
+      }),
+      getChannelPosts(CHANNEL_ID.DEVELOPER, {
+        offset: page * 4,
+        limit: 4,
+      }),
+    ])
+      .then((lists) => parseHomeList(...lists))
+      .then((result) => setHomeList((state) => [...state, ...result]));
+  }, [page]);
 
-      avatarProps: {
-        imgSrc: 'https://source.unsplash.com/random',
-        alt: '어쩌구씨',
-        isUserOn: true,
-      },
-      label: '어쩌구씨',
-    },
-    {
-      _id: '2',
-
-      avatarProps: {
-        imgSrc: 'https://source.unsplash.com/random',
-        alt: '어쩌구씨',
-        isUserOn: true,
-      },
-      label: '어쩌구씨',
-    },
-    {
-      _id: '3',
-
-      avatarProps: {
-        imgSrc: 'https://source.unsplash.com/random',
-        alt: '어쩌구씨',
-        isUserOn: true,
-      },
-      label: '어쩌구씨',
-    },
-    {
-      _id: '4',
-
-      avatarProps: {
-        imgSrc: 'https://source.unsplash.com/random',
-        alt: '어쩌구씨',
-        isUserOn: true,
-      },
-      label: '어쩌구씨',
-    },
-    {
-      _id: '5',
-
-      avatarProps: {
-        imgSrc: 'https://source.unsplash.com/random',
-        alt: '어쩌구씨',
-        isUserOn: true,
-      },
-      label: '어쩌구씨',
-    },
-    {
-      _id: '6',
-
-      avatarProps: {
-        imgSrc: 'https://source.unsplash.com/random',
-        alt: '어쩌구씨',
-        isUserOn: true,
-      },
-      label: '어쩌구씨',
-    },
-    {
-      _id: '7',
-
-      avatarProps: {
-        imgSrc: 'https://source.unsplash.com/random',
-        alt: '어쩌구씨',
-        isUserOn: true,
-      },
-      label: '어쩌구씨',
-    },
-    {
-      _id: '8',
-      avatarProps: {
-        imgSrc: 'https://source.unsplash.com/random',
-        alt: '어쩌구씨',
-        isUserOn: true,
-      },
-
-      label: '어쩌구씨',
-    },
-  ];
-
-  return { projects, onlineDevelopers };
+  return { homeList, target: pageEnd };
 };
 export default useHome;
+
+const parseProjectPosts = (list: PostType[]) => {
+  return list.map((projectPost) => {
+    const { _id, title, author, image } = projectPost;
+    const { title: projectTitle } = JSON.parse(title);
+
+    return { _id, projectTitle, name: author.fullName, imageUrl: image };
+  });
+};
+
+const parseDeveloperPosts = (list: PostType[]) => {
+  return list.map((developerPost) => {
+    const {
+      _id,
+      author: { fullName, image, isOnline },
+    } = developerPost;
+    return {
+      _id,
+      label: fullName,
+      AvatarProps: { imgSrc: image, alt: fullName, isUserOn: isOnline },
+    };
+  });
+};
+
+const parseHomeList = (projectList: PostType[], developerList: PostType[]) => {
+  const projects: HomeType[] = parseProjectPosts(projectList);
+  const developers: DeveloperType[] = parseDeveloperPosts(developerList);
+  projects[projects.length - 1] = {
+    ...projects[projects.length - 1],
+    developers,
+  };
+
+  return projects;
+};

@@ -1,17 +1,34 @@
-import { List } from '@mui/material';
+import { useCallback } from 'react';
 import styled from '@emotion/styled';
+import List from '@mui/material/List';
+import LinearProgress from '@mui/material/LinearProgress';
 
-import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 import { useDMList } from '@/components/dm/useDMList';
+import ItemWithAvatar from '@/components/shared/itemWithAvatar';
 
 export default function DMListPage() {
-  const { conversations } = useDMList();
+  const { conversations, isLoading, handleConversationClick } = useDMList({
+    onFail: useCallback((error: unknown) => {
+      // TODO: conversations 불러오기 실패 알림
+      console.error(error);
+    }, []),
+  });
 
-  return (
+  return isLoading ? (
+    <LinearProgress />
+  ) : (
     <ListStyled>
-      {conversations.map((conversation) => (
-        <ItemWithAvatar key={conversation._id} {...conversation} />
-      ))}
+      {conversations &&
+        conversations.map((conversation) => (
+          <ItemWithAvatar
+            name={conversation.dmUser.fullName}
+            message={conversation.message}
+            unReadCount={conversation.unReadCount}
+            onClick={() => handleConversationClick(conversation.dmUser)}
+            AvatarProps={{ imgSrc: conversation.dmUser.image }}
+            key={conversation._id}
+          />
+        ))}
     </ListStyled>
   );
 }

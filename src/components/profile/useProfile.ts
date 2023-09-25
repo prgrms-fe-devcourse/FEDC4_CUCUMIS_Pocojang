@@ -21,6 +21,8 @@ import {
   updateFileName,
 } from '@/stores/profile';
 import { fileNameSelector } from '@/stores/profile/selector';
+import session from '@/utils/sessionStorage';
+import SESSION_STORAGE from '@/consts/sessionStorage';
 
 export default function useProfile() {
   const dispatch = useAppDispatch();
@@ -31,7 +33,6 @@ export default function useProfile() {
   const loading = useAppSelector(loadingSelector);
   const selectedFile = useAppSelector(selectedFileSelector);
   const fileName = useAppSelector(fileNameSelector);
-
   const { userId } = useParams();
   const navigate = useNavigate();
   const navigationData = [
@@ -155,6 +156,10 @@ export default function useProfile() {
         if (myAccount?._id) {
           const newAccount = await getUser(myAccount._id);
           dispatch(updateMyAccount(newAccount));
+        } else {
+          dispatch(
+            updateMyAccount(session.getItem(SESSION_STORAGE.USER) as UserType),
+          );
         }
       } catch (error) {
         console.error('내 계정 업데이트 에러 >>', error);

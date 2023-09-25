@@ -22,8 +22,8 @@ import { sendNotification } from '@/api/notifications';
 import {
   DEVELOPER_URL,
   DM_URL,
+  PROFILE_MODIFY_URL,
   PROFILE_URL,
-  SETTINGS_URL,
 } from '@/consts/routes';
 import { userFollowingSelector } from '@/stores/auth/selector';
 import handleAxiosError from '@/utils/axiosError';
@@ -48,7 +48,7 @@ const useDeveloperDetail = () => {
   };
 
   const handleSettingClick = () => {
-    navigate(SETTINGS_URL);
+    navigate(PROFILE_MODIFY_URL);
   };
 
   const handleDMClick = () => {

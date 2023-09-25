@@ -1,33 +1,33 @@
 import styled from '@emotion/styled';
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { Box, Divider, LinearProgress, Stack, Typography } from '@mui/material';
 
 import BasicAvatar from '@/components/shared/avatar';
 import BasicChip from '@/components/shared/chip';
-import { PROFILE_URL, PROJECT_MODIFYL_URL } from '@/consts/routes';
 import Comments from '@/components/comments';
 import useProjectDetail from '@/components/projects/useProjectDetail';
 import ChipGroup from '@/components/shared/chipGroup';
+import FullLineTyphography from '@/components/shared/fullLineTyphograhy';
 
-const DEFAULT_IMAGE = 'https://source.unsplash.com/random';
+const DEFAULT_IMAGE = '/assets/Logo96.svg';
 
 export default function ProjectDetailPage() {
   const {
-    projectId,
     author,
     image = DEFAULT_IMAGE,
     contents,
     createdAt,
-    handleClick,
+    handleAvatarClick,
+    handleSettingClick,
     handleDeleteClick,
     isAuthor,
     isLoading,
   } = useProjectDetail();
 
   return isLoading ? (
-    <Box>로딩 중</Box>
+    <LinearProgress />
   ) : (
     <Stack spacing={3}>
-      <ProjectImageStyled
+      <ProjectImageBox
         component="img"
         src={image}
         alt={contents.title + "'s project image"}
@@ -38,11 +38,8 @@ export default function ProjectDetailPage() {
         spacing={2}
         alignContent="center"
       >
-        <BasicAvatar
-          imgSrc={author.image}
-          onClick={() => handleClick(PROFILE_URL, author._id ?? '')}
-        />
-        <TitleBoxStyled>
+        <BasicAvatar imgSrc={author.image} onClick={handleAvatarClick} />
+        <TitleBox>
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -59,24 +56,22 @@ export default function ProjectDetailPage() {
                 <BasicChip
                   label="수정"
                   variant="outlined"
-                  onClick={() =>
-                    handleClick(PROJECT_MODIFYL_URL, projectId as string)
-                  }
+                  onClick={handleSettingClick}
                 />
                 <BasicChip
                   label="삭제"
                   variant="outlined"
-                  onClick={() => handleDeleteClick(projectId as string)}
+                  onClick={handleDeleteClick}
                 />
               </ChipGroup>
             )}
           </Stack>
-        </TitleBoxStyled>
+        </TitleBox>
       </Stack>
-      <Typography variant="h4">{contents.title}</Typography>
+      <FullLineTyphography variant="h4">{contents.title}</FullLineTyphography>
       <Stack spacing={1}>
         <Typography color="gray">요구사항</Typography>
-        <Typography>{contents.requirements}</Typography>
+        <FullLineTyphography>{contents.requirements}</FullLineTyphography>
       </Stack>
       <Divider variant="middle" />
       <Box>
@@ -87,13 +82,13 @@ export default function ProjectDetailPage() {
   );
 }
 
-const ProjectImageStyled = styled(Box)({
+const ProjectImageBox = styled(Box)({
   width: '100%',
   height: '30vh',
   objectFit: 'cover',
 }) as typeof Box;
 
-const TitleBoxStyled = styled(Box)({
+const TitleBox = styled(Box)({
   minWidth: 0,
   marginRight: '16px',
   width: '100%',

@@ -30,10 +30,16 @@ export const developersSlice = createSlice({
   initialState,
   reducers: {
     setDeveloperList: (state, { payload }) => {
+      state.DeveloperList = [...state.DeveloperList, ...payload];
+    },
+    setSearchList: (state, { payload }) => {
       state.DeveloperList = payload;
     },
     setOnlineUserList: (state, { payload }) => {
       state.onlineUserList = payload;
+    },
+    cleanDeveloperList: (state) => {
+      state.DeveloperList = [];
     },
   },
 });

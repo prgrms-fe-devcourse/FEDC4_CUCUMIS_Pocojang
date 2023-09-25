@@ -3,5 +3,5 @@ export interface RequestLikePostType {
 }
 
 export interface RequestCancelLikePostType {
-  postId: string;
+  id: string;
 }

@@ -1,19 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { AxiosError } from 'axios';
 
-import { setPost } from '@/stores/projectDetail';
-import { useAppSelector } from '@/stores/hooks';
-import { projectDetailSelector } from '@/stores/projectDetail/selector';
+import { setIsLoading, setPost } from '@/stores/projectDetail';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { setUser, userIdSelector, isLoginSelector } from '@/stores/auth';
+import {
+  isLoadingSelector,
+  projectDetailSelector,
+} from '@/stores/projectDetail/selector';
 import type {
   PostType,
-  UserType,
   FormattedPost,
-  CommentType,
   DeveloperContent,
+  FollowType,
 } from '@/types';
-import session from '@/utils/sessionStorage';
-import SESSION_STORAGE from '@/consts/sessionStorage';
 import { getPost, deletePost } from '@/api/posts';
 import { getUser } from '@/api/user';
 import { followUser, unFollowUser } from '@/api/follow';
@@ -24,41 +25,32 @@ import {
   PROFILE_URL,
   SETTINGS_URL,
 } from '@/consts/routes';
-
-const formattedPost = (comments: CommentType[]) => {
-  const formattedComments = comments.map(({ _id, comment, author }) => ({
-    AvatarProps: {
-      imgSrc: author.image,
-    },
-    author: author.fullName,
-    comment,
-    userId: author._id,
-    commentId: _id,
-  }));
-
-  return formattedComments;
-};
+import { userFollowingSelector } from '@/stores/auth/selector';
+import handleAxiosError from '@/utils/axiosError';
 
 const useDeveloperDetail = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const { developerId } = useParams();
-  const { post } = useAppSelector(projectDetailSelector<DeveloperContent>);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [buttonState, setButtonState] = useState({
-    isFollowing: false,
-    isLoggedIn: false,
-  });
-  const [userInfo, setUserInfo] = useState<UserType>();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const userId = useAppSelector(userIdSelector);
+  const userFollowingList = useAppSelector(userFollowingSelector);
+  const isLoggedIn = useAppSelector(isLoginSelector);
+  const { post } = useAppSelector(projectDetailSelector<DeveloperContent>);
+  const isLoading = useAppSelector(isLoadingSelector);
+
+  const [isUserFollowing, setIsUserFollowing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + developerId);
   };
+
   const handleSettingClick = () => {
     navigate(SETTINGS_URL);
   };
+
   const handleDMClick = () => {
     navigate(DM_URL + developerId);
   };
@@ -67,24 +59,29 @@ const useDeveloperDetail = () => {
     const isAbleToDelete = confirm('정말로 삭제하시겠습니까?');
 
     if (isAbleToDelete && developerId) {
-      const res = await deletePost({ id: developerId });
+      try {
+        const res = await deletePost({ id: developerId });
 
-      res && navigate(DEVELOPER_URL);
+        res && navigate(DEVELOPER_URL, { replace: true });
+      } catch (error) {
+        window.alert('포스트 삭제에 실패하였습니다');
+      }
     }
   };
 
-  const handleFollowClick = async () => {
+  const handleFollowClick = useCallback(async () => {
+    dispatch(setIsLoading(true));
+
     try {
-      if (buttonState.isFollowing) {
+      if (isUserFollowing) {
         const followerIDList = post.author.followers;
+
         if (followerIDList) {
-          const followId = userInfo?.following.find(({ _id }) =>
+          const followId = userFollowingList.find(({ _id }) =>
             followerIDList.includes(_id),
           );
 
-          if (followId) {
-            await unFollowUser({ id: followId._id });
-          }
+          followId && (await unFollowUser({ id: followId._id }));
         }
       } else {
         if (post.author._id) {
@@ -97,76 +94,67 @@ const useDeveloperDetail = () => {
           });
         }
       }
-
-      if (userInfo?._id) {
-        const newUserInfo = await getUser(userInfo._id);
-        session.setItem(SESSION_STORAGE.USER, newUserInfo);
-      }
     } catch (error) {
-      console.log(error);
+      window.alert('팔로우 처리에 실패하였습니다');
+
+      dispatch(setIsLoading(false));
+    } finally {
+      try {
+        const newUserInfo = await getUser(userId);
+
+        dispatch(setUser(newUserInfo));
+      } catch (error) {
+        dispatch(setIsLoading(false));
+      } finally {
+        navigate(0);
+      }
     }
+  }, [
+    isUserFollowing,
+    post.author._id,
+    dispatch,
+    navigate,
+    post.author.followers,
+    userFollowingList,
+    userId,
+  ]);
 
-    navigate(0);
-  };
+  const fetchPost = useCallback(
+    async (postId: string) => {
+      dispatch(setIsLoading(true));
 
-  useEffect(() => {
-    setIsLoading(true);
-
-    const fetchPost = async (postId: string) => {
       try {
         const rs = await getPost(postId);
 
-        handlePost(rs);
+        const formattedPost = handlePostFormat(rs);
+
+        dispatch(setPost(formattedPost));
       } catch (error) {
-        console.log(error);
+        const axiosErrorMessage = handleAxiosError(error as Error);
+
+        setErrorMessage(axiosErrorMessage);
       } finally {
-        setIsLoading(false);
+        dispatch(setIsLoading(false));
       }
-    };
-
-    const handlePost = (rs: PostType) => {
-      const { author, comments, _id, image, createdAt } = rs;
-      const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
-
-      const formatedPost: Partial<FormattedPost<DeveloperContent>> = {
-        postId: _id,
-        comments: formattedPost(comments),
-        image: image,
-        author,
-        createdAt,
-        contents: {
-          oneLiner,
-          techStack,
-          position,
-          details,
-        },
-      };
-
-      dispatch(setPost(formatedPost));
-    };
-
-    if (developerId) {
-      fetchPost(developerId);
-    }
-  }, [developerId, dispatch]);
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
-    const user = session.getItem<UserType>(SESSION_STORAGE.USER);
+    developerId && fetchPost(developerId);
+  }, [developerId, fetchPost]);
 
-    if (user && post.author.followers) {
-      setUserInfo(user);
+  useEffect(() => {
+    const isFollowedByUser = getIsFollowedByUser(post, userFollowingList);
 
-      const followerID = post.author.followers;
-      const isFollowedByUser = user.following?.some(({ _id }) =>
-        followerID.includes(_id),
-      );
-      setButtonState({ isLoggedIn: true, isFollowing: isFollowedByUser });
+    setIsUserFollowing(isFollowedByUser);
+  }, [post, userFollowingList, userId]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      throw new AxiosError(errorMessage);
     }
-
-    if (!user) {
-      setButtonState((prev) => ({ ...prev, isLoggedIn: false }));
-    }
-  }, [post]);
+  }, [errorMessage]);
 
   return {
     developerId,
@@ -175,11 +163,58 @@ const useDeveloperDetail = () => {
     handleAvatarClick,
     handleDeleteClick,
     handleFollowClick,
-    isAuthor: post.author._id === userInfo?._id,
+    isAuthor: post.author._id === userId,
+    isUserFollowing,
     isLoading,
-    ...buttonState,
+    isLoggedIn,
     ...post,
   };
+};
+
+const handlePostFormat = (rs: PostType) => {
+  const { author, comments, _id, image, createdAt, likes } = rs;
+  const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
+
+  const formattedComments = comments.map(({ _id, comment, author }) => ({
+    AvatarProps: {
+      imgSrc: author.image,
+    },
+    author: author.fullName,
+    comment,
+    userId: author._id,
+    commentId: _id,
+  }));
+
+  const formattedPost: Partial<FormattedPost<DeveloperContent>> = {
+    likes,
+    postId: _id,
+    comments: formattedComments,
+    image: image,
+    author,
+    createdAt,
+    contents: {
+      oneLiner,
+      techStack,
+      position,
+      details,
+    },
+  };
+  return formattedPost;
+};
+
+const getIsFollowedByUser = (
+  post: FormattedPost<DeveloperContent>,
+  userFollowingList: FollowType[],
+) => {
+  if (post.author.followers) {
+    const authorFollowerIDList = post.author.followers;
+
+    const isFollowedByUser = userFollowingList.some(({ _id }) =>
+      authorFollowerIDList.includes(_id),
+    );
+    return isFollowedByUser;
+  }
+  return false;
 };
 
 export default useDeveloperDetail;

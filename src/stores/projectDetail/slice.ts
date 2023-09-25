@@ -8,6 +8,7 @@ import type {
 
 export interface ProjectDetailState<T> {
   post: FormattedPost<T>;
+  isLoading: boolean;
 }
 
 const initialState: ProjectDetailState<ProjectContent | DeveloperContent> = {
@@ -25,6 +26,7 @@ const initialState: ProjectDetailState<ProjectContent | DeveloperContent> = {
     updatedAt: '',
     contents: {},
   },
+  isLoading: false,
 };
 
 export const projectDetailSlice = createSlice({
@@ -33,6 +35,9 @@ export const projectDetailSlice = createSlice({
   reducers: {
     setPost: (state, action) => {
       state.post = action.payload;
+    },
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
     },
   },
 });

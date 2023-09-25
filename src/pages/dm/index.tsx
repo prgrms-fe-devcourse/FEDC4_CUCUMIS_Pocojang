@@ -19,14 +19,14 @@ export default function DMListPage() {
   ) : (
     <ListStyled>
       {conversations &&
-        conversations.map((conversation) => (
+        conversations.map(({ dmUser, message, unReadCount }) => (
           <ItemWithAvatar
-            name={conversation.dmUser.fullName}
-            message={conversation.message}
-            unReadCount={conversation.unReadCount}
-            onClick={() => handleConversationClick(conversation.dmUser)}
-            AvatarProps={{ imgSrc: conversation.dmUser.image }}
-            key={conversation._id}
+            name={dmUser.fullName}
+            message={message}
+            unReadCount={unReadCount}
+            onClick={() => handleConversationClick(dmUser)}
+            AvatarProps={{ imgSrc: dmUser.image }}
+            key={dmUser._id}
           />
         ))}
     </ListStyled>

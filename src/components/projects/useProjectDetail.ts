@@ -1,20 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { AxiosError } from 'axios';
 
 import { getPost, deletePost } from '@/api/posts';
-import { setPost } from '@/stores/projectDetail';
+import { setIsLoading, setPost } from '@/stores/projectDetail';
+import { userIdSelector } from '@/stores/auth';
 import { useAppSelector } from '@/stores/hooks';
-import { projectDetailSelector } from '@/stores/projectDetail/selector';
-import type {
-  PostType,
-  UserType,
-  FormattedPost,
-  ProjectContent,
-} from '@/types';
-import session from '@/utils/sessionStorage';
-import SESSION_STORAGE from '@/consts/sessionStorage';
-import { PROJECT_URL } from '@/consts/routes';
+import {
+  isLoadingSelector,
+  projectDetailSelector,
+} from '@/stores/projectDetail/selector';
+import type { PostType, FormattedPost, ProjectContent } from '@/types';
+import { PROFILE_URL, PROJECT_MODIFYL_URL, PROJECT_URL } from '@/consts/routes';
+import handleAxiosError from '@/utils/axiosError';
 
 const useProjectDetail = () => {
   const navigate = useNavigate();
@@ -22,90 +21,107 @@ const useProjectDetail = () => {
 
   const { projectId } = useParams();
   const { post } = useAppSelector(projectDetailSelector<ProjectContent>);
+  const userId = useAppSelector(userIdSelector);
+  const isLoading = useAppSelector(isLoadingSelector);
 
-  const [userId, setUserId] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleClick = (url: string, id: string) => {
-    navigate(url + id);
+  const handleAvatarClick = () => {
+    navigate(PROFILE_URL + post.author._id);
   };
 
-  const handleDeleteClick = async (id: string) => {
-    const ableToDelete = confirm('정말로 삭제하시겠습니까?');
+  const handleSettingClick = () => {
+    navigate(PROJECT_MODIFYL_URL + projectId);
+  };
 
-    if (ableToDelete) {
-      const res = await deletePost({ id });
+  const handleDeleteClick = async () => {
+    const ableToDelete = window.confirm('정말로 삭제하시겠습니까?');
 
-      res && navigate(PROJECT_URL);
+    if (ableToDelete && projectId) {
+      try {
+        const res = await deletePost({ id: projectId });
+
+        res && navigate(PROJECT_URL, { replace: true });
+      } catch (error) {
+        window.alert('포스트 삭제에 실패하였습니다');
+      }
     }
   };
 
-  useEffect(() => {
-    const user = session.getItem<UserType>(SESSION_STORAGE.USER);
+  const fetchPost = useCallback(
+    async (postId: string) => {
+      dispatch(setIsLoading(true));
 
-    if (user) {
-      const { _id } = user;
-      setUserId(_id);
-    }
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    const fetchPost = async (postId: string) => {
       try {
         const rs = await getPost(postId);
 
-        handlePost(rs);
-      } catch (error) {
-        console.log(error);
+        const formattedPost = handlePostFormat(rs);
+
+        dispatch(setPost(formattedPost));
+      } catch (error: unknown) {
+        const axiosErrorMessage = handleAxiosError(error as Error);
+
+        setErrorMessage(axiosErrorMessage);
       } finally {
-        setIsLoading(false);
+        dispatch(setIsLoading(false));
       }
-    };
+    },
+    [dispatch],
+  );
 
-    const handlePost = (rs: PostType) => {
-      const { author, comments, _id, image, createdAt } = rs;
-      const { title, requirements } = JSON.parse(rs.title);
-
-      const formattedComments = comments.map(({ _id, comment, author }) => ({
-        AvatarProps: {
-          imgSrc: author.image,
-        },
-        author: author.fullName,
-        comment,
-        userId: author._id,
-        commentId: _id,
-      }));
-
-      const formatedPost: Partial<FormattedPost<ProjectContent>> = {
-        postId: _id,
-        comments: formattedComments,
-        image: image,
-        author,
-        createdAt,
-        contents: {
-          title,
-          requirements,
-        },
-      };
-
-      dispatch(setPost(formatedPost));
-    };
-
+  useEffect(() => {
     if (projectId) {
       fetchPost(projectId);
     }
-  }, [projectId, dispatch]);
+  }, [projectId, fetchPost]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      throw new AxiosError(errorMessage);
+    }
+  }, [errorMessage]);
 
   return {
     projectId,
-    handleClick,
+    handleAvatarClick,
+    handleSettingClick,
     handleDeleteClick,
     isAuthor: post.author._id === userId,
     isLoading,
     ...post,
   };
+};
+
+const handlePostFormat = (rs: PostType) => {
+  const { author, comments, _id, image, createdAt, likes } = rs;
+  const { title, requirements } = JSON.parse(rs.title);
+
+  const formattedComments = comments.map(({ _id, comment, author }) => ({
+    AvatarProps: {
+      imgSrc: author.image,
+    },
+    author: author.fullName,
+    comment,
+    userId: author._id,
+    commentId: _id,
+  }));
+
+  const fomattedDate = createdAt.replace('T', ' ').slice(0, -5);
+
+  const formattedPost: Partial<FormattedPost<ProjectContent>> = {
+    likes,
+    postId: _id,
+    comments: formattedComments,
+    image: image,
+    author,
+    createdAt: fomattedDate,
+    contents: {
+      title,
+      requirements,
+    },
+  };
+
+  return formattedPost;
 };
 
 export default useProjectDetail;

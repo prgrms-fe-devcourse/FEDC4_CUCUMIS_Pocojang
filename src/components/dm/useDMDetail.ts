@@ -33,6 +33,7 @@ export const useDMDetail = ({
   }));
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInterval, setIsInterval] = useState(false);
 
   const fetchMessages = useCallback(
     async (dmUserId: string) => {
@@ -77,8 +78,10 @@ export const useDMDetail = ({
   );
 
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView();
-  }, [messages]);
+    if (!isInterval) {
+      messageEndRef.current?.scrollIntoView();
+    }
+  }, [isInterval, messages]);
 
   useEffect(() => {
     if (dmUserId) {
@@ -98,6 +101,7 @@ export const useDMDetail = ({
     if (dmUserId) {
       fetchMessages(dmUserId);
       updateMessagesSeen(dmUserId);
+      setIsInterval(true);
     }
   }, 3000);
 
@@ -118,6 +122,7 @@ export const useDMDetail = ({
         receiver: dmUserId,
       };
       createMessage(message);
+      setIsInterval(false);
     }
   }, [input, dmUserId, dispatch, onSendFail]);
 

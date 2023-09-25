@@ -15,6 +15,7 @@ import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import BasicChip from '@/components/shared/chip';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
+import Likes from '@/components/shared/likes';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -40,10 +41,6 @@ const Header = () => {
 
   const goToLogin = () => {
     navigate('/login');
-  };
-
-  const logout = () => {
-    // TODO: 로그아웃
   };
 
   return (
@@ -102,13 +99,8 @@ const Header = () => {
             >
               {title}
             </TypographyStyled>
-            {title === Title.SETTINGS && isLogin && (
-              <BasicChip
-                label="로그아웃"
-                variant="outlined"
-                color="primary"
-                onClick={logout}
-              />
+            {(title === Title.DEVELOPER || title === Title.PROJECT) && (
+              <Likes />
             )}
           </>
         )}

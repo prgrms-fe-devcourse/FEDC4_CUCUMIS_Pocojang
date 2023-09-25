@@ -11,4 +11,5 @@ export default interface ItemWithAvatarProps {
   to?: string;
   isLastItem?: boolean;
   isComment?: boolean;
+  onClick?: () => void;
 }

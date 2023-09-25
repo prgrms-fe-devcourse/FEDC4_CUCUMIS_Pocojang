@@ -5,3 +5,4 @@ export const DM_URL = '/dm/';
 export const DEVELOPER_URL = '/developers';
 export const PROJECT_URL = '/projects';
 export const LOGIN_URL = '/login';
+export const PROFILE_MODIFY_URL = '/settings/profile';

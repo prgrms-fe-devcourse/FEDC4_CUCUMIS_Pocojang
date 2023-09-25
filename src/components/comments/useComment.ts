@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAppSelector } from '@/stores/hooks';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { layoutSelector } from '@/stores/layout';
 import { createComment, deleteComment } from '@/api/comments';
 import { sendNotification } from '@/api/notifications';
@@ -9,8 +9,11 @@ import { projectDetailSelector } from '@/stores/projectDetail/selector';
 import { LOGIN_URL, PROFILE_URL } from '@/consts/routes';
 import { tokenSelector } from '@/stores/auth/selector';
 import { userIdSelector } from '@/stores/auth';
+import { setIsLoading } from '@/stores/projectDetail';
 
 const useComment = () => {
+  const dispatch = useAppDispatch();
+
   const { post } = useAppSelector(projectDetailSelector);
   const { input } = useAppSelector(layoutSelector);
   const token = useAppSelector(tokenSelector);
@@ -19,12 +22,17 @@ const useComment = () => {
   const navigate = useNavigate();
 
   const handleDeleteClick = async (id: string) => {
+    dispatch(setIsLoading(true));
+
     try {
       await deleteComment({ id });
     } catch (error) {
       window.alert('댓글 삭제에 실패하였습니다');
+    } finally {
+      dispatch(setIsLoading(false));
+
+      navigate(0);
     }
-    navigate(0);
   };
 
   const handleAvatarClick = (id: string) => {
@@ -40,6 +48,8 @@ const useComment = () => {
       return;
     }
 
+    dispatch(setIsLoading(true));
+
     try {
       const res = await createComment({
         comment: input,
@@ -52,12 +62,14 @@ const useComment = () => {
         userId: post.author._id as string,
         postId: post.postId,
       });
-
-      navigate(0);
     } catch (error) {
       window.alert('댓글 달기에 실패하였습니다');
+    } finally {
+      dispatch(setIsLoading(false));
+
+      navigate(0);
     }
-  }, [token, input, navigate, post.author._id, post.postId]);
+  }, [token, input, navigate, post.author._id, post.postId, dispatch]);
 
   useEffect(() => {
     input && submitComment();

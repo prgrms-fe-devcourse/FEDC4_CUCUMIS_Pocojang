@@ -25,10 +25,20 @@ const usePost = () => {
   const isLogin = useAppSelector(isLoginSelector);
   const isLoading = useAppSelector(isLoadingSelector);
 
-  const [authorId, setAuthorId] = useState('');
-  const [contents, setContents] = useState({ title: '', requirements: '' });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imageFile, setImageFile] = useState<string | null>(null);
+  const [contents, setContents] = useState({
+    title: '',
+    requirements: '',
+    authorId: '',
+  });
+  const [fileData, setFileData] = useState<{
+    selectedFile: File | null;
+    imageFile: string | null;
+    fileName: string;
+  }>({
+    selectedFile: null,
+    imageFile: null,
+    fileName: '',
+  });
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,12 +46,14 @@ const usePost = () => {
       const file = event.target.files[0] || null;
 
       if (file) {
-        setSelectedFile(file);
-
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-          setImageFile(reader.result as string);
+          setFileData({
+            selectedFile: file,
+            imageFile: reader.result as string,
+            fileName: file.name,
+          });
         };
       }
     }
@@ -68,9 +80,22 @@ const usePost = () => {
 
   const handlePost = (rs: PostType) => {
     const { title, requirements } = JSON.parse(rs.title);
-    setContents({ title, requirements });
+    setFileData((prev) => ({
+      ...prev,
+      imageFile: rs.image ?? null,
+      fileName: rs.image
+        ? 'image : ' + rs.createdAt.replace('T', ' ').slice(0, -5)
+        : '',
+    }));
 
-    setAuthorId(rs.author._id);
+    setContents({ title, requirements, authorId: rs.author._id });
+  };
+  const handleDeleteFileData = () => {
+    setFileData({ selectedFile: null, imageFile: null, fileName: '' });
+  };
+
+  const setLoadingState = (isLoading: boolean) => {
+    dispatch(setIsLoading(isLoading));
   };
 
   const setLoadingState = (isLoading: boolean) => {
@@ -80,10 +105,10 @@ const usePost = () => {
   useEffect(() => {
     if (!isLogin) {
       navigate(LOGIN_URL);
-    } else if (authorId && userId !== authorId) {
+    } else if (contents.authorId && userId !== contents.authorId) {
       throw new Error('잘못된 접근입니다');
     }
-  }, [isLogin, navigate, userId, authorId]);
+  }, [isLogin, navigate, userId, contents.authorId]);
 
   useEffect(() => {
     projectId && fetchPost(projectId);
@@ -102,8 +127,8 @@ const usePost = () => {
     isLoading,
     handleFileChange,
     setLoadingState,
-    selectedFile,
-    imageFile,
+    handleDeleteFileData,
+    ...fileData,
   };
 };
 

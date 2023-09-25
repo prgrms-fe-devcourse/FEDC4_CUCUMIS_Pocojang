@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, Box, Stack, LinearProgress } from '@mui/material';
+import { Button, Box, Stack, LinearProgress, Typography } from '@mui/material';
 import styled from '@emotion/styled';
+import CloseIcon from '@mui/icons-material/Close';
 
 import BasicInput from '@/components/shared/input';
 import usePost from '@/components/projects/usePost';
@@ -23,7 +24,9 @@ export default function ProjectPost() {
     setLoadingState,
     handleFileChange,
     selectedFile,
+    fileName,
     imageFile,
+    handleDeleteFileData,
   } = usePost();
 
   const { errors, handleChange, handleSubmit } = useForm({
@@ -87,7 +90,11 @@ export default function ProjectPost() {
       <Stack spacing={3}>
         <Box />
         {imageFile ? (
-          <PreviewImageBox src={imageFile} alt="프로필 이미지" />
+          <PreviewImageBox
+            src={imageFile}
+            alt="프로필 이미지"
+            onClick={handleDeleteFileData}
+          />
         ) : (
           <UploadStyledButton variant="outlined" component="label">
             <Box>Click to Upload</Box>
@@ -99,6 +106,12 @@ export default function ProjectPost() {
               onChange={handleFileChange}
             />
           </UploadStyledButton>
+        )}
+        {fileName && (
+          <Stack direction="row" spacing={1}>
+            <Typography>{fileName}</Typography>
+            <CloseIcon color="secondary" onClick={handleDeleteFileData} />
+          </Stack>
         )}
         <BasicInput
           defaultValue={prevTitle}

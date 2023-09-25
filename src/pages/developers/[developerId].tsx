@@ -39,7 +39,12 @@ export default function DeveloperDetail() {
           alt={contents.oneLiner + "'s project image"}
         />
         <StackContainer direction="column" alignItems="center">
-          <BasicAvatar {...author} size={90} onClick={handleAvatarClick} />
+          <BasicAvatar
+            {...author}
+            isUserOn={author.isOnline}
+            size={90}
+            onClick={handleAvatarClick}
+          />
           <Typography noWrap>{author.fullName}</Typography>
         </StackContainer>
       </Box>

@@ -178,6 +178,7 @@ const handlePostFormat = (rs: PostType) => {
   const formattedComments = comments.map(({ _id, comment, author }) => ({
     AvatarProps: {
       imgSrc: author.image,
+      isUserOn: author.isOnline,
     },
     author: author.fullName,
     comment,

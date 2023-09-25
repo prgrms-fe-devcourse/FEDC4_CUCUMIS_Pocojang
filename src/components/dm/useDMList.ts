@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setConversations, conversationsSelector } from '@/stores/dm';
 import { userIdSelector } from '@/stores/auth';
 import { setVisitingUser } from '@/stores/layout';
-import { ConversationDataType } from '@/stores/dm/slice';
 import { UserType } from '@/types';
 
 interface DMListHookParameters {
@@ -32,7 +31,26 @@ export const useDMList = ({ onFail }: DMListHookParameters) => {
         });
 
       dispatch(setConversations(filteredConversations));
-      return filteredConversations;
+
+      const requests = filteredConversations.map((conversation) =>
+        getMessages({ userId: conversation.dmUser?._id ?? '' }),
+      );
+      Promise.all(requests).then((results) => {
+        const unReadCountedConversations = results.map((result) => {
+          const conversationUser = [result[0].receiver, result[0].sender];
+          const dmUser = conversationUser.find((user) => user._id !== userId);
+          const conversationIndex = filteredConversations.findIndex(
+            (conversation) => conversation.dmUser?._id === dmUser?._id,
+          );
+          const unReadCount = result.filter(
+            (message) => message.receiver._id === userId && !message.seen,
+          ).length;
+
+          return { ...filteredConversations[conversationIndex], unReadCount };
+        });
+
+        dispatch(setConversations(unReadCountedConversations));
+      });
     } catch (error) {
       onFail(error);
     } finally {
@@ -40,36 +58,9 @@ export const useDMList = ({ onFail }: DMListHookParameters) => {
     }
   }, [dispatch, userId, onFail]);
 
-  const fetchUnReadCounts = useCallback(
-    async (conversations: ConversationDataType[]) => {
-      const requests = conversations.map((conversation) =>
-        getMessages({ userId: conversation.dmUser?._id ?? '' }),
-      );
-      Promise.all(requests)
-        .then((results) => {
-          const unReadCountedConversations = results.map((result) => {
-            const conversationUser = [result[0].receiver, result[0].sender];
-            const dmUser = conversationUser.find((user) => user._id !== userId);
-            const conversationIndex = conversations.findIndex(
-              (conversation) => conversation.dmUser?._id === dmUser?._id,
-            );
-            const unReadCount = result.filter(
-              (message) => message.receiver._id === userId && !message.seen,
-            ).length;
-
-            return { ...conversations[conversationIndex], unReadCount };
-          });
-
-          dispatch(setConversations(unReadCountedConversations));
-        })
-        .catch((error) => onFail(error));
-    },
-    [dispatch, userId, onFail],
-  );
-
   useEffect(() => {
-    fetchConversations().then((result) => result && fetchUnReadCounts(result));
-  }, [dispatch, fetchConversations, fetchUnReadCounts]);
+    fetchConversations();
+  }, [dispatch, fetchConversations]);
 
   const handleConversationClick = (dmUser: UserType) => {
     navigate(`/dm/${dmUser._id}`);

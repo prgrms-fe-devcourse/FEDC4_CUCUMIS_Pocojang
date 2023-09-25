@@ -15,7 +15,6 @@ const DEFAULT_IMAGE = '/assets/Logo96.svg';
 export default function DeveloperDetail() {
   const {
     author,
-    image = DEFAULT_IMAGE,
     contents,
     handleSettingClick,
     handleDMClick,
@@ -35,11 +34,17 @@ export default function DeveloperDetail() {
       <Box>
         <ProjectImageBox
           component="img"
-          src={image}
+          src={author.coverImage ?? DEFAULT_IMAGE}
           alt={contents.oneLiner + "'s project image"}
         />
         <StackContainer direction="column" alignItems="center">
-          <BasicAvatar {...author} size={90} onClick={handleAvatarClick} />
+          <BasicAvatar
+            {...author}
+            imgSrc={author.image}
+            isUserOn={author.isOnline}
+            size={90}
+            onClick={handleAvatarClick}
+          />
           <Typography noWrap>{author.fullName}</Typography>
         </StackContainer>
       </Box>

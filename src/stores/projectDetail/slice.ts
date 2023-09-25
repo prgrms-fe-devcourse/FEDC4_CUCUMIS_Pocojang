@@ -21,6 +21,7 @@ const initialState: ProjectDetailState<ProjectContent | DeveloperContent> = {
       image: '',
       fullName: '',
       _id: '',
+      isOnline: false,
     },
     createdAt: '',
     updatedAt: '',

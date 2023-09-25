@@ -30,7 +30,7 @@ const NavigationProfileContent = ({ userState, value }: Type) => {
                 to={`/profile/${follower}`}
               />
             ))}
-          {['2', '3'].includes(value) &&
+          {value === '2' &&
             userState.posts.map(({ _id, title, image }) => (
               <Box key={_id}>
                 <ProjectCardItem

@@ -39,7 +39,6 @@ export default function useProfile() {
     { label: userState?.following.length || 0, title: '팔로잉' },
     { label: userState?.followers.length || 0, title: '팔로워' },
     { label: userState?.posts.length || 0, title: '포스트' },
-    { label: userState?.likes.length || 0, title: '스크랩' },
   ];
 
   const isMe = (userId: string) => myAccount?._id === userId;

@@ -38,7 +38,11 @@ export default function ProjectDetailPage() {
         spacing={2}
         alignContent="center"
       >
-        <BasicAvatar imgSrc={author.image} onClick={handleAvatarClick} />
+        <BasicAvatar
+          imgSrc={author.image}
+          isUserOn={author.isOnline}
+          onClick={handleAvatarClick}
+        />
         <TitleBox>
           <Stack
             direction="row"

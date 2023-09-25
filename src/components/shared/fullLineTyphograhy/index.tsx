@@ -12,7 +12,7 @@ const FullLineTyphography = ({
 
 const WordWrapTypography = styled(Typography)({
   wordWrap: 'break-word',
-  whiteSpace: 'pre',
+  whiteSpace: 'pre-wrap',
 });
 
 export default FullLineTyphography;

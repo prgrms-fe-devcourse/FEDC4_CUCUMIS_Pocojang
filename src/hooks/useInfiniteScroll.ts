@@ -21,6 +21,7 @@ const useInfiniteScroll = ({ isFetching, options }: InfiniteScrollProps) => {
   }, [isFetching]);
 
   const loadMore = () => {
+    if (isFetching) return;
     setPage((prev) => prev + 1);
   };
 

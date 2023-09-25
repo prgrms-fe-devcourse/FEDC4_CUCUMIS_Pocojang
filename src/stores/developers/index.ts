@@ -5,5 +5,5 @@ export const {
   setSearchList,
   setDeveloperList,
   setOnlineUserList,
-  initDeveloperList,
+  cleanDeveloperList,
 } = developersSlice.actions;

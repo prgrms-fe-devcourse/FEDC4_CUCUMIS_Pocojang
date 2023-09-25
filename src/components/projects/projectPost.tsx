@@ -20,7 +20,7 @@ export default function ProjectPost() {
     prevTitle,
     prevRequirements,
     isLoading,
-    setIsLoading,
+    setLoadingState,
     handleFileChange,
     selectedFile,
     imageFile,
@@ -44,7 +44,8 @@ export default function ProjectPost() {
       selectedFile && formData.append(IMAGE, selectedFile);
 
       try {
-        setIsLoading(true);
+        setLoadingState(true);
+
         if (projectId) {
           formData.append(POST_ID, projectId);
 
@@ -62,7 +63,7 @@ export default function ProjectPost() {
       } catch (error) {
         console.error(error);
       } finally {
-        setIsLoading(false);
+        setLoadingState(false);
       }
     },
     validate: ({ title, requirements }: FormValues) => {

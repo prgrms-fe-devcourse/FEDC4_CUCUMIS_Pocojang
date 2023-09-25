@@ -15,6 +15,7 @@ import useForm, { FormErrors, FormValues } from '@/hooks/useForm';
 import BasicChip from '@/components/shared/chip';
 import BasicSearch from '@/components/shared/search';
 import BasicIconButton from '@/components/shared/iconButton';
+import Likes from '@/components/shared/likes';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -98,6 +99,9 @@ const Header = () => {
             >
               {title}
             </TypographyStyled>
+            {(title === Title.DEVELOPER || title === Title.PROJECT) && (
+              <Likes />
+            )}
           </>
         )}
       </ToolbarStyled>

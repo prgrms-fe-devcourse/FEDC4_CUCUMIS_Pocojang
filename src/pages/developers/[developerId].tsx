@@ -8,6 +8,7 @@ import BasicButton from '@/components/shared/button';
 import useDeveloperDetails from '@/components/developers/useDeveloperDetail';
 import Comments from '@/components/comments';
 import ChipGroup from '@/components/shared/chipGroup';
+import FullLineTyphography from '@/components/shared/fullLineTyphograhy';
 
 const DEFAULT_IMAGE = '/assets/Logo96.svg';
 
@@ -78,7 +79,7 @@ export default function DeveloperDetail() {
         )}
       </Stack>
       <Stack spacing={1}>
-        <Typography variant="h4">
+        <FullLineTyphography variant="h4">
           {contents.oneLiner}
           {contents.position && (
             <ChipContainer
@@ -87,7 +88,7 @@ export default function DeveloperDetail() {
               color="secondary"
             />
           )}
-        </Typography>
+        </FullLineTyphography>
         <ChipsBoxContainer>
           {Array.isArray(contents.techStack) &&
             contents.techStack?.map((skill: string, i: number) => (
@@ -98,7 +99,7 @@ export default function DeveloperDetail() {
       {contents.details && (
         <Box>
           <Typography color="gray">자기소개</Typography>
-          <Typography>{contents.details}</Typography>
+          <FullLineTyphography>{contents.details}</FullLineTyphography>
         </Box>
       )}
       <Divider variant="middle" />

@@ -45,9 +45,9 @@ const ItemWithAvatar = ({
       primary={<Typography color="text.primary">{name}</Typography>}
       secondary={
         message && (
-          <Typography variant="body2" color="text.primary" noWrap={!isComment}>
+          <SecondaryFullLineText isMultiLine={isComment}>
             {message}
-          </Typography>
+          </SecondaryFullLineText>
         )
       }
     />
@@ -74,11 +74,23 @@ const ItemWithAvatar = ({
 
 const BoxStyled = styled(Container)({
   padding: '8px 16px',
+  width: '100%',
+  overflow: 'hidden',
 });
 
 const SkeletonStyled = styled(Skeleton)({
   minWidth: '30px',
   borderRadius: '16px',
 });
+
+const SecondaryFullLineText = styled('span', {
+  shouldForwardProp: (prop) => prop !== 'isMultiLine',
+})(({ isMultiLine }: { isMultiLine: boolean }) => ({
+  wordWrap: isMultiLine ? 'break-word' : 'normal',
+  textOverflow: isMultiLine ? 'initial' : 'ellipsis',
+  overflow: isMultiLine ? 'visible' : 'hidden',
+  whiteSpace: isMultiLine ? 'normal' : 'nowrap',
+  display: isMultiLine ? 'inline' : 'block',
+}));
 
 export default ItemWithAvatar;

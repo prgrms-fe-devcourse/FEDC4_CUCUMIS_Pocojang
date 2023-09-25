@@ -8,6 +8,8 @@ import { projectsReducer } from '@/stores/projects';
 import { developersReducer } from '@/stores/developers';
 import { settingsProfileReducer } from '@/stores/settings/profile';
 
+import { profileReducer } from './profile';
+
 export const reducers = {
   auth: authReducer,
   layout: layoutReducer,
@@ -17,5 +19,6 @@ export const reducers = {
   dm: dmReducer,
   notifications: notificationReducer,
   developers: developersReducer,
+  profile: profileReducer,
   settingsProfile: settingsProfileReducer,
 };

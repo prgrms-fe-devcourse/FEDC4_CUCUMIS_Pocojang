@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { PostType, UserType } from '@/types';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
@@ -7,7 +7,7 @@ import {
   onlineUserListSelector,
 } from '@/stores/developers/selector';
 import {
-  initDeveloperList,
+  cleanDeveloperList,
   setDeveloperList,
   setOnlineUserList,
   setSearchList,
@@ -19,72 +19,91 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import CHANNEL_ID from '@/consts/channels';
 import { searchAll } from '@/api/search';
 
-//TODOapi 에러 처리, 1글자 이하이면 경고창이 필요한가?스낵바?, 페치중 페치 막기 , 초기 렌더링을 실행 막기
-const useDevelopers = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
+interface useDevelopersProps {
+  onGetFail: (error: unknown) => void;
+}
 
+const useDevelopers = ({ onGetFail }: useDevelopersProps) => {
   const dispatch = useAppDispatch();
-
   const developerList = useAppSelector(developerListSelector);
   const onlineUserList = useAppSelector(onlineUserListSelector);
   const headerSearchValue = useAppSelector(inputSelector);
-
-  const { page, pageEnd } = useInfiniteScroll({
-    options: { threshold: 0.2 },
-  });
-
-  useEffect(() => {
-    getOnlineUsers()
-      .then(parseOnlineUserList)
-      .then((list) => dispatch(setOnlineUserList(list)));
-
-    return () => {
-      setIsSearching(false);
-      dispatch(initDeveloperList());
-    };
-  }, [dispatch]);
+  const [isEndOfList, setIsEndOfList] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const isLoading = useRef(false);
+  const setIsLoading = (state: boolean) => {
+    isLoading.current = state;
+  };
+  const { page, pageEnd } = useInfiniteScroll({ isFetching, options: {} });
 
   useEffect(() => {
-    const searchProjects = async (value: string) => {
-      const searchResult = await searchAll(value).then((result: unknown) =>
-        parseSearchResult(result as Post[]),
-      );
-      dispatch(setSearchList(searchResult));
-      setIsLoading(false);
+    setIsLoading(isFetching);
+  }, [isFetching]);
+
+  useEffect(() => {
+    const searchDevelopers = async (value: string) => {
+      setIsFetching(true);
+      setIsEndOfList(true);
+      try {
+        const searchResult = await searchAll(value).then((result: unknown) =>
+          parseSearchResult(result as Post[]),
+        );
+        dispatch(setSearchList(searchResult));
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        setIsFetching(false);
+      }
     };
 
     const value = headerSearchValue.trim();
     if (value.length < 1) return;
-    setIsLoading(true);
-    setIsSearching(true);
     const encoded = encodeURIComponent(value);
-    searchProjects(encoded);
-  }, [dispatch, headerSearchValue]);
+    searchDevelopers(encoded);
+  }, [dispatch, headerSearchValue, onGetFail]);
 
   useEffect(() => {
-    const scrolling = async () => {
-      setIsLoading(true);
-      await getChannelPosts(CHANNEL_ID.DEVELOPER, {
-        offset: page * 5,
-        limit: 5,
-      })
-        .then(parseDeveloperPosts)
-        .then((posts) => {
-          dispatch(setDeveloperList(posts));
+    if (isLoading.current) return;
+    const fetch = async () => {
+      setIsFetching(true);
+      try {
+        const result = await getChannelPosts(CHANNEL_ID.DEVELOPER, {
+          offset: page * 7,
+          limit: 7,
         });
-      setIsLoading(false);
+        if (result.length === 0) {
+          setIsEndOfList(true);
+        }
+        const parsed = parseDeveloperPosts(result);
+        dispatch(setDeveloperList(parsed));
+      } catch (error) {
+        onGetFail(error);
+      } finally {
+        setIsFetching(false);
+      }
     };
+    fetch();
+  }, [dispatch, page, onGetFail]);
 
-    scrolling();
-  }, [dispatch, page]);
+  useEffect(() => {
+    try {
+      getOnlineUsers()
+        .then(parseOnlineUserList)
+        .then((list) => dispatch(setOnlineUserList(list)));
+    } catch (error) {
+      onGetFail(error);
+    }
+    return () => {
+      dispatch(cleanDeveloperList());
+    };
+  }, [dispatch, onGetFail]);
 
   return {
-    isSearching,
-    isLoading,
+    isFetching,
     target: pageEnd,
     onlineDevelopers: onlineUserList,
     developers: developerList,
+    isEndOfList,
   };
 };
 

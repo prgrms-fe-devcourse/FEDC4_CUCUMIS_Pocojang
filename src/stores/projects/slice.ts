@@ -7,12 +7,33 @@ export interface ProjectType {
   projectTitle: string;
 }
 
+interface InitialState {
+  ProjectList: ProjectType[];
+  isFetching: boolean;
+}
+
+const initialState: InitialState = {
+  ProjectList: [],
+  isFetching: false,
+};
+
 export const projectsSlice = createSlice({
   name: 'projects',
-  initialState: { list: [] as ProjectType[] },
+  initialState,
   reducers: {
-    setList: (state, { payload }) => {
-      state.list = [...state.list, ...payload];
+    setProjectList: (state, { payload }) => {
+      state.ProjectList = [...state.ProjectList, ...payload];
+    },
+
+    setIsFetching: (state, { payload }) => {
+      state.isFetching = payload;
+    },
+
+    setSearchList: (state, { payload }) => {
+      state.ProjectList = payload;
+    },
+    cleanProjectList: (state) => {
+      state.ProjectList = [];
     },
   },
 });

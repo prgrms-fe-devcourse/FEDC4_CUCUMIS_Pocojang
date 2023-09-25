@@ -98,6 +98,10 @@ const usePost = () => {
     dispatch(setIsLoading(isLoading));
   };
 
+  const setLoadingState = (isLoading: boolean) => {
+    dispatch(setIsLoading(isLoading));
+  };
+
   useEffect(() => {
     if (!isLogin) {
       navigate(LOGIN_URL);

@@ -6,6 +6,7 @@ import BasicChip from '@/components/shared/chip';
 import Comments from '@/components/comments';
 import useProjectDetail from '@/components/projects/useProjectDetail';
 import ChipGroup from '@/components/shared/chipGroup';
+import FullLineTyphography from '@/components/shared/fullLineTyphograhy';
 
 const DEFAULT_IMAGE = '/assets/Logo96.svg';
 
@@ -67,10 +68,10 @@ export default function ProjectDetailPage() {
           </Stack>
         </TitleBox>
       </Stack>
-      <Typography variant="h4">{contents.title}</Typography>
+      <FullLineTyphography variant="h4">{contents.title}</FullLineTyphography>
       <Stack spacing={1}>
         <Typography color="gray">요구사항</Typography>
-        <Typography>{contents.requirements}</Typography>
+        <FullLineTyphography>{contents.requirements}</FullLineTyphography>
       </Stack>
       <Divider variant="middle" />
       <Box>

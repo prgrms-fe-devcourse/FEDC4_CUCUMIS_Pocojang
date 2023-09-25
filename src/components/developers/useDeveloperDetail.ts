@@ -2,10 +2,13 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
-import { setPost } from '@/stores/projectDetail';
+import { setIsLoading, setPost } from '@/stores/projectDetail';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { setUser, userIdSelector, isLoginSelector } from '@/stores/auth';
-import { projectDetailSelector } from '@/stores/projectDetail/selector';
+import {
+  isLoadingSelector,
+  projectDetailSelector,
+} from '@/stores/projectDetail/selector';
 import type {
   PostType,
   FormattedPost,
@@ -35,11 +38,9 @@ const useDeveloperDetail = () => {
   const userFollowingList = useAppSelector(userFollowingSelector);
   const isLoggedIn = useAppSelector(isLoginSelector);
   const { post } = useAppSelector(projectDetailSelector<DeveloperContent>);
+  const isLoading = useAppSelector(isLoadingSelector);
 
-  const [pageState, setPageState] = useState({
-    isUserFollowing: false,
-    isLoading: true,
-  });
+  const [isUserFollowing, setIsUserFollowing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleAvatarClick = () => {
@@ -69,10 +70,10 @@ const useDeveloperDetail = () => {
   };
 
   const handleFollowClick = useCallback(async () => {
-    setPageState((prev) => ({ ...prev, isLoading: true }));
+    dispatch(setIsLoading(true));
 
     try {
-      if (pageState.isUserFollowing) {
+      if (isUserFollowing) {
         const followerIDList = post.author.followers;
 
         if (followerIDList) {
@@ -96,20 +97,20 @@ const useDeveloperDetail = () => {
     } catch (error) {
       window.alert('팔로우 처리에 실패하였습니다');
 
-      setPageState((prev) => ({ ...prev, isLoading: false }));
+      dispatch(setIsLoading(false));
     } finally {
       try {
         const newUserInfo = await getUser(userId);
 
         dispatch(setUser(newUserInfo));
       } catch (error) {
-        setPageState((prev) => ({ ...prev, isLoading: false }));
+        dispatch(setIsLoading(false));
       } finally {
         navigate(0);
       }
     }
   }, [
-    pageState.isUserFollowing,
+    isUserFollowing,
     post.author._id,
     dispatch,
     navigate,
@@ -120,6 +121,8 @@ const useDeveloperDetail = () => {
 
   const fetchPost = useCallback(
     async (postId: string) => {
+      dispatch(setIsLoading(true));
+
       try {
         const rs = await getPost(postId);
 
@@ -131,7 +134,7 @@ const useDeveloperDetail = () => {
 
         setErrorMessage(axiosErrorMessage);
       } finally {
-        setPageState((prev) => ({ ...prev, isLoading: false }));
+        dispatch(setIsLoading(false));
       }
     },
     [dispatch],
@@ -144,7 +147,7 @@ const useDeveloperDetail = () => {
   useEffect(() => {
     const isFollowedByUser = getIsFollowedByUser(post, userFollowingList);
 
-    setPageState((prev) => ({ ...prev, isUserFollowing: isFollowedByUser }));
+    setIsUserFollowing(isFollowedByUser);
   }, [post, userFollowingList, userId]);
 
   useEffect(() => {
@@ -161,14 +164,15 @@ const useDeveloperDetail = () => {
     handleDeleteClick,
     handleFollowClick,
     isAuthor: post.author._id === userId,
-    ...pageState,
+    isUserFollowing,
+    isLoading,
     isLoggedIn,
     ...post,
   };
 };
 
 const handlePostFormat = (rs: PostType) => {
-  const { author, comments, _id, image, createdAt } = rs;
+  const { author, comments, _id, image, createdAt, likes } = rs;
   const { oneLiner, techStack, position, details } = JSON.parse(rs.title);
 
   const formattedComments = comments.map(({ _id, comment, author }) => ({
@@ -182,6 +186,7 @@ const handlePostFormat = (rs: PostType) => {
   }));
 
   const formattedPost: Partial<FormattedPost<DeveloperContent>> = {
+    likes,
     postId: _id,
     comments: formattedComments,
     image: image,

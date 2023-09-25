@@ -1,26 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { notificationCreateType } from '@/consts/notificationCreateType';
 import type { NotificationType } from '@/types';
 
-export interface Notification {
-  isSeen: boolean;
-  _id: string;
-  name: string;
-  type: string;
+interface InitialState {
+  notifications: Notification[];
 }
-
+const initialState: InitialState = {
+  notifications: [],
+};
 export const notificationSlice = createSlice({
   name: 'notification',
-  initialState: { notifications: [] as Notification[] },
+  initialState,
   reducers: {
-    handleClick: (state, { payload }) => {
-      state.notifications = state.notifications.map((notification) => {
-        if (notification._id === payload && !notification.isSeen)
-          return { ...notification, isSeen: true };
-        return notification;
-      });
-    },
-
     setNotification: (state, { payload }) => {
       state.notifications = payload.map((notification: NotificationType) => {
         const {
@@ -29,8 +21,14 @@ export const notificationSlice = createSlice({
           author: { fullName },
         } = notification;
         const type = checkNotificationType(notification);
-        return { _id, isSeen: seen, name: fullName, type };
+        return { _id, seen, name: fullName, type, notification };
       });
+    },
+    readAllNotification: (state) => {
+      state.notifications = state.notifications.map((notification) => ({
+        ...notification,
+        seen: true,
+      }));
     },
   },
 });
@@ -41,10 +39,29 @@ const checkNotificationType = (notification: NotificationType): string => {
   }
   return '';
 };
+interface follow {
+  follower: string;
+}
+interface post {
+  _id: string;
+  title: string;
+  channel: string;
+}
+interface like {
+  post: post;
+}
 
-const notificationCreateType = {
-  follow: 'follow',
-  like: 'like',
-  message: 'message',
-  comment: 'comment',
-} as const;
+interface comment {
+  post: post;
+}
+
+export interface Notification {
+  seen: boolean;
+  _id: string;
+  name: string;
+  type: string;
+  like?: like;
+  comment?: comment;
+  follow?: follow;
+  notification: Notification;
+}

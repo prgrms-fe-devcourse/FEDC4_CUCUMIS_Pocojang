@@ -1,7 +1,7 @@
 import { Unsubscribe } from '@reduxjs/toolkit';
 
 import { AppStartListening } from '@/stores';
-import { setAuth, setUser } from '@/stores/auth';
+import { removeAuth, removeUser, setAuth, setUser } from '@/stores/auth';
 import session from '@/utils/sessionStorage';
 import SESSION_STORAGE from '@/consts/sessionStorage';
 
@@ -15,6 +15,14 @@ const onUpdateUser = (action: ReturnType<typeof setUser>) => {
   session.setItem(SESSION_STORAGE.USER, user);
 };
 
+const onRemoveAuth = () => {
+  session.removeItem(SESSION_STORAGE.TOKEN);
+};
+
+const onRemoveUser = () => {
+  session.removeItem(SESSION_STORAGE.USER);
+};
+
 export const setupAuthListeners = (
   startListening: AppStartListening,
 ): Unsubscribe => {
@@ -26,6 +34,14 @@ export const setupAuthListeners = (
     startListening({
       actionCreator: setUser,
       effect: onUpdateUser,
+    }),
+    startListening({
+      actionCreator: removeAuth,
+      effect: onRemoveAuth,
+    }),
+    startListening({
+      actionCreator: removeUser,
+      effect: onRemoveUser,
     }),
   ];
 

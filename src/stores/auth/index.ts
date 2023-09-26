@@ -9,4 +9,5 @@ export const {
   userIdSelector,
   userFullNameSelector,
   isLoginSelector,
+  userInfoSelector,
 } = selector;

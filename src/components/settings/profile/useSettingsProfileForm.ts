@@ -33,20 +33,24 @@ interface SettingsProfileFormParameters {
 
 const updateProfile = (
   profilePostId: string,
+  name: string,
   formData: FormData,
 ): Promise<[PostType, UserType]> =>
   Promise.all([
     updatePost(formData),
     updateUser({
-      fullName: formData.get('name') as string,
+      fullName: name,
       username: profilePostId,
     }),
   ]);
 
-const createProfile = async (formData: FormData): Promise<UserType> => {
+const createProfile = async (
+  name: string,
+  formData: FormData,
+): Promise<UserType> => {
   const profilePost = await createPost(formData);
   const userData = await updateUser({
-    fullName: formData.get('name') as string,
+    fullName: name,
     username: profilePost._id,
   });
   return userData;
@@ -76,22 +80,23 @@ const useSettingsProfileForm = ({
     const { name, oneLiner, techStack, position, details } =
       settingsProfileFormValues;
 
-    const title = JSON.stringify({
+    const profile = {
       name: name || defaultValues.name,
       oneLiner: oneLiner || defaultValues.oneLiner,
       techStack: techStack || defaultValues.techStack,
       position: position || defaultValues.position,
       details: details || defaultValues.details,
-    });
+    };
+    const title = JSON.stringify(profile);
     formData.append('title', title);
     formData.append('channelId', CHANNEL_ID.DEVELOPER);
 
     try {
       if (profilePostId) {
         formData.append('postId', profilePostId);
-        await updateProfile(profilePostId, formData);
+        await updateProfile(profilePostId, profile.name, formData);
       } else {
-        const userData = await createProfile(formData);
+        const userData = await createProfile(profile.name, formData);
         dispatch(setUser(userData));
       }
       onSuccess();

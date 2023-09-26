@@ -23,6 +23,7 @@ const useComment = () => {
   const userId = useAppSelector(userIdSelector);
   const isLoading = useAppSelector(isLoadingSelector);
   const isFetching = useRef(false);
+
   const setIsFetching = (state: boolean) => {
     isFetching.current = state;
   };
@@ -49,7 +50,6 @@ const useComment = () => {
 
   useEffect(() => {
     const submitComment = async () => {
-      console.log(token, input, developerId, projectId);
       if (!token) {
         window.alert('로그인이 필요합니다');
 

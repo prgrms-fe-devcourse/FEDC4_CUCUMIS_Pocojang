@@ -38,7 +38,6 @@ export const projectDetailSlice = createSlice({
       state.post = action.payload;
     },
     setIsLoading: (state, action) => {
-      console.log(action);
       state.isLoading = action.payload;
     },
   },

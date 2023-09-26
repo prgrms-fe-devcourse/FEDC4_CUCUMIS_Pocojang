@@ -27,6 +27,7 @@ import {
 } from '@/consts/routes';
 import { userFollowingSelector } from '@/stores/auth/selector';
 import handleAxiosError from '@/utils/axiosError';
+import { setVisitingUser } from '@/stores/layout';
 
 const useDeveloperDetail = () => {
   const { developerId } = useParams();
@@ -44,7 +45,8 @@ const useDeveloperDetail = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleAvatarClick = () => {
-    navigate(PROFILE_URL + developerId);
+    navigate(PROFILE_URL + post.author._id);
+    dispatch(setVisitingUser(post.author));
   };
 
   const handleSettingClick = () => {
@@ -52,7 +54,8 @@ const useDeveloperDetail = () => {
   };
 
   const handleDMClick = () => {
-    navigate(DM_URL + developerId);
+    navigate(DM_URL + post.author._id);
+    dispatch(setVisitingUser(post.author));
   };
 
   const handleDeleteClick = async () => {

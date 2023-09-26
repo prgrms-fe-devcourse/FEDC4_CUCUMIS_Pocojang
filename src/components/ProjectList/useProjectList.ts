@@ -50,6 +50,7 @@ const useProjectList = ({ onGetFail }: useProjectListProps) => {
   };
 
   useEffect(() => {
+    console.log(isFetching);
     setIsLoading(isFetching);
   }, [isFetching]);
 

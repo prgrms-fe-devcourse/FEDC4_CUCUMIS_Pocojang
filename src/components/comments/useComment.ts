@@ -1,11 +1,14 @@
-import { useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
-import { layoutSelector } from '@/stores/layout';
+import { inputSelector } from '@/stores/layout';
 import { createComment, deleteComment } from '@/api/comments';
 import { sendNotification } from '@/api/notifications';
-import { projectDetailSelector } from '@/stores/projectDetail/selector';
+import {
+  isLoadingSelector,
+  projectDetailSelector,
+} from '@/stores/projectDetail/selector';
 import { LOGIN_URL, PROFILE_URL } from '@/consts/routes';
 import { tokenSelector } from '@/stores/auth/selector';
 import { userIdSelector } from '@/stores/auth';
@@ -13,11 +16,16 @@ import { setIsLoading } from '@/stores/projectDetail';
 
 const useComment = () => {
   const dispatch = useAppDispatch();
-
+  const { developerId, projectId } = useParams();
   const { post } = useAppSelector(projectDetailSelector);
-  const { input } = useAppSelector(layoutSelector);
+  const input = useAppSelector(inputSelector);
   const token = useAppSelector(tokenSelector);
   const userId = useAppSelector(userIdSelector);
+  const isLoading = useAppSelector(isLoadingSelector);
+  const isFetching = useRef(false);
+  const setIsFetching = (state: boolean) => {
+    isFetching.current = state;
+  };
 
   const navigate = useNavigate();
 
@@ -39,41 +47,47 @@ const useComment = () => {
     navigate(PROFILE_URL + id);
   };
 
-  const submitComment = useCallback(async () => {
-    if (!token) {
-      window.alert('로그인이 필요합니다');
+  useEffect(() => {
+    const submitComment = async () => {
+      console.log(token, input, developerId, projectId);
+      if (!token) {
+        window.alert('로그인이 필요합니다');
 
-      navigate(LOGIN_URL);
+        navigate(LOGIN_URL);
 
-      return;
-    }
+        return;
+      }
 
-    dispatch(setIsLoading(true));
+      dispatch(setIsLoading(true));
+      // if (!developerId && !projectId) return;
 
-    try {
-      const res = await createComment({
-        comment: input,
-        postId: post.postId,
-      });
+      try {
+        const res = await createComment({
+          comment: input,
+          postId: (developerId || projectId) as string,
+        });
 
-      await sendNotification({
-        notificationType: 'COMMENT',
-        notificationTypeId: res._id,
-        userId: post.author._id as string,
-        postId: post.postId,
-      });
-    } catch (error) {
-      window.alert('댓글 달기에 실패하였습니다');
-    } finally {
-      dispatch(setIsLoading(false));
+        await sendNotification({
+          notificationType: 'COMMENT',
+          notificationTypeId: res._id,
+          userId: res.author._id as string,
+          postId: res.post,
+        });
+      } catch (error) {
+        window.alert('댓글 달기에 실패하였습니다');
+      } finally {
+        dispatch(setIsLoading(false));
 
-      navigate(0);
-    }
-  }, [token, input, navigate, post.author._id, post.postId, dispatch]);
+        // navigate(0);
+      }
+    };
+    if (isFetching.current || input.length < 1) return;
+    submitComment();
+  }, [input, developerId, navigate, dispatch, projectId, token]);
 
   useEffect(() => {
-    input && submitComment();
-  }, [input, submitComment]);
+    setIsFetching(isLoading);
+  }, [isLoading]);
 
   return {
     comments: post.comments,

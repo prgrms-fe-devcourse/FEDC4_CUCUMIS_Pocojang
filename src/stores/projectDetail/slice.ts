@@ -40,5 +40,26 @@ export const projectDetailSlice = createSlice({
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+    setAddComment: (state, action) => {
+      state.post.comments.push(action.payload);
+    },
+    setDeleteComment: (state, action) => {
+      const commentIndex = state.post.comments.findIndex(
+        (comment) => comment.commentId === action.payload,
+      );
+
+      if (commentIndex !== -1) {
+        state.post.comments.splice(commentIndex, 1);
+      }
+    },
+    setUpdateComment: (state, action) => {
+      const commentIndex = state.post.comments.findIndex(
+        (comment) => comment.commentId === action.payload.oldId,
+      );
+
+      if (commentIndex !== -1) {
+        state.post.comments[commentIndex].commentId = action.payload.newId;
+      }
+    },
   },
 });

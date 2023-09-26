@@ -8,8 +8,12 @@ import { sendNotification } from '@/api/notifications';
 import { projectDetailSelector } from '@/stores/projectDetail/selector';
 import { LOGIN_URL, PROFILE_URL } from '@/consts/routes';
 import { tokenSelector } from '@/stores/auth/selector';
-import { userIdSelector } from '@/stores/auth';
-import { setIsLoading } from '@/stores/projectDetail';
+import { userIdSelector, userInfoSelector } from '@/stores/auth';
+import {
+  setAddComment,
+  setDeleteComment,
+  setUpdateComment,
+} from '@/stores/projectDetail';
 
 const useComment = () => {
   const dispatch = useAppDispatch();
@@ -18,20 +22,16 @@ const useComment = () => {
   const { input } = useAppSelector(layoutSelector);
   const token = useAppSelector(tokenSelector);
   const userId = useAppSelector(userIdSelector);
+  const userInfo = useAppSelector(userInfoSelector);
 
   const navigate = useNavigate();
 
   const handleDeleteClick = async (id: string) => {
-    dispatch(setIsLoading(true));
-
+    dispatch(setDeleteComment(id));
     try {
       await deleteComment({ id });
     } catch (error) {
       window.alert('댓글 삭제에 실패하였습니다');
-    } finally {
-      dispatch(setIsLoading(false));
-
-      navigate(0);
     }
   };
 
@@ -40,7 +40,7 @@ const useComment = () => {
   };
 
   const submitComment = useCallback(async () => {
-    if (!token) {
+    if (!token || !userInfo) {
       window.alert('로그인이 필요합니다');
 
       navigate(LOGIN_URL);
@@ -48,13 +48,28 @@ const useComment = () => {
       return;
     }
 
-    dispatch(setIsLoading(true));
+    const { isOnline, image, fullName, _id } = userInfo;
+
+    dispatch(
+      setAddComment({
+        AvatarProps: {
+          imgSrc: image,
+          isUserOn: isOnline,
+        },
+        comment: input,
+        author: fullName,
+        commentId: 'temp' + input,
+        userId: _id,
+      }),
+    );
 
     try {
       const res = await createComment({
         comment: input,
         postId: post.postId,
       });
+
+      dispatch(setUpdateComment({ newId: res._id, oldId: 'temp' + input }));
 
       await sendNotification({
         notificationType: 'COMMENT',
@@ -64,12 +79,16 @@ const useComment = () => {
       });
     } catch (error) {
       window.alert('댓글 달기에 실패하였습니다');
-    } finally {
-      dispatch(setIsLoading(false));
-
-      navigate(0);
     }
-  }, [token, input, navigate, post.author._id, post.postId, dispatch]);
+  }, [
+    token,
+    input,
+    navigate,
+    post.author._id,
+    post.postId,
+    dispatch,
+    userInfo,
+  ]);
 
   useEffect(() => {
     input && submitComment();

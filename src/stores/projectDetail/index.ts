@@ -7,4 +7,5 @@ export const {
   setAddComment,
   setDeleteComment,
   setUpdateComment,
+  setDeleteFollow,
 } = projectDetailSlice.actions;

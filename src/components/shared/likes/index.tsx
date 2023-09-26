@@ -4,7 +4,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Stack, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 
-import { useAppSelector } from '@/stores/hooks';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
 import {
   likesSelector,
@@ -13,8 +13,10 @@ import {
 } from '@/stores/projectDetail/selector';
 import { cancelLikePost, likePost } from '@/api/likes';
 import { sendNotification } from '@/api/notifications';
+import { setDeleteFollow } from '@/stores/projectDetail';
 
 const Likes = () => {
+  const dispatch = useAppDispatch();
   const userId = useAppSelector(userIdSelector);
   const likes = useAppSelector(likesSelector);
   const postId = useAppSelector(postIdSelector);
@@ -63,6 +65,7 @@ const Likes = () => {
     if (userLikeInfo) {
       try {
         await cancelLikePost({ id: userLikeInfo._id });
+        dispatch(setDeleteFollow({ userId }));
       } catch (error) {
         window.alert('좋아요 처리에 실패하였습니다');
       }

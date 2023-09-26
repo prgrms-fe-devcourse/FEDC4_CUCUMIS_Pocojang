@@ -73,10 +73,10 @@ const useDeveloperDetail = () => {
   };
 
   const handleFollowClick = useCallback(async () => {
-    dispatch(setIsLoading(true));
-
     try {
       if (isUserFollowing) {
+        setIsUserFollowing(false);
+
         const followerIDList = post.author.followers;
 
         if (followerIDList) {
@@ -88,6 +88,8 @@ const useDeveloperDetail = () => {
         }
       } else {
         if (post.author._id) {
+          setIsUserFollowing(true);
+
           const res = await followUser({ userId: post.author._id });
 
           await sendNotification({
@@ -99,24 +101,19 @@ const useDeveloperDetail = () => {
       }
     } catch (error) {
       window.alert('팔로우 처리에 실패하였습니다');
-
-      dispatch(setIsLoading(false));
     } finally {
       try {
         const newUserInfo = await getUser(userId);
 
         dispatch(setUser(newUserInfo));
       } catch (error) {
-        dispatch(setIsLoading(false));
-      } finally {
-        navigate(0);
+        console.log(error);
       }
     }
   }, [
     isUserFollowing,
     post.author._id,
     dispatch,
-    navigate,
     post.author.followers,
     userFollowingList,
     userId,

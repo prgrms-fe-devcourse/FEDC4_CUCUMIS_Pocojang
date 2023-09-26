@@ -68,7 +68,7 @@ export default function DeveloperDetail() {
               <>
                 {isUserFollowing ? (
                   <BasicButton variant="outlined" onClick={handleFollowClick}>
-                    언팔로우
+                    팔로우 취소
                   </BasicButton>
                 ) : (
                   <BasicButton variant="outlined" onClick={handleFollowClick}>

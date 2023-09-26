@@ -159,9 +159,13 @@
   </tr>
 </table>
 
-### 개발 문화
+### 👥 개발 문화
 #### Git-All-in-One
-- Discussion → Issue → Project → PR → Code Review → Merge → CI/CD → Release Note
+- `Discussion` → `Issue` → `Project` → `PR` → `Code Review` → `Merge` → `CI/CD` → `Release Note`
 #### 스크럼, 스프린트
 - 변화에 유연한 애자일로 빠르게 프로덕트 개발
 #### 감정회고
+
+### 📝 회고록
+- [중간회고](https://prgrms.notion.site/0ee6a8edd56e4ebdb2945d7a129e5b9e?pvs=4)
+- [최종회고](https://prgrms.notion.site/eae78e43de5c4caab8eee92d65770d72?pvs=4)

@@ -10,8 +10,12 @@
 ## 배포 주소
 > https://fedc-4-cucumis-pocojang.vercel.app/
 
+<br/>
+
 ## Requirements
 - Node.js `18.17.1`
+
+<br/>
 
 ## 기술 스택
 <table>
@@ -79,6 +83,8 @@
 </tr>
 </table>
 
+<br/>
+
 ## 디렉토리 구조
 ```
 ├── README.md
@@ -111,6 +117,8 @@
 └── vite.config.ts
 ```
 
+<br/>
+
 ## 주요 기능
 ### 🏠 홈
 - 프로젝트 및 현재 접속 중인 개발자 목록
@@ -131,8 +139,12 @@
 ### 🔐 로그인/회원가입
 - 개발자 기술 스택, 직군, 한 줄 설명 및 자기소개 입력
 
+<br/>
+
 ## 유저 플로우
 ![참외인력소_유저플로우](https://github.com/prgrms-fe-devcourse/FEDC4_CUCUMIS_Pocojang/assets/49032882/8aa563f5-4770-4348-8f09-0c01ff092dee)
+
+<br/>
 
 ## 팀 소개
 <table>

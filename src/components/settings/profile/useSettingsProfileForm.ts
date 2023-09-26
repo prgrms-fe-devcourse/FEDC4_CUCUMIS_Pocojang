@@ -38,7 +38,10 @@ const updateProfile = (
 ): Promise<[PostType, UserType]> =>
   Promise.all([
     updatePost(formData),
-    updateUser({ fullName: name, username: profilePostId }),
+    updateUser({
+      fullName: name,
+      username: profilePostId,
+    }),
   ]);
 
 const createProfile = async (
@@ -77,21 +80,23 @@ const useSettingsProfileForm = ({
     const { name, oneLiner, techStack, position, details } =
       settingsProfileFormValues;
 
-    const title = JSON.stringify({
-      oneLiner: oneLiner ?? defaultValues.oneLiner,
-      techStack: techStack ?? defaultValues.techStack,
-      position: position ?? defaultValues.position,
-      details: details ?? defaultValues.details,
-    });
+    const profile = {
+      name: name || defaultValues.name,
+      oneLiner: oneLiner || defaultValues.oneLiner,
+      techStack: techStack || defaultValues.techStack,
+      position: position || defaultValues.position,
+      details: details || defaultValues.details,
+    };
+    const title = JSON.stringify(profile);
     formData.append('title', title);
     formData.append('channelId', CHANNEL_ID.DEVELOPER);
 
     try {
       if (profilePostId) {
         formData.append('postId', profilePostId);
-        await updateProfile(profilePostId, name, formData);
+        await updateProfile(profilePostId, profile.name, formData);
       } else {
-        const userData = await createProfile(name, formData);
+        const userData = await createProfile(profile.name, formData);
         dispatch(setUser(userData));
       }
       onSuccess();

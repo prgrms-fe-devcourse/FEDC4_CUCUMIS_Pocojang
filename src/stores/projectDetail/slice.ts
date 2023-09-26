@@ -61,7 +61,7 @@ export const projectDetailSlice = createSlice({
         state.post.comments[commentIndex].commentId = action.payload.newId;
       }
     },
-    setDeleteFollow: (state, action) => {
+    setDeleteLike: (state, action) => {
       const userLikeIndex = state.post.likes.findIndex(
         (like) => like.user === action.payload.userId,
       );

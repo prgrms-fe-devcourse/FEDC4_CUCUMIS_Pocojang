@@ -13,7 +13,7 @@ import {
 } from '@/stores/projectDetail/selector';
 import { cancelLikePost, likePost } from '@/api/likes';
 import { sendNotification } from '@/api/notifications';
-import { setDeleteFollow } from '@/stores/projectDetail';
+import { setDeleteLike } from '@/stores/projectDetail';
 
 const Likes = () => {
   const dispatch = useAppDispatch();
@@ -65,7 +65,7 @@ const Likes = () => {
     if (userLikeInfo) {
       try {
         await cancelLikePost({ id: userLikeInfo._id });
-        dispatch(setDeleteFollow({ userId }));
+        dispatch(setDeleteLike({ userId }));
       } catch (error) {
         window.alert('좋아요 처리에 실패하였습니다');
       }

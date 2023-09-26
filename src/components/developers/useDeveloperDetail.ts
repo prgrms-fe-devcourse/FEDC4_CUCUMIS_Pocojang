@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
@@ -43,6 +43,7 @@ const useDeveloperDetail = () => {
 
   const [isUserFollowing, setIsUserFollowing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const optimisticRef = useRef(false);
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + post.author._id);
@@ -72,7 +73,8 @@ const useDeveloperDetail = () => {
     }
   };
 
-  const handleFollowClick = useCallback(async () => {
+  const handleFollowClick = async () => {
+    optimisticRef.current = true;
     try {
       if (isUserFollowing) {
         setIsUserFollowing(false);
@@ -103,21 +105,20 @@ const useDeveloperDetail = () => {
       window.alert('팔로우 처리에 실패하였습니다');
     } finally {
       try {
-        const newUserInfo = await getUser(userId);
+        if (developerId) {
+          const rs = await getPost(developerId);
 
+          const formattedPost = handlePostFormat(rs);
+
+          dispatch(setPost(formattedPost));
+        }
+        const newUserInfo = await getUser(userId);
         dispatch(setUser(newUserInfo));
       } catch (error) {
         console.log(error);
       }
     }
-  }, [
-    isUserFollowing,
-    post.author._id,
-    dispatch,
-    post.author.followers,
-    userFollowingList,
-    userId,
-  ]);
+  };
 
   const fetchPost = useCallback(
     async (postId: string) => {
@@ -147,7 +148,7 @@ const useDeveloperDetail = () => {
   useEffect(() => {
     const isFollowedByUser = getIsFollowedByUser(post, userFollowingList);
 
-    setIsUserFollowing(isFollowedByUser);
+    if (!optimisticRef.current) setIsUserFollowing(isFollowedByUser);
   }, [post, userFollowingList, userId]);
 
   useEffect(() => {

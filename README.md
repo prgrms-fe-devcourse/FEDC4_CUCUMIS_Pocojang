@@ -3,8 +3,9 @@
   <img src="https://github.com/prgrms-fe-devcourse/FEDC4_CUCUMIS_Pocojang/assets/49032882/bcbaa202-40cb-45d3-aebb-7be83de8cc89" width="150px"/>
 </div>
 
-> 참외 인력소는 ‘참한 외주 개발자 인력소’의 줄임말로,<br/>
-> <b>개발자와 프로젝트 관리자(PM)을 중개하는 모바일 웹 플랫폼</b>입니다.
+> 참외 인력소; 참한 외주 개발자 인력소
+> 
+**개발자와 프로젝트 관리자(PM)을 중개하는 모바일 웹 플랫폼**
 
 ## 배포 주소
 > https://fedc-4-cucumis-pocojang.vercel.app/
@@ -64,6 +65,16 @@
   <td align="center">배포</td>
   <td>
     <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=Vercel&logoColor=white">
+  </td>
+</tr>
+<tr>
+  <td align="center">협업툴</td>
+  <td>
+    <img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white">
+    <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white">
+    <img src="https://img.shields.io/badge/Notion-181717?style=for-the-badge&logo=Notion&logoColor=white">
+    <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white">
+    <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=Discord&logoColor=white">
   </td>
 </tr>
 </table>
@@ -147,3 +158,10 @@
     <td align="center"><a href="https://github.com/eeseung"><b>이승희</b></a></td>
   </tr>
 </table>
+
+### 개발 문화
+#### Git-All-in-One
+- Discussion → Issue → Project → PR → Code Review → Merge → CI/CD → Release Note
+#### 스크럼, 스프린트
+- 변화에 유연한 애자일로 빠르게 프로덕트 개발
+#### 감정회고

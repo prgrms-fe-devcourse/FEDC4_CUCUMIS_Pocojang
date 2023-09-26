@@ -52,5 +52,14 @@ export const projectDetailSlice = createSlice({
         state.post.comments.splice(commentIndex, 1);
       }
     },
+    setUpdateComment: (state, action) => {
+      const commentIndex = state.post.comments.findIndex(
+        (comment) => comment.commentId === action.payload.oldId,
+      );
+
+      if (commentIndex !== -1) {
+        state.post.comments[commentIndex].commentId = action.payload.newId;
+      }
+    },
   },
 });

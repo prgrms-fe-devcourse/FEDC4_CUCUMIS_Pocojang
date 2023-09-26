@@ -9,7 +9,11 @@ import { projectDetailSelector } from '@/stores/projectDetail/selector';
 import { LOGIN_URL, PROFILE_URL } from '@/consts/routes';
 import { tokenSelector } from '@/stores/auth/selector';
 import { userIdSelector, userInfoSelector } from '@/stores/auth';
-import { setAddComment, setDeleteComment } from '@/stores/projectDetail';
+import {
+  setAddComment,
+  setDeleteComment,
+  setUpdateComment,
+} from '@/stores/projectDetail';
 
 const useComment = () => {
   const dispatch = useAppDispatch();
@@ -23,17 +27,13 @@ const useComment = () => {
   const navigate = useNavigate();
 
   const handleDeleteClick = async (id: string) => {
-    // dispatch(setIsLoading(true));
     dispatch(setDeleteComment(id));
     try {
       await deleteComment({ id });
     } catch (error) {
       window.alert('댓글 삭제에 실패하였습니다');
-    } finally {
-      // dispatch(setIsLoading(false));
     }
   };
-  console.log(userInfo);
 
   const handleAvatarClick = (id: string) => {
     navigate(PROFILE_URL + id);
@@ -47,9 +47,9 @@ const useComment = () => {
 
       return;
     }
-    // dispatch(setIsLoading(true));
+
     const { isOnline, image, fullName, _id } = userInfo;
-    console.log(userInfo, image);
+
     dispatch(
       setAddComment({
         AvatarProps: {
@@ -69,6 +69,8 @@ const useComment = () => {
         postId: post.postId,
       });
 
+      dispatch(setUpdateComment({ newId: res._id, oldId: 'temp' + input }));
+
       await sendNotification({
         notificationType: 'COMMENT',
         notificationTypeId: res._id,
@@ -77,9 +79,6 @@ const useComment = () => {
       });
     } catch (error) {
       window.alert('댓글 달기에 실패하였습니다');
-    } finally {
-      // dispatch(setIsLoading(false));
-      // navigate(0);
     }
   }, [
     token,

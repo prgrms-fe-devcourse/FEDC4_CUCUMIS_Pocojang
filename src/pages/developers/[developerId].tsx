@@ -24,6 +24,7 @@ export default function DeveloperDetail() {
     isAuthor,
     isLoading,
     isUserFollowing,
+    isFollowButtonClicked,
     isLoggedIn,
   } = useDeveloperDetails();
 
@@ -67,13 +68,21 @@ export default function DeveloperDetail() {
             ) : (
               <>
                 {isUserFollowing ? (
-                  <BasicButton variant="outlined" onClick={handleFollowClick}>
+                  <FollowButton
+                    variant="outlined"
+                    onClick={handleFollowClick}
+                    isClicked={isFollowButtonClicked}
+                  >
                     팔로잉 취소
-                  </BasicButton>
+                  </FollowButton>
                 ) : (
-                  <BasicButton variant="outlined" onClick={handleFollowClick}>
+                  <FollowButton
+                    variant="outlined"
+                    onClick={handleFollowClick}
+                    isClicked={isFollowButtonClicked}
+                  >
                     팔로잉
-                  </BasicButton>
+                  </FollowButton>
                 )}
                 <BasicButton variant="outlined" onClick={handleDMClick}>
                   DM
@@ -133,4 +142,10 @@ const ChipsBoxContainer = styled(Box)({
 
 const ChipContainer = styled(BasicChip)<{ margin: string }>(({ margin }) => ({
   margin: margin,
+}));
+
+const FollowButton = styled(BasicButton, {
+  shouldForwardProp: (prop) => prop !== 'isClicked',
+})(({ isClicked }: { isClicked: boolean }) => ({
+  cursor: isClicked ? 'wait' : 'pointer',
 }));

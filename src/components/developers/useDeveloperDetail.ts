@@ -43,6 +43,7 @@ const useDeveloperDetail = () => {
 
   const [isUserFollowing, setIsUserFollowing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isFollowButtonClicked, setIsFollowButtonClicked] = useState(false);
   const optimisticRef = useRef(false);
 
   const handleAvatarClick = () => {
@@ -74,6 +75,7 @@ const useDeveloperDetail = () => {
   };
 
   const handleFollowClick = async () => {
+    setIsFollowButtonClicked(true);
     optimisticRef.current = true;
     try {
       if (isUserFollowing) {
@@ -116,6 +118,8 @@ const useDeveloperDetail = () => {
         dispatch(setUser(newUserInfo));
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsFollowButtonClicked(false);
       }
     }
   };
@@ -168,6 +172,7 @@ const useDeveloperDetail = () => {
     isUserFollowing,
     isLoading,
     isLoggedIn,
+    isFollowButtonClicked,
     ...post,
   };
 };

@@ -27,6 +27,7 @@ const Likes = () => {
   const [heartState, setHearState] = useState({
     isHeartClicked: false,
     count: likes.length,
+    isClickedNow: false,
   });
   const handleSendHeart = async () => {
     if (!userId) {
@@ -35,6 +36,7 @@ const Likes = () => {
     setHearState((prev) => ({
       isHeartClicked: true,
       count: prev.count + 1,
+      isClickedNow: true,
     }));
 
     try {
@@ -48,6 +50,11 @@ const Likes = () => {
       });
     } catch (error) {
       window.alert('좋아요 처리에 실패하였습니다');
+    } finally {
+      setHearState((prev) => ({
+        ...prev,
+        isClickedNow: false,
+      }));
     }
   };
 
@@ -58,6 +65,7 @@ const Likes = () => {
     setHearState((prev) => ({
       isHeartClicked: false,
       count: prev.count - 1,
+      isClickedNow: true,
     }));
 
     const userLikeInfo = likes.find((like) => like.user === userId);
@@ -68,16 +76,34 @@ const Likes = () => {
         dispatch(setDeleteLike({ userId }));
       } catch (error) {
         window.alert('좋아요 처리에 실패하였습니다');
+      } finally {
+        setHearState((prev) => ({
+          ...prev,
+          isClickedNow: false,
+        }));
       }
     } else {
-      await cancelLikePost({ id: tempHeartId });
+      try {
+        await cancelLikePost({ id: tempHeartId });
+      } catch (error) {
+        window.alert('좋아요 처리에 실패하였습니다');
+      } finally {
+        setHearState((prev) => ({
+          ...prev,
+          isClickedNow: false,
+        }));
+      }
     }
   };
 
   useEffect(() => {
     const isUserLike = likes.some((like) => like.user === userId);
 
-    setHearState({ count: likes.length, isHeartClicked: isUserLike });
+    setHearState((prev) => ({
+      ...prev,
+      count: likes.length,
+      isHeartClicked: isUserLike,
+    }));
   }, [userId, likes]);
 
   return (
@@ -86,6 +112,7 @@ const Likes = () => {
       alignItems="center"
       spacing={0.5}
       isUser={!!userId}
+      isClickedNow={heartState.isClickedNow}
     >
       {heartState.isHeartClicked ? (
         <FavoriteIcon onClick={handleCancelHeart} color="primary" />
@@ -98,9 +125,9 @@ const Likes = () => {
 };
 
 const IconContainer = styled(Stack, {
-  shouldForwardProp: (prop) => prop !== 'isUser',
-})(({ isUser }: { isUser: boolean }) => ({
-  cursor: isUser ? 'pointer' : 'not-allowed',
+  shouldForwardProp: (prop) => prop !== 'isUser' && prop !== 'isClickedNow',
+})(({ isUser, isClickedNow }: { isUser: boolean; isClickedNow: boolean }) => ({
+  cursor: isUser ? (isClickedNow ? 'wait' : 'pointer') : 'not-allowed',
 }));
 
 export default Likes;

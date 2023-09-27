@@ -4,7 +4,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Stack, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 
-import { useAppSelector } from '@/stores/hooks';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { userIdSelector } from '@/stores/auth';
 import {
   likesSelector,
@@ -13,8 +13,10 @@ import {
 } from '@/stores/projectDetail/selector';
 import { cancelLikePost, likePost } from '@/api/likes';
 import { sendNotification } from '@/api/notifications';
+import { setDeleteLike } from '@/stores/projectDetail';
 
 const Likes = () => {
+  const dispatch = useAppDispatch();
   const userId = useAppSelector(userIdSelector);
   const likes = useAppSelector(likesSelector);
   const postId = useAppSelector(postIdSelector);
@@ -25,6 +27,7 @@ const Likes = () => {
   const [heartState, setHearState] = useState({
     isHeartClicked: false,
     count: likes.length,
+    isClickedNow: false,
   });
   const handleSendHeart = async () => {
     if (!userId) {
@@ -33,6 +36,7 @@ const Likes = () => {
     setHearState((prev) => ({
       isHeartClicked: true,
       count: prev.count + 1,
+      isClickedNow: true,
     }));
 
     try {
@@ -46,6 +50,11 @@ const Likes = () => {
       });
     } catch (error) {
       window.alert('좋아요 처리에 실패하였습니다');
+    } finally {
+      setHearState((prev) => ({
+        ...prev,
+        isClickedNow: false,
+      }));
     }
   };
 
@@ -56,6 +65,7 @@ const Likes = () => {
     setHearState((prev) => ({
       isHeartClicked: false,
       count: prev.count - 1,
+      isClickedNow: true,
     }));
 
     const userLikeInfo = likes.find((like) => like.user === userId);
@@ -63,18 +73,37 @@ const Likes = () => {
     if (userLikeInfo) {
       try {
         await cancelLikePost({ id: userLikeInfo._id });
+        dispatch(setDeleteLike({ userId }));
       } catch (error) {
         window.alert('좋아요 처리에 실패하였습니다');
+      } finally {
+        setHearState((prev) => ({
+          ...prev,
+          isClickedNow: false,
+        }));
       }
     } else {
-      await cancelLikePost({ id: tempHeartId });
+      try {
+        await cancelLikePost({ id: tempHeartId });
+      } catch (error) {
+        window.alert('좋아요 처리에 실패하였습니다');
+      } finally {
+        setHearState((prev) => ({
+          ...prev,
+          isClickedNow: false,
+        }));
+      }
     }
   };
 
   useEffect(() => {
     const isUserLike = likes.some((like) => like.user === userId);
 
-    setHearState({ count: likes.length, isHeartClicked: isUserLike });
+    setHearState((prev) => ({
+      ...prev,
+      count: likes.length,
+      isHeartClicked: isUserLike,
+    }));
   }, [userId, likes]);
 
   return (
@@ -83,6 +112,7 @@ const Likes = () => {
       alignItems="center"
       spacing={0.5}
       isUser={!!userId}
+      isClickedNow={heartState.isClickedNow}
     >
       {heartState.isHeartClicked ? (
         <FavoriteIcon onClick={handleCancelHeart} color="primary" />
@@ -95,9 +125,9 @@ const Likes = () => {
 };
 
 const IconContainer = styled(Stack, {
-  shouldForwardProp: (prop) => prop !== 'isUser',
-})(({ isUser }: { isUser: boolean }) => ({
-  cursor: isUser ? 'pointer' : 'not-allowed',
+  shouldForwardProp: (prop) => prop !== 'isUser' && prop !== 'isClickedNow',
+})(({ isUser, isClickedNow }: { isUser: boolean; isClickedNow: boolean }) => ({
+  cursor: isUser ? (isClickedNow ? 'wait' : 'pointer') : 'not-allowed',
 }));
 
 export default Likes;

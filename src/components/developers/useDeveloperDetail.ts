@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
@@ -43,6 +43,8 @@ const useDeveloperDetail = () => {
 
   const [isUserFollowing, setIsUserFollowing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isFollowButtonClicked, setIsFollowButtonClicked] = useState(false);
+  const optimisticRef = useRef(false);
 
   const handleAvatarClick = () => {
     navigate(PROFILE_URL + post.author._id);
@@ -72,11 +74,13 @@ const useDeveloperDetail = () => {
     }
   };
 
-  const handleFollowClick = useCallback(async () => {
-    dispatch(setIsLoading(true));
-
+  const handleFollowClick = async () => {
+    setIsFollowButtonClicked(true);
+    optimisticRef.current = true;
     try {
       if (isUserFollowing) {
+        setIsUserFollowing(false);
+
         const followerIDList = post.author.followers;
 
         if (followerIDList) {
@@ -88,6 +92,8 @@ const useDeveloperDetail = () => {
         }
       } else {
         if (post.author._id) {
+          setIsUserFollowing(true);
+
           const res = await followUser({ userId: post.author._id });
 
           await sendNotification({
@@ -99,28 +105,24 @@ const useDeveloperDetail = () => {
       }
     } catch (error) {
       window.alert('팔로우 처리에 실패하였습니다');
-
-      dispatch(setIsLoading(false));
     } finally {
       try {
-        const newUserInfo = await getUser(userId);
+        if (developerId) {
+          const rs = await getPost(developerId);
 
+          const formattedPost = handlePostFormat(rs);
+
+          dispatch(setPost(formattedPost));
+        }
+        const newUserInfo = await getUser(userId);
         dispatch(setUser(newUserInfo));
       } catch (error) {
-        dispatch(setIsLoading(false));
+        console.log(error);
       } finally {
-        navigate(0);
+        setIsFollowButtonClicked(false);
       }
     }
-  }, [
-    isUserFollowing,
-    post.author._id,
-    dispatch,
-    navigate,
-    post.author.followers,
-    userFollowingList,
-    userId,
-  ]);
+  };
 
   const fetchPost = useCallback(
     async (postId: string) => {
@@ -150,7 +152,7 @@ const useDeveloperDetail = () => {
   useEffect(() => {
     const isFollowedByUser = getIsFollowedByUser(post, userFollowingList);
 
-    setIsUserFollowing(isFollowedByUser);
+    if (!optimisticRef.current) setIsUserFollowing(isFollowedByUser);
   }, [post, userFollowingList, userId]);
 
   useEffect(() => {
@@ -170,6 +172,7 @@ const useDeveloperDetail = () => {
     isUserFollowing,
     isLoading,
     isLoggedIn,
+    isFollowButtonClicked,
     ...post,
   };
 };

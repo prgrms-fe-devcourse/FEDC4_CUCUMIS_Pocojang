@@ -61,5 +61,14 @@ export const projectDetailSlice = createSlice({
         state.post.comments[commentIndex].commentId = action.payload.newId;
       }
     },
+    setDeleteLike: (state, action) => {
+      const userLikeIndex = state.post.likes.findIndex(
+        (like) => like.user === action.payload.userId,
+      );
+
+      if (userLikeIndex !== -1) {
+        state.post.likes.splice(userLikeIndex, 1);
+      }
+    },
   },
 });
